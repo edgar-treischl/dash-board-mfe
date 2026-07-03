@@ -35,6 +35,7 @@ export default function App() {
               <button
                 key={option.key}
                 type="button"
+                data-view={option.key}
                 className={
                   option.key === view
                     ? `${CLASS_NAMES.viewTab} ${CLASS_NAMES.viewTabActive}`
