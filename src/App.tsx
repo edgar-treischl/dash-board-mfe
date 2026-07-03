@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { RetentionView } from './components/RetentionPage.tsx'
+import { BavariaView } from './components/BavariaPage.tsx'
 import { TrendView } from './components/TrendPage.tsx'
 import { HeroView } from './components/HeroPage.tsx'
 import { InfoView } from './components/InfoPage.tsx'
@@ -62,10 +62,7 @@ export default function App() {
             </ErrorBoundary>
           ) : view === 'retention' ? (
             <ErrorBoundary>
-              <RetentionView
-                selectedYear={selectedYear}
-                onYearChange={setSelectedYear}
-              />
+              <BavariaView />
             </ErrorBoundary>
           ) : view === 'trends' ? (
             <ErrorBoundary>
