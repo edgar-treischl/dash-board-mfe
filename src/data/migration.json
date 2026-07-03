@@ -1,0 +1,578 @@
+[
+  {
+    "syear": "2024/25",
+    "stype": "Grundschulen",
+    "group": "Deutsche",
+    "number": 58,
+    "year": "2024",
+    "total": 124,
+    "percentage": 46.7741935483871
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Grundschulen",
+    "group": "Ausländer",
+    "number": 66,
+    "year": "2024",
+    "total": 124,
+    "percentage": 53.2258064516129
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Deutsche",
+    "number": 1566,
+    "year": "2024",
+    "total": 2654,
+    "percentage": 59.0052750565185
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Ausländer",
+    "number": 1088,
+    "year": "2024",
+    "total": 2654,
+    "percentage": 40.9947249434815
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Realschulen",
+    "group": "Deutsche",
+    "number": 6944,
+    "year": "2024",
+    "total": 7874,
+    "percentage": 88.1889763779528
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Realschulen",
+    "group": "Ausländer",
+    "number": 930,
+    "year": "2024",
+    "total": 7874,
+    "percentage": 11.8110236220472
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Gymnasien",
+    "group": "Deutsche",
+    "number": 4440,
+    "year": "2024",
+    "total": 5005,
+    "percentage": 88.7112887112887
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Gymnasien",
+    "group": "Ausländer",
+    "number": 565,
+    "year": "2024",
+    "total": 5005,
+    "percentage": 11.2887112887113
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Int. Gesamtschulen",
+    "group": "Deutsche",
+    "number": 11,
+    "year": "2024",
+    "total": 16,
+    "percentage": 68.75
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Int. Gesamtschulen",
+    "group": "Ausländer",
+    "number": 5,
+    "year": "2024",
+    "total": 16,
+    "percentage": 31.25
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Grundschulen",
+    "group": "Deutsche",
+    "number": 55,
+    "year": "2023",
+    "total": 118,
+    "percentage": 46.6101694915254
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Grundschulen",
+    "group": "Ausländer",
+    "number": 63,
+    "year": "2023",
+    "total": 118,
+    "percentage": 53.3898305084746
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Deutsche",
+    "number": 1385,
+    "year": "2023",
+    "total": 2183,
+    "percentage": 63.4448007329363
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Ausländer",
+    "number": 798,
+    "year": "2023",
+    "total": 2183,
+    "percentage": 36.5551992670637
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Realschulen",
+    "group": "Deutsche",
+    "number": 6618,
+    "year": "2023",
+    "total": 7360,
+    "percentage": 89.9184782608696
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Realschulen",
+    "group": "Ausländer",
+    "number": 742,
+    "year": "2023",
+    "total": 7360,
+    "percentage": 10.0815217391304
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Gymnasien",
+    "group": "Deutsche",
+    "number": 4470,
+    "year": "2023",
+    "total": 5012,
+    "percentage": 89.1859537110934
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Gymnasien",
+    "group": "Ausländer",
+    "number": 542,
+    "year": "2023",
+    "total": 5012,
+    "percentage": 10.8140462889066
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Int. Gesamtschulen",
+    "group": "Deutsche",
+    "number": 30,
+    "year": "2023",
+    "total": 32,
+    "percentage": 93.75
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Int. Gesamtschulen",
+    "group": "Ausländer",
+    "number": 2,
+    "year": "2023",
+    "total": 32,
+    "percentage": 6.25
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Grundschulen",
+    "group": "Deutsche",
+    "number": 88,
+    "year": "2022",
+    "total": 147,
+    "percentage": 59.8639455782313
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Grundschulen",
+    "group": "Ausländer",
+    "number": 59,
+    "year": "2022",
+    "total": 147,
+    "percentage": 40.1360544217687
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Deutsche",
+    "number": 1539,
+    "year": "2022",
+    "total": 2256,
+    "percentage": 68.218085106383
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Ausländer",
+    "number": 717,
+    "year": "2022",
+    "total": 2256,
+    "percentage": 31.781914893617
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Realschulen",
+    "group": "Deutsche",
+    "number": 7217,
+    "year": "2022",
+    "total": 7995,
+    "percentage": 90.2689180737961
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Realschulen",
+    "group": "Ausländer",
+    "number": 778,
+    "year": "2022",
+    "total": 7995,
+    "percentage": 9.73108192620388
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Gymnasien",
+    "group": "Deutsche",
+    "number": 4622,
+    "year": "2022",
+    "total": 5109,
+    "percentage": 90.4678019181836
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Gymnasien",
+    "group": "Ausländer",
+    "number": 487,
+    "year": "2022",
+    "total": 5109,
+    "percentage": 9.5321980818164
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Grundschulen",
+    "group": "Deutsche",
+    "number": 78,
+    "year": "2021",
+    "total": 129,
+    "percentage": 60.4651162790698
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Grundschulen",
+    "group": "Ausländer",
+    "number": 51,
+    "year": "2021",
+    "total": 129,
+    "percentage": 39.5348837209302
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Deutsche",
+    "number": 998,
+    "year": "2021",
+    "total": 1472,
+    "percentage": 67.7989130434783
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Ausländer",
+    "number": 474,
+    "year": "2021",
+    "total": 1472,
+    "percentage": 32.2010869565217
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Realschulen",
+    "group": "Deutsche",
+    "number": 1971,
+    "year": "2021",
+    "total": 2151,
+    "percentage": 91.6317991631799
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Realschulen",
+    "group": "Ausländer",
+    "number": 180,
+    "year": "2021",
+    "total": 2151,
+    "percentage": 8.36820083682008
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Gymnasien",
+    "group": "Deutsche",
+    "number": 1325,
+    "year": "2021",
+    "total": 1458,
+    "percentage": 90.877914951989
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Gymnasien",
+    "group": "Ausländer",
+    "number": 133,
+    "year": "2021",
+    "total": 1458,
+    "percentage": 9.12208504801097
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Grundschulen",
+    "group": "Deutsche",
+    "number": 42,
+    "year": "2020",
+    "total": 81,
+    "percentage": 51.8518518518518
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Grundschulen",
+    "group": "Ausländer",
+    "number": 39,
+    "year": "2020",
+    "total": 81,
+    "percentage": 48.1481481481481
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Deutsche",
+    "number": 561,
+    "year": "2020",
+    "total": 873,
+    "percentage": 64.2611683848797
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Ausländer",
+    "number": 312,
+    "year": "2020",
+    "total": 873,
+    "percentage": 35.7388316151203
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Realschulen",
+    "group": "Deutsche",
+    "number": 625,
+    "year": "2020",
+    "total": 695,
+    "percentage": 89.9280575539568
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Realschulen",
+    "group": "Ausländer",
+    "number": 70,
+    "year": "2020",
+    "total": 695,
+    "percentage": 10.0719424460432
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Gymnasien",
+    "group": "Deutsche",
+    "number": 578,
+    "year": "2020",
+    "total": 613,
+    "percentage": 94.2903752039152
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Gymnasien",
+    "group": "Ausländer",
+    "number": 35,
+    "year": "2020",
+    "total": 613,
+    "percentage": 5.70962479608483
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Grundschulen",
+    "group": "Deutsche",
+    "number": 84,
+    "year": "2019",
+    "total": 151,
+    "percentage": 55.6291390728477
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Grundschulen",
+    "group": "Ausländer",
+    "number": 67,
+    "year": "2019",
+    "total": 151,
+    "percentage": 44.3708609271523
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Deutsche",
+    "number": 1884,
+    "year": "2019",
+    "total": 2700,
+    "percentage": 69.7777777777778
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Ausländer",
+    "number": 816,
+    "year": "2019",
+    "total": 2700,
+    "percentage": 30.2222222222222
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Realschulen",
+    "group": "Deutsche",
+    "number": 6851,
+    "year": "2019",
+    "total": 7393,
+    "percentage": 92.6687407006628
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Realschulen",
+    "group": "Ausländer",
+    "number": 542,
+    "year": "2019",
+    "total": 7393,
+    "percentage": 7.33125929933721
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Gymnasien",
+    "group": "Deutsche",
+    "number": 4239,
+    "year": "2019",
+    "total": 4577,
+    "percentage": 92.6152501638628
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Gymnasien",
+    "group": "Ausländer",
+    "number": 338,
+    "year": "2019",
+    "total": 4577,
+    "percentage": 7.38474983613721
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Int. Gesamtschulen",
+    "group": "Deutsche",
+    "number": 26,
+    "year": "2019",
+    "total": 31,
+    "percentage": 83.8709677419355
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Int. Gesamtschulen",
+    "group": "Ausländer",
+    "number": 5,
+    "year": "2019",
+    "total": 31,
+    "percentage": 16.1290322580645
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Grundschulen",
+    "group": "Deutsche",
+    "number": 135,
+    "year": "2018",
+    "total": 258,
+    "percentage": 52.3255813953488
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Grundschulen",
+    "group": "Ausländer",
+    "number": 123,
+    "year": "2018",
+    "total": 258,
+    "percentage": 47.6744186046512
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Deutsche",
+    "number": 1913,
+    "year": "2018",
+    "total": 2703,
+    "percentage": 70.7732149463559
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Ausländer",
+    "number": 790,
+    "year": "2018",
+    "total": 2703,
+    "percentage": 29.2267850536441
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Realschulen",
+    "group": "Deutsche",
+    "number": 7203,
+    "year": "2018",
+    "total": 7716,
+    "percentage": 93.3514774494557
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Realschulen",
+    "group": "Ausländer",
+    "number": 513,
+    "year": "2018",
+    "total": 7716,
+    "percentage": 6.64852255054432
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Gymnasien",
+    "group": "Deutsche",
+    "number": 4519,
+    "year": "2018",
+    "total": 4863,
+    "percentage": 92.9261772568373
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Gymnasien",
+    "group": "Ausländer",
+    "number": 344,
+    "year": "2018",
+    "total": 4863,
+    "percentage": 7.07382274316266
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Int. Gesamtschulen",
+    "group": "Deutsche",
+    "number": 22,
+    "year": "2018",
+    "total": 27,
+    "percentage": 81.4814814814815
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Int. Gesamtschulen",
+    "group": "Ausländer",
+    "number": 5,
+    "year": "2018",
+    "total": 27,
+    "percentage": 18.5185185185185
+  }
+]
