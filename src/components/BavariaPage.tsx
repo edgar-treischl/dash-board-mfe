@@ -230,9 +230,7 @@ function BavariaViewComponent({
               )}
 
               {view === 'map' && (
-                <div style={{ padding: '1rem' }}>
-                  <RegierungsbezirkeMap selectedMetric={selectedMetric} regions={regions} />
-                </div>
+                <RegierungsbezirkeMap selectedMetric={selectedMetric} regions={regions} />
               )}
 
               {view === 'table' && (

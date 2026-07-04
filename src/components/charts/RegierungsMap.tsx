@@ -105,7 +105,7 @@ const colorScale = scaleSequential(interpolateViridis)
   .domain([minValue, maxValue]);
 
     return (
-      <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '24px' }}>
+      <>
         <h2 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '16px' }}>
           {metricLabels[selectedMetric]} nach Regierungsbezirk
         </h2>
@@ -257,7 +257,7 @@ const colorScale = scaleSequential(interpolateViridis)
             <span>Keine Daten</span>
           </div>
         </div>
-      </div>
+      </>
     );
 }
 
