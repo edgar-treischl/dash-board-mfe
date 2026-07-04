@@ -337,6 +337,58 @@
   font-weight: 600;
 }
 
+/* View switcher variant (semantic nav element) */
+.class-retention-mfe__view-switcher {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  align-self: flex-start;
+  border: 1px solid var(--class-retention-border);
+  border-radius: 18px;
+  background: var(--class-retention-surface);
+  box-shadow: var(--class-retention-shadow);
+  margin-bottom: 1.5rem;
+}
+
+.class-retention-mfe__view-switcher .class-retention-mfe__view-tab {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--class-retention-text);
+  background-color: transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.class-retention-mfe__view-switcher .class-retention-mfe__view-tab:hover {
+  color: var(--class-retention-heading);
+  background-color: rgba(0, 141, 201, 0.08);
+}
+
+.class-retention-mfe__view-switcher .class-retention-mfe__view-tab.is-active {
+  background: var(--class-retention-bg);
+  color: var(--class-retention-heading);
+  box-shadow: inset 0 0 0 1px var(--class-retention-border);
+  font-weight: 600;
+}
+
+/* Responsive: Full width on mobile */
+@media (max-width: 900px) {
+  .class-retention-mfe__view-switcher {
+    width: 100%;
+    align-self: stretch;
+  }
+  
+  .class-retention-mfe__view-switcher .class-retention-mfe__view-tab {
+    flex: 1;
+  }
+}
+
 /* ========================
    6. FORMS & CONTROLS
    ======================== */

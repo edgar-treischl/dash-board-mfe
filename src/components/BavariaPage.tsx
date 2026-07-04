@@ -3,6 +3,7 @@ import { bavariaMetrics, regions } from '../data/bavaria.ts'
 import { COMMON_STYLES } from '../config/chartConfig.ts'
 import { InterpretationBox } from './InterpretationBox.tsx'
 import { RegierungsbezirkeMap } from './charts/RegierungsMap.tsx'
+import { ViewSwitcher } from './controls/ViewSwitcher.tsx'
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
 
@@ -89,41 +90,16 @@ function BavariaViewComponent({
 
       <h3 className="class-retention-mfe__stats-header">Nach Regierungsbezirk</h3>
 
-      {/* View selector tabs */}
-      <div className="class-retention-mfe__view-selector" style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem' }}>
-        <button
-          onClick={() => setView('chart')}
-          className={`class-retention-mfe__view-tab ${view === 'chart' ? 'is-active' : ''}`}
-          style={{
-            padding: '0.5rem 1rem',
-            borderRadius: '4px',
-            border: 'none',
-            cursor: 'pointer',
-            fontWeight: view === 'chart' ? '600' : '500',
-            color: view === 'chart' ? '#fff' : '#6b7280',
-            backgroundColor: view === 'chart' ? '#3b82f6' : 'transparent',
-            transition: 'all 0.2s',
-          }}
-        >
-          Balkendiagramm
-        </button>
-        <button
-          onClick={() => setView('map')}
-          className={`class-retention-mfe__view-tab ${view === 'map' ? 'is-active' : ''}`}
-          style={{
-            padding: '0.5rem 1rem',
-            borderRadius: '4px',
-            border: 'none',
-            cursor: 'pointer',
-            fontWeight: view === 'map' ? '600' : '500',
-            color: view === 'map' ? '#fff' : '#6b7280',
-            backgroundColor: view === 'map' ? '#3b82f6' : 'transparent',
-            transition: 'all 0.2s',
-          }}
-        >
-          Karte
-        </button>
-      </div>
+      {/* View selector using semantic nav element */}
+      <ViewSwitcher
+        options={[
+          { key: 'chart', label: 'Balkendiagramm' },
+          { key: 'map', label: 'Karte' },
+        ]}
+        activeKey={view}
+        onSelect={(selectedView) => setView(selectedView as ViewType)}
+        ariaLabel="Ansichtsauswahl für Regierungsbezirke"
+      />
 
       <section className="class-retention-mfe__explorer-layout">
         <div className="class-retention-mfe__explorer-left">
