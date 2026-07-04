@@ -21,7 +21,7 @@ function RegierungsViewComponent() {
     schools: 'Schulen',
     students: 'Schüler und Schülerinnen',
     teachersFTE: 'Lehrkräfte (VZÄ)',
-    avgClassSize: 'Klassengröße (Ø)',
+    avgClassSize: 'Klassengröße (Ø aller Schularten)',
   }
 
   // Build interpretation tabs
@@ -57,7 +57,7 @@ function RegierungsViewComponent() {
   return (
     <>
       {/* Region selector - prominent at top */}
-      <section className="class-retention-mfe__region-selector-section">
+      <section style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '24px 0', borderBottom: '2px solid var(--class-retention-border)', marginBottom: '24px', width: '100%' }}>
         <RegionSelect
           selectedRegionId={selectedRegion}
           onRegionChange={setSelectedRegion}
@@ -66,11 +66,24 @@ function RegierungsViewComponent() {
       </section>
 
       {/* Region-specific metrics */}
-      <section className="class-retention-mfe__stats-section">
+      <section style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h3 className="class-retention-mfe__stats-header">{currentRegion.shortName}</h3>
+          <h3 className="class-retention-mfe__stats-header">{currentRegion.shortName} in Zahlen</h3>
         </div>
-        <div className="class-retention-mfe__stats-row" aria-label="Kennzahlen der ausgewählten Region">
+        <div 
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+            gap: '12px',
+            width: '100%',
+            background: 'var(--class-retention-surface)',
+            border: '1px solid var(--class-retention-border)',
+            borderRadius: '18px',
+            padding: '24px',
+            boxShadow: 'var(--class-retention-shadow)',
+          }}
+          aria-label="Kennzahlen der ausgewählten Region"
+        >
           {(Object.keys(currentRegion.metrics) as MetricKey[]).map((key) => (
             <section key={key} className="class-retention-mfe__stat-card">
               <span className="class-retention-mfe__stat-type">{metricLabels[key]}</span>
@@ -80,23 +93,34 @@ function RegierungsViewComponent() {
         </div>
       </section>
 
-      <h3 className="class-retention-mfe__stats-header">Nach Regierungsbezirk</h3>
-
-
-
-      <section className="class-retention-mfe__explorer-layout">
-        <div className="class-retention-mfe__explorer-left">
+      <section 
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '60% 40%',
+          gap: '20px',
+          marginBottom: '16px',
+          alignItems: 'stretch',
+          width: '100%',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
           {/* Chart Card */}
           <div className="class-retention-mfe__chart-card">
+            {/* Card Header */}
+            <div className="class-retention-mfe__story-header">
+              <h3 className="class-retention-mfe__story-heading">Schulämter</h3>
+            </div>
+
             {/* View selector using semantic nav element */}
             <ViewSwitcher
               options={[
-                { key: 'table', label: 'Tabelle' },
+                { key: 'table', label: 'Überblick' },
                 { key: 'map', label: 'Karte' },
               ]}
               activeKey={view}
               onSelect={(selectedView) => setView(selectedView as ViewType)}
               ariaLabel="Ansichtsauswahl für Regierungsbezirke"
+              variant="underline"
               />
             <div className="class-retention-mfe__card-heading"></div>
 
@@ -193,7 +217,7 @@ function RegierungsViewComponent() {
           </div>
         </div>
 
-        <div className="class-retention-mfe__explorer-right">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <InterpretationBox tabs={interpretationTabs} defaultTab="befund" />
         </div>
       </section>
