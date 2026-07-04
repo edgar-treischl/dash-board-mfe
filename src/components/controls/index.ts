@@ -7,3 +7,6 @@
 
 export { YearSelect } from './YearSelect'
 export type { YearSelectProps } from './YearSelect'
+
+export { RegionSelect } from './RegionSelect'
+export type { RegionSelectProps } from './RegionSelect'

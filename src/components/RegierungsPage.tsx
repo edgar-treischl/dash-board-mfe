@@ -4,6 +4,7 @@ import { COMMON_STYLES } from '../config/chartConfig.ts'
 import { InterpretationBox } from './InterpretationBox.tsx'
 import { OfficesLeafletMap } from './charts/OfficesLeafletMap.tsx'
 import { ViewSwitcher } from './controls/ViewSwitcher.tsx'
+import { RegionSelect } from './controls/RegionSelect.tsx'
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
 
@@ -55,30 +56,19 @@ function RegierungsViewComponent() {
 
   return (
     <>
+      {/* Region selector - prominent at top */}
+      <section className="class-retention-mfe__region-selector-section">
+        <RegionSelect
+          selectedRegionId={selectedRegion}
+          onRegionChange={setSelectedRegion}
+          label="Wählen Sie eine Region:"
+        />
+      </section>
+
       {/* Region-specific metrics */}
       <section className="class-retention-mfe__stats-section">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <h3 className="class-retention-mfe__stats-header">{currentRegion.shortName}</h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label htmlFor="region-select" style={{ marginRight: '4px', fontWeight: '500' }}>Region:</label>
-            <select
-              id="region-select"
-              value={selectedRegion}
-              onChange={(e) => setSelectedRegion(e.target.value)}
-              style={{
-                padding: '6px 12px',
-                fontSize: '14px',
-                borderRadius: '4px',
-                border: '1px solid #d1d5db',
-              }}
-            >
-              {regions.map((region) => (
-                <option key={region.id} value={region.id}>
-                  {region.shortName}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
         <div className="class-retention-mfe__stats-row" aria-label="Kennzahlen der ausgewählten Region">
           {(Object.keys(currentRegion.metrics) as MetricKey[]).map((key) => (

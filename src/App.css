@@ -257,6 +257,16 @@
   color: var(--class-retention-text);
 }
 
+/* Region selector section - prominent selector for Bavaria regions */
+.class-retention-mfe__region-selector-section {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 24px 0;
+  border-bottom: 2px solid var(--class-retention-border);
+  margin-bottom: 24px;
+}
+
 .class-retention-mfe__chart-card,
 .class-retention-mfe__stat-card {
   border: 1px solid var(--class-retention-border);

@@ -1,0 +1,87 @@
+/**
+ * RegionSelect Component Styles
+ * 
+ * Self-contained styles for the RegionSelect component
+ * Displays region icon on the far right, selector and label on the left
+ */
+
+/* Wrapper for entire control - control group on left, icon on far right */
+.class-retention-mfe__region-control-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 32px;
+}
+
+/* Container for the region SVG icon */
+.class-retention-mfe__region-icon-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Control group container */
+.class-retention-mfe__region-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 280px;
+}
+
+/* Main label */
+.class-retention-mfe__region-control-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--class-retention-heading, #333);
+  display: flex;
+  align-items: center;
+}
+
+/* Select dropdown element */
+.class-retention-mfe__region-control-select {
+  border: 1px solid var(--class-retention-border, #e5e7eb);
+  border-radius: 12px;
+  background: var(--class-retention-bg, #f9fafb);
+  color: var(--class-retention-heading, #333);
+  padding: 10px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23333' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+  font-weight: 500;
+  accent-color: var(--class-retention-accent, #008dc9);
+}
+
+/* Focus state */
+.class-retention-mfe__region-control-select:focus-visible {
+  outline: 2px solid var(--class-retention-accent, #008dc9);
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.class-retention-mfe__region-control-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Short label for the select field */
+.class-retention-mfe__region-control-short-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--class-retention-text, #666);
+  padding-right: 5px;
+}
+
+/* Container for label + select pair */
+.class-retention-mfe__region-control-pair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
