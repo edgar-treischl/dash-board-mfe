@@ -12,7 +12,7 @@ type BavariaViewProps = {
   onMetricChange?: (metric: MetricKey) => void
 }
 
-type ViewType = 'chart' | 'map'
+type ViewType = 'chart' | 'map' | 'table'
 
 function BavariaViewComponent({
   selectedMetric: propSelectedMetric,
@@ -26,9 +26,9 @@ function BavariaViewComponent({
 
   const metricLabels: Record<MetricKey, string> = {
     schools: 'Schulen',
-    students: 'Schüler',
+    students: 'Schüler und Schülerinnen',
     teachersFTE: 'Lehrkräfte (VZÄ)',
-    avgClassSize: 'Ø Klassengröße',
+    avgClassSize: 'Klassengröße (Ø)',
   }
 
   const metricColors: Record<MetricKey, string> = {
@@ -77,7 +77,7 @@ function BavariaViewComponent({
     <>
       {/* Bavaria-wide metrics */}
       <section className="class-retention-mfe__stats-section">
-        <h3 className="class-retention-mfe__stats-header">Bayern Gesamt</h3>
+        <h3 className="class-retention-mfe__stats-header">Insgesamt</h3>
         <div className="class-retention-mfe__stats-row" aria-label="Bayernweite Kennzahlen">
           {(Object.keys(bavariaMetrics) as MetricKey[]).map((key) => (
             <section key={key} className="class-retention-mfe__stat-card">
@@ -90,49 +90,54 @@ function BavariaViewComponent({
 
       <h3 className="class-retention-mfe__stats-header">Nach Regierungsbezirk</h3>
 
-      {/* View selector using semantic nav element */}
-      <ViewSwitcher
-        options={[
-          { key: 'chart', label: 'Balkendiagramm' },
-          { key: 'map', label: 'Karte' },
-        ]}
-        activeKey={view}
-        onSelect={(selectedView) => setView(selectedView as ViewType)}
-        ariaLabel="Ansichtsauswahl für Regierungsbezirke"
-      />
+
 
       <section className="class-retention-mfe__explorer-layout">
         <div className="class-retention-mfe__explorer-left">
           {/* Chart Card */}
           <div className="class-retention-mfe__chart-card">
+            {/* View selector using semantic nav element */}
+            <ViewSwitcher
+              options={[
+                { key: 'chart', label: 'Balkendiagramm' },
+                { key: 'map', label: 'Karte' },
+                { key: 'table', label: 'Tabelle' },
+              ]}
+              activeKey={view}
+              onSelect={(selectedView) => setView(selectedView as ViewType)}
+              ariaLabel="Ansichtsauswahl für Regierungsbezirke"
+              />
             <div className="class-retention-mfe__card-heading"></div>
 
-            <div className="class-retention-mfe__controls-section">
-              <label htmlFor="metric-select" style={{ marginRight: '8px' }}>Kennzahl:</label>
-              <select
-                id="metric-select"
-                value={selectedMetric}
-                onChange={(e) => onMetricChange(e.target.value as MetricKey)}
-                style={{
-                  padding: '6px 12px',
-                  fontSize: '14px',
-                  borderRadius: '4px',
-                  border: '1px solid #d1d5db',
-                }}
-              >
-                {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
-                  <option key={key} value={key}>
-                    {metricLabels[key]}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {view !== 'table' && (
+              <div className="class-retention-mfe__controls-section">
+                
+                <label htmlFor="metric-select" style={{ marginRight: '8px' }}>Kennzahl:</label>
+                <select
+                  id="metric-select"
+                  value={selectedMetric}
+                  onChange={(e) => onMetricChange(e.target.value as MetricKey)}
+                  style={{
+                    padding: '6px 12px',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    border: '1px solid #d1d5db',
+                  }}
+                >
+                  {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+                    <option key={key} value={key}>
+                      {metricLabels[key]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div className="class-retention-mfe__chart-frame">
               {view === 'chart' && (
                 <svg width="100%" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet" style={{ overflow: 'visible' }}>
                   {/* Title/Label for Y-axis */}
-                  <text x="20" y="20" fontSize="13" fontWeight="600" fill="#1f2937">
+                  <text x="0" y="6" fontSize="28" fontWeight="800" fill="#1f2937">
                     {metricLabels[selectedMetric]}
                   </text>
                   
@@ -178,7 +183,7 @@ function BavariaViewComponent({
                         <text
                           x="10"
                           y={yPos + 20}
-                          fontSize="13"
+                          fontSize="18"
                           fill="#374151"
                           fontWeight="500"
                         >
@@ -188,8 +193,8 @@ function BavariaViewComponent({
                         {/* Value label above bar */}
                         <text
                           x="200"
-                          y={yPos - 8}
-                          fontSize="12"
+                          y={yPos - 18}
+                          fontSize="16"
                           fill="#374151"
                           fontWeight="600"
                         >
@@ -214,7 +219,7 @@ function BavariaViewComponent({
                   <text
                     x="500"
                     y={50 + sortedRegions.length * 50 + 50}
-                    fontSize="12"
+                    fontSize="16"
                     fill="#6b7280"
                     textAnchor="middle"
                     fontWeight="500"
@@ -227,6 +232,77 @@ function BavariaViewComponent({
               {view === 'map' && (
                 <div style={{ padding: '1rem' }}>
                   <RegierungsbezirkeMap selectedMetric={selectedMetric} regions={regions} />
+                </div>
+              )}
+
+              {view === 'table' && (
+                <div style={{ padding: '1rem', overflowX: 'auto' }}>
+                  <table style={{
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    fontSize: '14px',
+                  }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f3f4f6', borderBottom: '2px solid #d1d5db' }}>
+                        <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#1f2937' }}>Regierungsbezirk</th>
+                        {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+                          <th key={key} style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
+                            {metricLabels[key]}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {regions.map((region, idx) => (
+                        <tr 
+                          key={region.id} 
+                          style={{ 
+                            backgroundColor: idx % 2 === 0 ? '#ffffff' : '#f9fafb',
+                            borderBottom: '1px solid #e5e7eb',
+                          }}
+                        >
+                          <td style={{ padding: '12px', fontWeight: '500', color: '#374151' }}>
+                            {region.shortName}
+                          </td>
+                          {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+                            <td 
+                              key={key} 
+                              style={{ 
+                                padding: '12px', 
+                                textAlign: 'right', 
+                                color: '#4b5563',
+                                fontVariantNumeric: 'tabular-nums',
+                              }}
+                            >
+                              {typeof region.metrics[key] === 'number' && region.metrics[key] % 1 !== 0
+                                ? region.metrics[key].toFixed(1)
+                                : region.metrics[key].toLocaleString()
+                              }
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                      <tr style={{ backgroundColor: '#f0f9ff', borderTop: '2px solid #d1d5db', fontWeight: '600' }}>
+                        <td style={{ padding: '12px', color: '#1f2937' }}>Bayern (Gesamt)</td>
+                        {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+                          <td 
+                            key={key} 
+                            style={{ 
+                              padding: '12px', 
+                              textAlign: 'right', 
+                              color: '#1f2937',
+                              fontVariantNumeric: 'tabular-nums',
+                            }}
+                          >
+                            {typeof bavariaMetrics[key] === 'number' && bavariaMetrics[key] % 1 !== 0
+                              ? bavariaMetrics[key].toFixed(1)
+                              : bavariaMetrics[key].toLocaleString()
+                            }
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               )}
             </div>
