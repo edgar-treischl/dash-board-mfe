@@ -36,41 +36,41 @@ function formatValue(value: number): string {
 }
 
 // Calculate nice round breaks for legend
-function calculateLegendBreaks(min: number, max: number, count: number = 5): number[] {
-  const range = max - min;
-  if (range === 0) return [min];
-  
-  // Calculate nice step size
-  const roughStep = range / (count - 1);
-  const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
-  const normalizedStep = roughStep / magnitude;
-  
-  // Round to nice numbers: 1, 2, 5, 10
-  let niceStep: number;
-  if (normalizedStep <= 1) niceStep = 1;
-  else if (normalizedStep <= 2) niceStep = 2;
-  else if (normalizedStep <= 5) niceStep = 5;
-  else niceStep = 10;
-  
-  niceStep *= magnitude;
-  
-  // Generate breaks
-  const niceMin = Math.floor(min / niceStep) * niceStep;
-  const niceMax = Math.ceil(max / niceStep) * niceStep;
-  
-  const breaks: number[] = [];
-  for (let i = niceMax; i >= niceMin; i -= niceStep) {
-    if (i >= min && i <= max) {
-      breaks.push(i);
-    }
-  }
-  
-  // Ensure we have min and max
-  if (breaks[breaks.length - 1] > min) breaks.push(min);
-  if (breaks[0] < max) breaks.unshift(max);
-  
-  return breaks.sort((a, b) => b - a); // descending order
-}
+// function calculateLegendBreaks(min: number, max: number, count: number = 5): number[] {
+//   const range = max - min;
+//   if (range === 0) return [min];
+//   
+//   // Calculate nice step size
+//   const roughStep = range / (count - 1);
+//   const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
+//   const normalizedStep = roughStep / magnitude;
+//   
+//   // Round to nice numbers: 1, 2, 5, 10
+//   let niceStep: number;
+//   if (normalizedStep <= 1) niceStep = 1;
+//   else if (normalizedStep <= 2) niceStep = 2;
+//   else if (normalizedStep <= 5) niceStep = 5;
+//   else niceStep = 10;
+//   
+//   niceStep *= magnitude;
+//   
+//   // Generate breaks
+//   const niceMin = Math.floor(min / niceStep) * niceStep;
+//   const niceMax = Math.ceil(max / niceStep) * niceStep;
+//   
+//   const breaks: number[] = [];
+//   for (let i = niceMax; i >= niceMin; i -= niceStep) {
+//     if (i >= min && i <= max) {
+//       breaks.push(i);
+//     }
+//   }
+//   
+//   // Ensure we have min and max
+//   if (breaks[breaks.length - 1] > min) breaks.push(min);
+//   if (breaks[0] < max) breaks.unshift(max);
+//   
+//   return breaks.sort((a, b) => b - a); // descending order
+// }
 
 
 
@@ -103,9 +103,6 @@ const maxValue =
 
 const colorScale = scaleSequential(interpolateViridis)
   .domain([minValue, maxValue]);
-
-  // Calculate nice legend breaks
-  const legendBreaks = calculateLegendBreaks(minValue, maxValue, 5);
 
     return (
       <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '24px' }}>
