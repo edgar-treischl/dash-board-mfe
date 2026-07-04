@@ -8,8 +8,8 @@
  */
 export const VIEW_OPTIONS = [
   { key: 'home' as const, label: 'Startseite' },
-  { key: 'retention' as const, label: 'Bayern im Überblick' },
-  { key: 'trends' as const, label: 'Zeitverlauf' },
+  { key: 'retention' as const, label: 'Bayern' },
+  { key: 'trends' as const, label: 'Regierungsbezirke' },
   { key: 'sex' as const, label: 'Geschlecht' },
   { key: 'migration' as const, label: 'Migration' },
   { key: 'data' as const, label: 'Info' },
@@ -23,8 +23,8 @@ export const VIEW_METADATA: Record<
   string
 > = {
   home: 'Klassenwiederholung',
-  retention: 'Bayern im Überblick',
-  trends: 'Klassenwiederholungen im Zeitverlauf',
+  retention: 'Bayern',
+  trends: 'Regierungsbezirke',
   sex: 'Klassenwiederholungen nach Geschlecht',
   migration: 'Klassenwiederholungen nach Herkunft',
   data: 'Über diese App',

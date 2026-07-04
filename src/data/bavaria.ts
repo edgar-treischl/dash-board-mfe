@@ -78,3 +78,28 @@ export const regions = [
     ]
   }
 ];
+
+
+export const officeCoords = {
+  "oberbayern|Staatliches Schulamt München-Stadt":   {lat:48.137, lon:11.575},
+  "oberbayern|Staatliches Schulamt München-Land":    {lat:48.100, lon:11.780},
+  "oberbayern|Staatliches Schulamt Rosenheim":       {lat:47.850, lon:12.130},
+
+  "niederbayern|Staatliches Schulamt Landshut":      {lat:48.540, lon:12.150},
+  "niederbayern|Staatliches Schulamt Passau":        {lat:48.570, lon:13.460},
+
+  "oberpfalz|Staatliches Schulamt Regensburg":       {lat:49.020, lon:12.100},
+  "oberpfalz|Staatliches Schulamt Amberg-Sulzbach":  {lat:49.440, lon:11.860},
+
+  "oberfranken|Staatliches Schulamt Bamberg":        {lat:49.890, lon:10.890},
+  "oberfranken|Staatliches Schulamt Hof":            {lat:50.316, lon:11.912},
+
+  "mittelfranken|Staatliches Schulamt Nürnberg-Stadt": {lat:49.450, lon:11.080},
+  "mittelfranken|Staatliches Schulamt Ansbach":        {lat:49.300, lon:10.570},
+
+  "unterfranken|Staatliches Schulamt Würzburg":      {lat:49.800, lon:9.940},
+  "unterfranken|Staatliches Schulamt Aschaffenburg": {lat:49.980, lon:9.150},
+
+  "schwaben|Staatliches Schulamt Augsburg-Stadt":    {lat:48.370, lon:10.900},
+  "schwaben|Staatliches Schulamt Kempten":           {lat:47.730, lon:10.310}
+};

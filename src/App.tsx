@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BavariaView } from './components/BavariaPage.tsx'
-import { TrendView } from './components/TrendPage.tsx'
+import { RegierungsView } from './components/RegierungsPage.tsx'
 import { HeroView } from './components/HeroPage.tsx'
 import { InfoView } from './components/InfoPage.tsx'
 import { SexView } from './components/SexPage.tsx'
@@ -66,7 +66,7 @@ export default function App() {
             </ErrorBoundary>
           ) : view === 'trends' ? (
             <ErrorBoundary>
-              <TrendView />
+              <RegierungsView />
             </ErrorBoundary>
           ) : view === 'sex' ? (
             <ErrorBoundary>
