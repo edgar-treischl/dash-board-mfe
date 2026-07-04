@@ -2,6 +2,7 @@ import { memo, useState } from 'react'
 import { bavariaMetrics, regions } from '../data/bavaria.ts'
 import { COMMON_STYLES } from '../config/chartConfig.ts'
 import { InterpretationBox } from './InterpretationBox.tsx'
+import { RegierungsbezirkeMap } from './charts/RegierungsMap.tsx'
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
 
@@ -214,6 +215,10 @@ function BavariaViewComponent({
         <div className="class-retention-mfe__explorer-right">
           <InterpretationBox tabs={interpretationTabs} defaultTab="befund" />
         </div>
+      </section>
+
+      <section style={{ marginTop: '2rem' }}>
+        <RegierungsbezirkeMap selectedMetric={selectedMetric} regions={regions} />
       </section>
     </>
   )
