@@ -4,6 +4,7 @@ import { COMMON_STYLES } from '../config/chartConfig.ts'
 import { InterpretationBox } from './InterpretationBox.tsx'
 import { RegierungsbezirkeMap } from './charts/RegierungsMap.tsx'
 import { ViewSwitcher } from './controls/ViewSwitcher.tsx'
+import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons.tsx'
 
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
@@ -44,6 +45,13 @@ function BavariaViewComponent({
     students: '#ef4444',
     teachersFTE: '#10b981',
     avgClassSize: '#f59e0b',
+  }
+
+  const metricIcons: Record<MetricKey, React.ReactNode> = {
+    schools: <SchoolsIcon className="class-retention-mfe__grid-icon" />,
+    students: <PupilsIcon className="class-retention-mfe__grid-icon" />,
+    teachersFTE: <TeachersIcon className="class-retention-mfe__grid-icon" />,
+    avgClassSize: <ClassSizeIcon className="class-retention-mfe__grid-icon" />,
   }
 
   // Sort regions by selected metric value
@@ -121,6 +129,9 @@ function BavariaViewComponent({
                 className={`class-retention-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
                 onClick={() => onMetricChange(key)}
               >
+                <div className="class-retention-mfe__grid-icon-wrapper">
+                  {metricIcons[key]}
+                </div>
                 <strong>{metricLabels[key]}</strong>
                 <span className="class-retention-mfe__level-desc">{metricDescriptions[key]}</span>
               </button>

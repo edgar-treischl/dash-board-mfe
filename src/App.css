@@ -123,6 +123,31 @@
   color: var(--class-retention-text);
 }
 
+.class-retention-mfe__grid-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 8px;
+  color: var(--class-retention-text);
+  transition: color 0.15s ease;
+}
+
+.class-retention-mfe__level-select-btn:hover .class-retention-mfe__grid-icon-wrapper {
+  color: var(--class-retention-accent);
+}
+
+.class-retention-mfe__level-select-btn.is-active .class-retention-mfe__grid-icon-wrapper {
+  color: var(--class-retention-accent);
+}
+
+.class-retention-mfe__grid-icon {
+  width: 100%;
+  height: 100%;
+  stroke-width: 1.5;
+}
+
 .class-retention-mfe__hero-text {
   display: flex;
   flex-direction: column;
