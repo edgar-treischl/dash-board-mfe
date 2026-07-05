@@ -34,7 +34,7 @@ function BavariaViewComponent({
   }
 
   const metricDescriptions: Record<MetricKey, string> = {
-    schools: 'Anzahl der Schulen pro Regierungsbezirk',
+    schools: 'Anzahl der Schulen',
     students: 'Gesamtzahl der Schüler und Schülerinnen',
     teachersFTE: 'Lehrkräfte in Vollzeitäquivalenten',
     avgClassSize: 'Durchschnittliche Klassengröße',
@@ -90,58 +90,92 @@ function BavariaViewComponent({
   }
 
   return (
-    <>
-      {/* Metric Selection Grid Section */}
-      <section className="class-retention-mfe__selection-section" style={{ width: '100%', maxWidth: 'none' }}>
-        <h2 className="class-retention-mfe__selection-title">Indikator</h2>
-        <small>Bitte wählen Sie einen Indikator zur Analyse aus.</small>
-        <div className="class-retention-mfe__selection-grid">
-          {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
-            <button
-              key={key}
-              className={`class-retention-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
-              onClick={() => onMetricChange(key)}
-            >
-              <div className="class-retention-mfe__grid-icon-wrapper">
-                {metricIcons[key]}
-              </div>
-              <strong>{metricLabels[key]}</strong>
-              <span className="class-retention-mfe__level-desc">{metricDescriptions[key]}</span>
-            </button>
-          ))}
+    <div className="class-retention-mfe__bavaria-container" style={{ width: '100%', margin: '0', padding: '24px', boxSizing: 'border-box' }}>
+      
+      {/* Main Card Container */}
+      <div style={{
+        background: 'var(--class-retention-surface)',
+        border: '1px solid var(--class-retention-border)',
+        borderRadius: '18px',
+        boxShadow: 'var(--class-retention-shadow)',
+        overflow: 'hidden'
+      }}>
+        
+        {/* Selection Grid Header */}
+        <div style={{
+          padding: '24px 24px 20px 24px',
+          borderBottom: '1px solid var(--class-retention-border)',
+          background: 'linear-gradient(to bottom, rgba(37, 99, 235, 0.02), transparent)'
+        }}>
+          <h1 className="class-retention-mfe__selection-title" style={{ marginBottom: '6px' }}>Bayern im Überblick</h1>
+          <small style={{ color: 'var(--class-retention-text)', fontSize: '0.875rem' }}>Wählen Sie einen Indikator zur Analyse der bayerischen Regierungsbezirke.</small>
         </div>
-      </section>
 
-      <section 
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '60% 40%',
-          gap: '20px',
-          marginBottom: '16px',
-          alignItems: 'stretch',
-          width: '100%',
-        }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
-          {/* Chart Card */}
-          <div className="class-retention-mfe__chart-card">
+        {/* Selection Grid */}
+        <div style={{ padding: '24px' }}>
+          <div className="class-retention-mfe__selection-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+            {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+              <button
+                key={key}
+                className={`class-retention-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
+                onClick={() => onMetricChange(key)}
+              >
+                <div className="class-retention-mfe__grid-icon-wrapper">
+                  {metricIcons[key]}
+                </div>
+                <strong>{metricLabels[key]}</strong>
+                <span className="class-retention-mfe__level-desc">{metricDescriptions[key]}</span>
+                <div style={{ 
+                  marginTop: '8px', 
+                  padding: '8px 12px',
+                  background: selectedMetric === key ? 'rgba(37, 99, 235, 0.08)' : 'rgba(0, 0, 0, 0.03)',
+                  borderRadius: '8px',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  color: selectedMetric === key ? 'var(--class-retention-primary)' : 'var(--class-retention-text)',
+                  transition: 'all 0.2s ease'
+                }}>
+                  Bayern: {bavariaMetrics[key].toLocaleString()}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>        
+        {/* Graph/Map Section */}
+        <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '60% 40%',
+              gap: '20px',
+              alignItems: 'stretch',
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+              {/* Chart Card */}
+              <div style={{
+                border: '1px solid var(--class-retention-border)',
+                borderRadius: '12px',
+                background: 'var(--class-retention-bg)',
+                overflow: 'hidden'
+              }}>
             {/* Card Header */}
             <div className="class-retention-mfe__story-header">
-              <h3 className="class-retention-mfe__story-heading"> {metricLabels[selectedMetric]}</h3>
+              <h3 className="class-retention-mfe__story-heading">{metricLabels[selectedMetric]} nach Regierungsbezirk</h3>
             </div>
 
             {/* View selector using semantic nav element */}
             <ViewSwitcher
               options={[
-                { key: 'chart', label: 'Balkendiagramm' },
+                { key: 'chart', label: 'Diagramm' },
                 { key: 'map', label: 'Karte' },
-                { key: 'table', label: 'Tabelle' },
+                { key: 'table', label: 'Daten' },
               ]}
               activeKey={view}
               onSelect={(selectedView) => setView(selectedView as ViewType)}
               ariaLabel="Ansichtsauswahl für Regierungsbezirke"
               variant="underline"
-              />
+            />
             <div className="class-retention-mfe__card-heading"></div>
 
             <div className="class-retention-mfe__chart-frame">
@@ -297,37 +331,14 @@ function BavariaViewComponent({
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <InterpretationBox tabs={interpretationTabs} defaultTab="befund" />
+          {/* Interpretation Container - Right column of grid */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <InterpretationBox tabs={interpretationTabs} defaultTab="befund" />
+          </div>
         </div>
-      </section>
-
-            {/* Bavaria-wide metrics */}
-      <section style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-        <h3 className="class-retention-mfe__stats-header">Insgesamt</h3>
-        <div 
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-            gap: '12px',
-            width: '100%',
-            background: 'var(--class-retention-surface)',
-            border: '1px solid var(--class-retention-border)',
-            borderRadius: '18px',
-            padding: '24px',
-            boxShadow: 'var(--class-retention-shadow)',
-          }}
-          aria-label="Bayernweite Kennzahlen"
-        >
-          {(Object.keys(bavariaMetrics) as MetricKey[]).map((key) => (
-            <section key={key} className="class-retention-mfe__stat-card">
-              <span className="class-retention-mfe__stat-type">{metricLabels[key]}</span>
-              <strong>{bavariaMetrics[key].toLocaleString()}</strong>
-            </section>
-          ))}
-        </div>
-      </section>
-    </>
+      </div>
+    </div>
+    </div>
   )
 }
 

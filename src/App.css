@@ -52,9 +52,7 @@
 }
 
 .class-retention-mfe__selection-section {
-  max-width: 100%;
-  margin: 24px 0;
-  padding: 24px;
+  /* Handled by inline styles for proper centering */
 }
 
 .class-retention-mfe__selection-title {
@@ -71,21 +69,44 @@
 }
 
 .class-retention-mfe__level-select-btn {
-  border-radius: 18px;
-  border: 1px solid var(--class-retention-border);
-  background: var(--class-retention-surface);
-  padding: 14px 12px;
+  border-radius: 12px;
+  border: 2px solid var(--class-retention-border);
+  background: var(--class-retention-bg);
+  padding: 16px 14px;
   font-size: 0.9rem;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
-  box-shadow: var(--class-retention-shadow);
-  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.class-retention-mfe__level-select-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .class-retention-mfe__level-select-btn:hover {
   border-color: var(--class-retention-accent);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+  transform: translateY(-2px);
+}
+
+.class-retention-mfe__level-select-btn:hover::before {
+  opacity: 1;
+}
+
+.class-retention-mfe__level-select-btn:active {
+  transform: translateY(0px);
 }
 
 .class-retention-mfe__level-select-btn:focus-visible {
@@ -96,21 +117,30 @@
 .class-retention-mfe__level-select-btn strong {
   display: block;
   font-size: 1rem;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: var(--class-retention-heading);
+  transition: color 0.2s ease;
 }
 
 .class-retention-mfe__level-desc {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--class-retention-text);
   line-height: 1.4;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
 }
 
 .class-retention-mfe__level-select-btn.is-active {
   border-color: var(--class-retention-accent);
-  background: rgba(37, 99, 235, 0.08);
-  color: var(--class-retention-heading);
+  border-width: 2px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(37, 99, 235, 0.04));
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(0px);
+}
+
+.class-retention-mfe__level-select-btn.is-active::before {
+  opacity: 1;
 }
 
 .class-retention-mfe__level-select-btn.is-active strong {
@@ -119,7 +149,12 @@
 }
 
 .class-retention-mfe__level-select-btn.is-active .class-retention-mfe__level-desc {
-  color: var(--class-retention-text);
+  color: var(--class-retention-heading);
+  opacity: 1;
+}
+
+.class-retention-mfe__level-select-btn:hover .class-retention-mfe__level-desc {
+  opacity: 1;
 }
 
 .class-retention-mfe__grid-icon-wrapper {
