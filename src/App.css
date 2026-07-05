@@ -249,6 +249,12 @@
   display: block;
 }
 
+.class-retention-mfe__hero-image img {
+  max-width: 250px;
+  height: auto;
+  display: block;
+}
+
 .class-retention-mfe__panel-header {
   display: flex;
   align-items: flex-start;
