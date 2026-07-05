@@ -917,12 +917,19 @@
   }
 
   .class-retention-mfe__selection-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 120px)) !important;
   }
 }
 
 @media (max-width: 600px) {
   .class-retention-mfe__selection-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)) !important;
+    gap: 6px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .class-retention-mfe__selection-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }

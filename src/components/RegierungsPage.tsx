@@ -4,7 +4,7 @@ import { COMMON_STYLES } from '../config/chartConfig.ts'
 import { InterpretationBox } from './InterpretationBox.tsx'
 import { OfficesLeafletMap } from './charts/OfficesLeafletMap.tsx'
 import { ViewSwitcher } from './controls/ViewSwitcher.tsx'
-import { RegionSelect } from './controls/RegionSelect.tsx'
+import { RegionIcon } from './controls/RegionIcon.tsx'
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
 
@@ -56,13 +56,38 @@ function RegierungsViewComponent() {
 
   return (
     <>
-      {/* Region selector - prominent at top */}
-      <section style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '24px 0', borderBottom: '2px solid var(--class-retention-border)', marginBottom: '24px', width: '100%' }}>
-        <RegionSelect
-          selectedRegionId={selectedRegion}
-          onRegionChange={setSelectedRegion}
-          label="Wählen Sie eine Region:"
-        />
+      {/* Region Selection Grid Section */}
+      <section className="class-retention-mfe__selection-section" style={{ width: '100%', maxWidth: 'none' }}>
+        <h2 className="class-retention-mfe__selection-title">Regierungsbezirke</h2>
+        <small>Bitte wählen Sie einen Regierungsbezirk zur Analyse.</small>
+        <div 
+          className="class-retention-mfe__selection-grid"
+          style={{
+            gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+            gap: '8px'
+          }}
+        >
+          {regions.map((region) => (
+            <button
+              key={region.id}
+              className={`class-retention-mfe__level-select-btn ${selectedRegion === region.id ? 'is-active' : ''}`}
+              onClick={() => setSelectedRegion(region.id)}
+              style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                gap: '8px',
+                padding: '12px 8px',
+                minHeight: 'auto'
+              }}
+            >
+              <RegionIcon regionId={region.id} width={48} height={48} />
+              <strong style={{ fontSize: '0.85rem', textAlign: 'center', lineHeight: '1.2' }}>
+                {region.shortName}
+              </strong>
+            </button>
+          ))}
+        </div>
       </section>
 
       {/* Region-specific metrics */}
