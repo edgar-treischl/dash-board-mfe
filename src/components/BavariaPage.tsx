@@ -29,8 +29,8 @@ function BavariaViewComponent({
   const metricLabels: Record<MetricKey, string> = {
     schools: 'Schulen',
     students: 'Schüler und Schülerinnen',
-    teachersFTE: 'Lehrkräfte (VZÄ)',
-    avgClassSize: 'Klassengröße (Ø)',
+    teachersFTE: 'Lehrkräfte',
+    avgClassSize: 'Klassengröße',
   }
 
   const metricDescriptions: Record<MetricKey, string> = {
@@ -91,54 +91,26 @@ function BavariaViewComponent({
 
   return (
     <>
-      {/* Bavaria-wide metrics */}
-      <section style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-        <h3 className="class-retention-mfe__stats-header">Insgesamt</h3>
-        <div 
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-            gap: '12px',
-            width: '100%',
-            background: 'var(--class-retention-surface)',
-            border: '1px solid var(--class-retention-border)',
-            borderRadius: '18px',
-            padding: '24px',
-            boxShadow: 'var(--class-retention-shadow)',
-          }}
-          aria-label="Bayernweite Kennzahlen"
-        >
-          {(Object.keys(bavariaMetrics) as MetricKey[]).map((key) => (
-            <section key={key} className="class-retention-mfe__stat-card">
-              <span className="class-retention-mfe__stat-type">{metricLabels[key]}</span>
-              <strong>{bavariaMetrics[key].toLocaleString()}</strong>
-            </section>
+      {/* Metric Selection Grid Section */}
+      <section className="class-retention-mfe__selection-section" style={{ width: '100%', maxWidth: 'none' }}>
+        <h2 className="class-retention-mfe__selection-title">Indikator</h2>
+        <small>Bitte wählen Sie einen Indikator zur Analyse aus.</small>
+        <div className="class-retention-mfe__selection-grid">
+          {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+            <button
+              key={key}
+              className={`class-retention-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
+              onClick={() => onMetricChange(key)}
+            >
+              <div className="class-retention-mfe__grid-icon-wrapper">
+                {metricIcons[key]}
+              </div>
+              <strong>{metricLabels[key]}</strong>
+              <span className="class-retention-mfe__level-desc">{metricDescriptions[key]}</span>
+            </button>
           ))}
         </div>
       </section>
-
-      {/* Metric Selection Grid Section */}
-      {view !== 'table' && (
-        <section className="class-retention-mfe__selection-section" style={{ width: '100%', maxWidth: 'none' }}>
-          <h2 className="class-retention-mfe__selection-title">Kennzahlen</h2>
-          <small>Bitte wählen Sie die gewünschte Kennzahl zur Analyse.</small>
-          <div className="class-retention-mfe__selection-grid">
-            {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
-              <button
-                key={key}
-                className={`class-retention-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
-                onClick={() => onMetricChange(key)}
-              >
-                <div className="class-retention-mfe__grid-icon-wrapper">
-                  {metricIcons[key]}
-                </div>
-                <strong>{metricLabels[key]}</strong>
-                <span className="class-retention-mfe__level-desc">{metricDescriptions[key]}</span>
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
 
       <section 
         style={{
@@ -350,6 +322,32 @@ function BavariaViewComponent({
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <InterpretationBox tabs={interpretationTabs} defaultTab="befund" />
+        </div>
+      </section>
+
+            {/* Bavaria-wide metrics */}
+      <section style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+        <h3 className="class-retention-mfe__stats-header">Insgesamt</h3>
+        <div 
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+            gap: '12px',
+            width: '100%',
+            background: 'var(--class-retention-surface)',
+            border: '1px solid var(--class-retention-border)',
+            borderRadius: '18px',
+            padding: '24px',
+            boxShadow: 'var(--class-retention-shadow)',
+          }}
+          aria-label="Bayernweite Kennzahlen"
+        >
+          {(Object.keys(bavariaMetrics) as MetricKey[]).map((key) => (
+            <section key={key} className="class-retention-mfe__stat-card">
+              <span className="class-retention-mfe__stat-type">{metricLabels[key]}</span>
+              <strong>{bavariaMetrics[key].toLocaleString()}</strong>
+            </section>
+          ))}
         </div>
       </section>
     </>
