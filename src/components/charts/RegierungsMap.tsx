@@ -22,13 +22,6 @@ type RegierungsMapProps = {
 // Based on NUTS2 data for Bavaria (DE2*): GISCO 2021, resolution 20m
 const REGIERUNGSBEZIRKE_TOPOJSON = `${import.meta.env.BASE_URL}bavaria-regierungsbezirke-dissolved.topojson`;
 
-const metricLabels: Record<MetricKey, string> = {
-  schools: 'Schulen',
-  students: 'Schüler',
-  teachersFTE: 'Lehrkräfte (VZÄ)',
-  avgClassSize: 'Ø Klassengröße',
-}
-
 function formatValue(value: number): string {
   return value.toLocaleString('de-DE', {
     maximumFractionDigits: 0,
