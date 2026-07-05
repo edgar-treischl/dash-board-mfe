@@ -127,7 +127,7 @@ function BavariaViewComponent({
           <div className="class-retention-mfe__chart-card">
             {/* Card Header */}
             <div className="class-retention-mfe__story-header">
-              <h3 className="class-retention-mfe__story-heading">Indikatoren</h3>
+              <h3 className="class-retention-mfe__story-heading"> {metricLabels[selectedMetric]}</h3>
             </div>
 
             {/* View selector using semantic nav element */}
@@ -147,10 +147,6 @@ function BavariaViewComponent({
             <div className="class-retention-mfe__chart-frame">
               {view === 'chart' && (
                 <svg width="100%" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet" style={{ overflow: 'visible' }}>
-                  {/* Title/Label for Y-axis */}
-                  <text x="0" y="6" fontSize="28" fontWeight="800" fill="#1f2937">
-                    {metricLabels[selectedMetric]}
-                  </text>
                   
                   {/* Grid lines and scale labels */}
                   {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
@@ -293,25 +289,6 @@ function BavariaViewComponent({
                           ))}
                         </tr>
                       ))}
-                      <tr style={{ backgroundColor: '#f0f9ff', borderTop: '2px solid #d1d5db', fontWeight: '600' }}>
-                        <td style={{ padding: '12px', color: '#1f2937' }}>Bayern (Gesamt)</td>
-                        {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
-                          <td 
-                            key={key} 
-                            style={{ 
-                              padding: '12px', 
-                              textAlign: 'right', 
-                              color: '#1f2937',
-                              fontVariantNumeric: 'tabular-nums',
-                            }}
-                          >
-                            {typeof bavariaMetrics[key] === 'number' && bavariaMetrics[key] % 1 !== 0
-                              ? bavariaMetrics[key].toFixed(1)
-                              : bavariaMetrics[key].toLocaleString()
-                            }
-                          </td>
-                        ))}
-                      </tr>
                     </tbody>
                   </table>
                 </div>

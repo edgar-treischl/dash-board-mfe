@@ -133,7 +133,7 @@ function RegierungsViewComponent() {
           <div className="class-retention-mfe__chart-card">
             {/* Card Header */}
             <div className="class-retention-mfe__story-header">
-              <h3 className="class-retention-mfe__story-heading">Schulämter</h3>
+              <h3 className="class-retention-mfe__story-heading">Schulämter in {currentRegion.shortName}</h3>
             </div>
 
             {/* View selector using semantic nav element */}

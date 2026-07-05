@@ -105,11 +105,7 @@ const colorScale = scaleSequential(interpolateViridis)
   .domain([minValue, maxValue]);
 
     return (
-      <>
-        <h2 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '16px' }}>
-          {metricLabels[selectedMetric]} nach Regierungsbezirk
-        </h2>
-      
+      <>      
         {/* Map - full width */}
         <div style={{ position: 'relative', marginBottom: '20px' }}>
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
