@@ -38,16 +38,17 @@ export function PupilsIcon({ className }: IconProps) {
       strokeLinejoin="round"
       className={className}
     >
-      {/* Center pupil */}
+      {/* Head */}
       <circle cx="12" cy="8" r="3" />
-      <path d="M7 19c1-2.5 3-4 5-4s4 1.5 5 4" />
 
-      {/* Side pupils */}
-      <circle cx="5" cy="10" r="2" />
-      <circle cx="19" cy="10" r="2" />
+      {/* Shoulders */}
+      <path d="M6.5 19c.8-3 2.9-5 5.5-5s4.7 2 5.5 5" />
     </svg>
   );
 }
+
+
+
 
 export function SchoolsIcon({ className }: IconProps) {
   return (

@@ -7,7 +7,8 @@ import { ViewSwitcher } from './controls/ViewSwitcher.tsx'
 import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons.tsx'
 
 
-type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
+type MetricKey = 'students' | 'avgClassSize' | 'teachersFTE' | 'schools'
+
 
 type BavariaViewProps = {
   selectedMetric?: MetricKey
@@ -27,10 +28,10 @@ function BavariaViewComponent({
   const onMetricChange = propOnMetricChange || setInternalMetric
 
   const metricLabels: Record<MetricKey, string> = {
-    schools: 'Schulen',
     students: 'Schüler und Schülerinnen',
-    teachersFTE: 'Lehrkräfte',
     avgClassSize: 'Klassengröße',
+    teachersFTE: 'Lehrkräfte',
+    schools: 'Schulen',
   }
 
   const metricDescriptions: Record<MetricKey, string> = {
@@ -130,7 +131,7 @@ function BavariaViewComponent({
                   padding: '8px 12px',
                   background: selectedMetric === key ? 'rgba(37, 99, 235, 0.08)' : 'rgba(0, 0, 0, 0.03)',
                   borderRadius: '8px',
-                  fontSize: '0.875rem',
+                  fontSize: '0.975rem',
                   fontWeight: '600',
                   color: selectedMetric === key ? 'var(--class-retention-primary)' : 'var(--class-retention-text)',
                   transition: 'all 0.2s ease'
@@ -140,7 +141,8 @@ function BavariaViewComponent({
               </button>
             ))}
           </div>
-        </div>        
+        </div>   
+
         {/* Graph/Map Section */}
         <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
           <div

@@ -12,6 +12,8 @@ type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
 type ViewType = 'table' | 'map'
 
 function RegierungsViewComponent() {
+  // Sort Regions alphabetically by name for consistent display
+  regions.sort((a, b) => a.shortName.localeCompare(b.shortName))
   const [view, setView] = useState<ViewType>('table')
   const [selectedRegion, setSelectedRegion] = useState<string>(regions[0].id)
 
@@ -21,8 +23,8 @@ function RegierungsViewComponent() {
   const metricLabels: Record<MetricKey, string> = {
     schools: 'Schulen',
     students: 'Schüler und Schülerinnen',
-    teachersFTE: 'Lehrkräfte (VZÄ)',
-    avgClassSize: 'Klassengröße (Ø aller Schularten)',
+    teachersFTE: 'Lehrkräfte',
+    avgClassSize: 'Klassengröße',
   }
 
   const metricDescriptions: Record<MetricKey, string> = {
