@@ -11,7 +11,6 @@ export const VIEW_OPTIONS = [
   { key: 'retention' as const, label: 'Bayern' },
   { key: 'trends' as const, label: 'Regierungsbezirke' },
   { key: 'sex' as const, label: 'Geschlecht' },
-  { key: 'migration' as const, label: 'Migration' },
   { key: 'data' as const, label: 'Info' },
 ] as const
 

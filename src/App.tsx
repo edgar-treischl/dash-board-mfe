@@ -3,8 +3,7 @@ import { BavariaView } from './components/BavariaPage.tsx'
 import { RegierungsView } from './components/RegierungsPage.tsx'
 import { HeroView } from './components/HeroPage.tsx'
 import { InfoView } from './components/InfoPage.tsx'
-import { SexView } from './components/SexPage.tsx'
-import { MigrationView } from './components/MigrationPage.tsx'
+import { SAmtView } from './components/SAmtPage.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import {
   SCHOOL_YEARS,
@@ -70,17 +69,7 @@ export default function App() {
             </ErrorBoundary>
           ) : view === 'sex' ? (
             <ErrorBoundary>
-              <SexView
-                selectedYear={selectedYear}
-                onYearChange={setSelectedYear}
-              />
-            </ErrorBoundary>
-          ) : view === 'migration' ? (
-            <ErrorBoundary>
-              <MigrationView
-                selectedYear={selectedYear}
-                onYearChange={setSelectedYear}
-              />
+              <SAmtView/>
             </ErrorBoundary>
           ) : (
             <ErrorBoundary>
