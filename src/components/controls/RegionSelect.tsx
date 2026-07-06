@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { regions } from '../../data/bavaria.ts'
+import { regions } from '../../data/bavaria'
 import { RegionIcon } from './RegionIcon'
 import './RegionSelect.css'
 

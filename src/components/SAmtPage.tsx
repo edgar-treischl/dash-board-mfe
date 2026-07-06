@@ -1,314 +1,350 @@
 import { memo, useState } from 'react'
-import { bavariaMetrics, regions } from '../data/bavaria.ts'
-import { COMMON_STYLES } from '../config/chartConfig.ts'
-import { InterpretationBox } from './InterpretationBox.tsx'
-import { OfficesLeafletMap } from './charts/OfficesLeafletMap.tsx'
-import { ViewSwitcher } from './controls/ViewSwitcher.tsx'
-import { RegionIcon } from './controls/RegionIcon.tsx'
-import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons.tsx'
+import { SCHULEN, DISTRICT_METADATA, AMPEL_COLORS, SUPPLY_CATEGORIES, LONG_TERM_DATA } from '../data/SAmt'
 
-type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
+type SchoolTypeFilter = 'Alle' | 'Grundschule' | 'Mittelschule'
+type StartchancenFilter = 'Alle' | 'Startchancen-Schule'
+type SubjectType = 'mat' | 'deu'
+type AmpelMode = 'vera' | 'supply' | 'satisfaction'
+type NavSection = 'lernstand' | 'belastung' | 'ressourcen'
 
-type ViewType = 'table' | 'map'
+function SAmtPageComponent() {
+  const [schoolTypeFilter, setSchoolTypeFilter] = useState<SchoolTypeFilter>('Alle')
+  const [startFilter, setStartFilter] = useState<StartchancenFilter>('Alle')
+  const [subject, setSubject] = useState<SubjectType>('mat')
+  const [ampelMode, setAmpelMode] = useState<AmpelMode>('vera')
+  const [navSection, setNavSection] = useState<NavSection>('lernstand')
+  const [selectedSchoolId, setSelectedSchoolId] = useState<number | null>(null)
 
-function SAmtViewComponent() {
-  // Sort Regions alphabetically by name for consistent display
-  regions.sort((a, b) => a.shortName.localeCompare(b.shortName))
-  const [view, setView] = useState<ViewType>('table')
-  const [selectedRegion, setSelectedRegion] = useState<string>(regions[0].id)
+  // Filter schools based on current filters
+  const filteredSchools = SCHULEN.filter(school => {
+    if (schoolTypeFilter !== 'Alle' && school.type !== schoolTypeFilter) return false
+    if (startFilter !== 'Alle' && school.startchancen !== startFilter) return false
+    return true
+  })
 
-  // Find the currently selected region object
-  const currentRegion = regions.find(r => r.id === selectedRegion) || regions[0]
-
-  const metricLabels: Record<MetricKey, string> = {
-    schools: 'Schulen',
-    students: 'Schüler und Schülerinnen',
-    teachersFTE: 'Lehrkräfte',
-    avgClassSize: 'Klassengröße',
+  // Calculate summary metrics for filtered schools
+  const summaryMetrics = {
+    totalSchools: filteredSchools.length,
+    totalStudents: filteredSchools.reduce((sum, s) => sum + s.students, 0),
+    avgSozialindex: filteredSchools.length > 0 
+      ? filteredSchools.reduce((sum, s) => sum + s.sozialindex, 0) / filteredSchools.length 
+      : 0,
+    avgVeraMat: filteredSchools.length > 0
+      ? filteredSchools.reduce((sum, s) => sum + s.veraMat, 0) / filteredSchools.length
+      : 0,
+    avgVeraDeu: filteredSchools.length > 0
+      ? filteredSchools.reduce((sum, s) => sum + s.veraDeu, 0) / filteredSchools.length
+      : 0,
+    avgTeacherRatio: filteredSchools.length > 0
+      ? filteredSchools.reduce((sum, s) => sum + s.teacherRatio, 0) / filteredSchools.length
+      : 0
   }
 
-  const metricDescriptions: Record<MetricKey, string> = {
-    schools: 'Anzahl der Schulen',
-    students: 'Gesamtzahl der Schüler und Schülerinnen',
-    teachersFTE: 'Lehrkräfte in Vollzeitäquivalenten',
-    avgClassSize: 'Durchschnittliche Klassengröße',
-  }
-
-  const metricIcons: Record<MetricKey, React.ReactNode> = {
-    schools: <SchoolsIcon className="class-retention-mfe__grid-icon" />,
-    students: <PupilsIcon className="class-retention-mfe__grid-icon" />,
-    teachersFTE: <TeachersIcon className="class-retention-mfe__grid-icon" />,
-    avgClassSize: <ClassSizeIcon className="class-retention-mfe__grid-icon" />,
-  }
-
-  // Build interpretation tabs
-  const interpretationTabs = {
-    befund: {
-      label: 'Befund',
-      content: (
-        <div>
-          <p className="class-retention-mfe__story-text">
-            Die Verteilung der Bildungsressourcen in Bayern nach Regierungsbezirken zeigt deutliche regionale Unterschiede. Die dargestellten Daten umfassen Schulen, Schülerinnen und Schüler sowie Lehrkräfte (Vollzeitäquivalente).
-          </p>
-          <ul className="class-retention-mfe__story-text" style={COMMON_STYLES.bulletList}>
-            <li style={COMMON_STYLES.listItem}>
-              Vergleichen Sie die Staatlichen Schulämter der einzelnen Regionen in der Tabelle.
-            </li>
-            <li style={COMMON_STYLES.listItem}>
-              Bayern gesamt: {bavariaMetrics.students.toLocaleString()} Schüler und Schülerinnen, {bavariaMetrics.schools.toLocaleString()} Schulen
-            </li>
-          </ul>
-        </div>
-      ),
-    },
-    hinweis: {
-      label: 'Hinweis',
-      content: (
-        <p className="class-retention-mfe__story-text class-retention-mfe__story-text--italic">
-          Die Daten basieren auf den sieben Regierungsbezirken Bayerns: Oberbayern, Niederbayern, Oberpfalz, Oberfranken, Mittelfranken, Unterfranken und Schwaben. Die Unterschiede spiegeln sowohl die Bevölkerungsdichte als auch die Bildungsinfrastruktur wider.
-        </p>
-      ),
-    },
-  }
+  const selectedSchool = selectedSchoolId ? SCHULEN.find(s => s.id === selectedSchoolId) : null
 
   return (
     <div className="class-retention-mfe__bavaria-container" style={{ width: '100%', margin: '0', padding: '24px', boxSizing: 'border-box' }}>
       
-      {/* Main Card Container */}
-      <div style={{
+      {/* Header Card */}
+      <div className="card" style={{
         background: 'var(--class-retention-surface)',
         border: '1px solid var(--class-retention-border)',
         borderRadius: '18px',
         boxShadow: 'var(--class-retention-shadow)',
-        overflow: 'hidden'
+        padding: '24px',
+        marginBottom: '16px'
       }}>
-        
-        {/* Region Selection Header */}
-        <div style={{
-          padding: '24px 24px 20px 24px',
-          borderBottom: '1px solid var(--class-retention-border)',
-          background: 'linear-gradient(to bottom, rgba(37, 99, 235, 0.02), transparent)'
-        }}>
-          <h1 className="class-retention-mfe__selection-title" style={{ marginBottom: '6px' }}>Regierungsbezirke</h1>
-          <small style={{ color: 'var(--class-retention-text)', fontSize: '0.875rem' }}>Bitte wählen Sie einen Regierungsbezirk zur Analyse.</small>
+        <h1 style={{ margin: '0 0 8px', fontSize: '1.5rem' }}>
+          Schulamts-Dashboard – {DISTRICT_METADATA.name}
+        </h1>
+        <p style={{ margin: '4px 0 0', fontSize: '0.9rem', color: 'var(--class-retention-text)', opacity: 0.9 }}>
+          {DISTRICT_METADATA.description}
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
+          <span style={{ padding: '4px 12px', background: 'rgba(37, 99, 235, 0.1)', borderRadius: '999px', fontSize: '0.75rem' }}>
+            🏛️ Ebene: Staatliches Schulamt
+          </span>
+          <span style={{ padding: '4px 12px', background: 'rgba(37, 99, 235, 0.1)', borderRadius: '999px', fontSize: '0.75rem' }}>
+            📍 München-Stadt (Demo)
+          </span>
+          <span style={{ padding: '4px 12px', background: 'rgba(37, 99, 235, 0.1)', borderRadius: '999px', fontSize: '0.75rem' }}>
+            🗺️ Interaktive Analysen
+          </span>
         </div>
+      </div>
 
-        {/* Region Selection Grid */}
-        <div style={{ padding: '24px' }}>
-          <div 
-            className="class-retention-mfe__selection-grid"
-            style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-              gap: '12px'
-            }}
-          >
-            {regions.map((region) => (
-              <button
-                key={region.id}
-                className={`class-retention-mfe__level-select-btn ${selectedRegion === region.id ? 'is-active' : ''}`}
-                onClick={() => setSelectedRegion(region.id)}
-                style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  alignItems: 'center', 
-                  gap: '8px',
-                  padding: '12px 8px',
-                  minHeight: 'auto'
-                }}
-              >
-                <RegionIcon regionId={region.id} width={48} height={48} />
-                <strong style={{ fontSize: '0.85rem', textAlign: 'center', lineHeight: '1.2' }}>
-                  {region.shortName}
-                </strong>
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* Filter and Overview Card */}
+      <div className="card" style={{
+        background: 'var(--class-retention-surface)',
+        border: '1px solid var(--class-retention-border)',
+        borderRadius: '18px',
+        boxShadow: 'var(--class-retention-shadow)',
+        padding: '24px',
+        marginBottom: '16px'
+      }}>
+        <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Filter und Überblick im Schulamtsbezirk</h2>
+        <small style={{ color: 'var(--class-retention-text)', fontSize: '0.85rem' }}>
+          Alle Daten sind fiktiv, orientieren sich aber an typischen Größenordnungen.
+        </small>
 
-        {/* Region-specific Metrics Section */}
-        <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
-          <div style={{
-            padding: '0 0 20px 0',
-          }}>
-            <h2 className="class-retention-mfe__selection-title" style={{ marginBottom: '6px' }}>{currentRegion.shortName} in Zahlen</h2>
-            <small style={{ color: 'var(--class-retention-text)', fontSize: '0.875rem' }}>Kennzahlen für den ausgewählten Regierungsbezirk</small>
-          </div>
-
-          <div className="class-retention-mfe__selection-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '24px' }}>
-            {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
-              <div
-                key={key}
-                style={{
-                  background: 'var(--class-retention-bg)',
-                  border: '1px solid var(--class-retention-border)',
-                  borderRadius: '12px',
-                  padding: '16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}
-              >
-                <div className="class-retention-mfe__grid-icon-wrapper">
-                  {metricIcons[key]}
-                </div>
-                <strong style={{ fontSize: '0.875rem', textAlign: 'center' }}>{metricLabels[key]}</strong>
-                <span className="class-retention-mfe__level-desc" style={{ fontSize: '0.75rem', opacity: 0.7 }}>{metricDescriptions[key]}</span>
-                <div style={{ 
-                  marginTop: '8px', 
-                  padding: '8px 12px',
-                  background: 'rgba(37, 99, 235, 0.08)',
-                  borderRadius: '8px',
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  color: 'var(--class-retention-primary)',
-                  transition: 'all 0.2s ease'
-                }}>
-                  {currentRegion.metrics[key].toLocaleString()}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Chart/Table and Interpretation Section */}
-        <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '60% 40%',
-              gap: '20px',
-              alignItems: 'stretch',
-            }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
-              {/* Chart Card */}
-              <div style={{
+        {/* School Type Filter */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginTop: '16px' }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', marginRight: '8px' }}>Schulart:</span>
+          {(['Alle', 'Grundschule', 'Mittelschule'] as SchoolTypeFilter[]).map(type => (
+            <button
+              key={type}
+              onClick={() => setSchoolTypeFilter(type)}
+              className={schoolTypeFilter === type ? 'is-active' : ''}
+              style={{
+                padding: '6px 14px',
                 border: '1px solid var(--class-retention-border)',
-                borderRadius: '12px',
-                background: 'var(--class-retention-bg)',
-                overflow: 'hidden'
-              }}>
-                {/* Card Header */}
-                <div className="class-retention-mfe__story-header">
-                  <h3 className="class-retention-mfe__story-heading">Schulämter in {currentRegion.shortName}</h3>
-                </div>
+                borderRadius: '999px',
+                background: schoolTypeFilter === type ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)',
+                color: schoolTypeFilter === type ? '#fff' : 'var(--class-retention-text)',
+                fontSize: '0.8rem',
+                cursor: 'pointer'
+              }}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
 
-                {/* View selector using semantic nav element */}
-                <ViewSwitcher
-                  options={[
-                    { key: 'table', label: 'Überblick' },
-                    { key: 'map', label: 'Karte' },
-                  ]}
-                  activeKey={view}
-                  onSelect={(selectedView) => setView(selectedView as ViewType)}
-                  ariaLabel="Ansichtsauswahl für Regierungsbezirke"
-                  variant="underline"
-                />
-                <div className="class-retention-mfe__card-heading"></div>
+        {/* Startchancen Filter */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginTop: '12px' }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', marginRight: '8px' }}>Startchancen:</span>
+          {(['Alle', 'Startchancen-Schule'] as StartchancenFilter[]).map(filter => (
+            <button
+              key={filter}
+              onClick={() => setStartFilter(filter)}
+              className={startFilter === filter ? 'is-active' : ''}
+              style={{
+                padding: '6px 14px',
+                border: '1px solid var(--class-retention-border)',
+                borderRadius: '999px',
+                background: startFilter === filter ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)',
+                color: startFilter === filter ? '#fff' : 'var(--class-retention-text)',
+                fontSize: '0.8rem',
+                cursor: 'pointer'
+              }}
+            >
+              {filter === 'Alle' ? 'Alle' : 'Nur Startchancen-Schulen'}
+            </button>
+          ))}
+        </div>
 
-                <div className="class-retention-mfe__chart-frame">
-                  {view === 'map' && (
-                    <OfficesLeafletMap
-                      selectedRegionId={selectedRegion}
-                      regions={regions}
-                    />
-                  )}
+        {/* Subject Filter */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginTop: '12px' }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', marginRight: '8px' }}>Fach (Lernstand):</span>
+          {(['mat', 'deu'] as SubjectType[]).map(subj => (
+            <button
+              key={subj}
+              onClick={() => setSubject(subj)}
+              className={subject === subj ? 'is-active' : ''}
+              style={{
+                padding: '6px 14px',
+                border: '1px solid var(--class-retention-border)',
+                borderRadius: '999px',
+                background: subject === subj ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)',
+                color: subject === subj ? '#fff' : 'var(--class-retention-text)',
+                fontSize: '0.8rem',
+                cursor: 'pointer'
+              }}
+            >
+              {subj === 'mat' ? 'Mathematik' : 'Deutsch'}
+            </button>
+          ))}
+        </div>
 
-                  {view === 'table' && (
-                    <div style={{ padding: '1rem', overflowX: 'auto' }}>
-                      <table style={{
-                        width: '100%',
-                        borderCollapse: 'collapse',
-                        fontSize: '14px',
-                      }}>
-                        <thead>
-                          <tr style={{ backgroundColor: '#f3f4f6', borderBottom: '2px solid #d1d5db' }}>
-                            <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#1f2937' }}>Staatliches Schulamt</th>
-                            <th style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
-                              {metricLabels['schools']}
-                            </th>
-                            <th style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
-                              {metricLabels['students']}
-                            </th>
-                            <th style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
-                              {metricLabels['teachersFTE']}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {currentRegion.schoolOffices.map((office, idx) => (
-                            <tr 
-                              key={idx} 
-                              style={{ 
-                                backgroundColor: idx % 2 === 0 ? '#ffffff' : '#f9fafb',
-                                borderBottom: '1px solid #e5e7eb',
-                              }}
-                            >
-                              <td style={{ padding: '12px', fontWeight: '500', color: '#374151' }}>
-                                {office.name}
-                              </td>
-                              <td 
-                                style={{ 
-                                  padding: '12px', 
-                                  textAlign: 'right', 
-                                  color: '#4b5563',
-                                  fontVariantNumeric: 'tabular-nums',
-                                }}
-                              >
-                                {office.schools.toLocaleString()}
-                              </td>
-                              <td 
-                                style={{ 
-                                  padding: '12px', 
-                                  textAlign: 'right', 
-                                  color: '#4b5563',
-                                  fontVariantNumeric: 'tabular-nums',
-                                }}
-                              >
-                                {office.students.toLocaleString()}
-                              </td>
-                              <td 
-                                style={{ 
-                                  padding: '12px', 
-                                  textAlign: 'right', 
-                                  color: '#4b5563',
-                                  fontVariantNumeric: 'tabular-nums',
-                                }}
-                              >
-                                {office.teachersFTE.toLocaleString()}
-                              </td>
-                            </tr>
-                          ))}
-                          <tr style={{ backgroundColor: '#f0f9ff', borderTop: '2px solid #d1d5db', fontWeight: '600' }}>
-                            <td style={{ padding: '12px', color: '#1f2937' }}>{currentRegion.shortName} (Gesamt)</td>
-                            <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
-                              {currentRegion.metrics.schools.toLocaleString()}
-                            </td>
-                            <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
-                              {currentRegion.metrics.students.toLocaleString()}
-                            </td>
-                            <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
-                              {currentRegion.metrics.teachersFTE.toLocaleString()}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-              </div>
+        {/* Ampel Mode Filter */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginTop: '12px' }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', marginRight: '8px' }}>Ampel-Fokus:</span>
+          {(['vera', 'supply', 'satisfaction'] as AmpelMode[]).map(mode => (
+            <button
+              key={mode}
+              onClick={() => setAmpelMode(mode)}
+              className={ampelMode === mode ? 'is-active' : ''}
+              style={{
+                padding: '6px 14px',
+                border: '1px solid var(--class-retention-border)',
+                borderRadius: '999px',
+                background: ampelMode === mode ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)',
+                color: ampelMode === mode ? '#fff' : 'var(--class-retention-text)',
+                fontSize: '0.8rem',
+                cursor: 'pointer'
+              }}
+            >
+              {mode === 'vera' ? 'Leistungen (VERA)' : mode === 'supply' ? 'Lehrerversorgung' : 'Lehrerzufriedenheit'}
+            </button>
+          ))}
+        </div>
+
+        {/* Summary Grid */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
+          gap: '12px', 
+          marginTop: '20px' 
+        }}>
+          <div style={{ background: 'var(--class-retention-bg)', border: '1px solid var(--class-retention-border)', borderRadius: '12px', padding: '12px' }}>
+            <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Schulen</strong>
+            <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--class-retention-primary)' }}>
+              {summaryMetrics.totalSchools}
             </div>
-
-            {/* Interpretation Container - Right column of grid */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <InterpretationBox tabs={interpretationTabs} defaultTab="befund" />
+          </div>
+          <div style={{ background: 'var(--class-retention-bg)', border: '1px solid var(--class-retention-border)', borderRadius: '12px', padding: '12px' }}>
+            <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Schüler:innen</strong>
+            <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--class-retention-primary)' }}>
+              {summaryMetrics.totalStudents.toLocaleString()}
+            </div>
+          </div>
+          <div style={{ background: 'var(--class-retention-bg)', border: '1px solid var(--class-retention-border)', borderRadius: '12px', padding: '12px' }}>
+            <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Ø Sozialindex</strong>
+            <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--class-retention-primary)' }}>
+              {summaryMetrics.avgSozialindex.toFixed(2)}
+            </div>
+          </div>
+          <div style={{ background: 'var(--class-retention-bg)', border: '1px solid var(--class-retention-border)', borderRadius: '12px', padding: '12px' }}>
+            <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Ø VERA {subject === 'mat' ? 'Mathe' : 'Deutsch'}</strong>
+            <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--class-retention-primary)' }}>
+              {(subject === 'mat' ? summaryMetrics.avgVeraMat : summaryMetrics.avgVeraDeu).toFixed(1)}
+            </div>
+          </div>
+          <div style={{ background: 'var(--class-retention-bg)', border: '1px solid var(--class-retention-border)', borderRadius: '12px', padding: '12px' }}>
+            <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Ø Schüler/Lehrer</strong>
+            <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--class-retention-primary)' }}>
+              {summaryMetrics.avgTeacherRatio.toFixed(1)}
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Map Card (Placeholder) */}
+      <div className="card" style={{
+        background: 'var(--class-retention-surface)',
+        border: '1px solid var(--class-retention-border)',
+        borderRadius: '18px',
+        boxShadow: 'var(--class-retention-shadow)',
+        padding: '24px',
+        marginBottom: '16px'
+      }}>
+        <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Karte – Schulen im Schulamtsbezirk</h2>
+        <small style={{ color: 'var(--class-retention-text)', fontSize: '0.85rem' }}>
+          Jeder Punkt ist eine Schule. Farbe = Ampel nach gewähltem Fokus.
+        </small>
+        <div style={{ height: '360px', background: 'var(--class-retention-bg)', border: '1px solid var(--class-retention-border)', borderRadius: '12px', marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--class-retention-text)' }}>
+          [Karte: {filteredSchools.length} Schulen]
+        </div>
+      </div>
+
+      {/* School Analysis - Two Column Bars */}
+      <div className="card" style={{
+        background: 'var(--class-retention-surface)',
+        border: '1px solid var(--class-retention-border)',
+        borderRadius: '18px',
+        boxShadow: 'var(--class-retention-shadow)',
+        padding: '24px',
+        marginBottom: '16px'
+      }}>
+        <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Auswertung nach Schule</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '16px' }}>
+          <div>
+            <h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Schulen – VERA {subject === 'mat' ? 'Mathematik' : 'Deutsch'}</h3>
+            <div style={{ fontSize: '0.8rem' }}>
+              {filteredSchools.sort((a, b) => (subject === 'mat' ? b.veraMat - a.veraMat : b.veraDeu - a.veraDeu)).slice(0, 10).map(school => {
+                const value = subject === 'mat' ? school.veraMat : school.veraDeu
+                return (
+                  <div key={school.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                    <div style={{ flex: '0 0 180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{school.name}</div>
+                    <div style={{ flex: '1', height: '8px', background: '#e5e7eb', borderRadius: '999px', overflow: 'hidden' }}>
+                      <div style={{ width: `${(value / 100) * 100}%`, height: '100%', background: 'var(--class-retention-primary)', borderRadius: '999px' }} />
+                    </div>
+                    <div style={{ flex: '0 0 50px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{value.toFixed(1)}</div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+          <div>
+            <h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Schulen – Lehrerversorgung (Schüler/Lehrer)</h3>
+            <div style={{ fontSize: '0.8rem' }}>
+              {filteredSchools.sort((a, b) => a.teacherRatio - b.teacherRatio).slice(0, 10).map(school => (
+                <div key={school.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                  <div style={{ flex: '0 0 180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{school.name}</div>
+                  <div style={{ flex: '1', height: '8px', background: '#e5e7eb', borderRadius: '999px', overflow: 'hidden' }}>
+                    <div style={{ width: `${(school.teacherRatio / 30) * 100}%`, height: '100%', background: school.supplyCategory === 'gut' ? AMPEL_COLORS.green : school.supplyCategory === 'angespannt' ? AMPEL_COLORS.yellow : AMPEL_COLORS.red, borderRadius: '999px' }} />
+                  </div>
+                  <div style={{ flex: '0 0 50px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{school.teacherRatio.toFixed(1)}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Tabs - Lernstand/Belastung/Ressourcen */}
+      <div className="card" style={{
+        background: 'var(--class-retention-surface)',
+        border: '1px solid var(--class-retention-border)',
+        borderRadius: '18px',
+        boxShadow: 'var(--class-retention-shadow)',
+        padding: '24px',
+        marginBottom: '16px'
+      }}>
+        <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Steuerungs-Navigation: Lernstand · Belastung · Ressourcen</h2>
+        <small style={{ color: 'var(--class-retention-text)', fontSize: '0.85rem' }}>
+          Die Auswertungen beziehen sich auf die aktuell gefilterten Schulen. Ergänzt um eine 10-Jahres-Entwicklung auf Schulamtsebene.
+        </small>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '16px' }}>
+          {(['lernstand', 'belastung', 'ressourcen'] as NavSection[]).map(section => (
+            <button key={section} onClick={() => setNavSection(section)} className={navSection === section ? 'is-active' : ''} style={{ padding: '8px 16px', border: '1px solid var(--class-retention-border)', borderRadius: '999px', background: navSection === section ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)', color: navSection === section ? '#fff' : 'var(--class-retention-text)', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>{section === 'lernstand' ? '📊' : section === 'belastung' ? '⚖️' : '🧩'}</span>
+              <span>{section === 'lernstand' ? 'Lernstand' : section === 'belastung' ? 'Belastung & Zusammensetzung' : 'Ressourcenverteilung'}</span>
+            </button>
+          ))}
+        </div>
+        <div style={{ marginTop: '16px', padding: '16px', background: 'var(--class-retention-bg)', borderRadius: '12px', border: '1px solid var(--class-retention-border)' }}>
+          {navSection === 'lernstand' && (<div><h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Lernstand (10-Jahres-Trend)</h3><p style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)' }}>[Chart: Lernstand über Zeit - Ziel: {LONG_TERM_DATA.targets.lernstand}]</p></div>)}
+          {navSection === 'belastung' && (<div><h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Belastung & Zusammensetzung (10-Jahres-Trend)</h3><p style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)' }}>[Chart: Sozialindex über Zeit - Ziel: {LONG_TERM_DATA.targets.belastung}]</p></div>)}
+          {navSection === 'ressourcen' && (<div><h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Ressourcenverteilung (10-Jahres-Trend)</h3><p style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)' }}>[Chart: Schüler/Lehrer-Verhältnis über Zeit - Ziel: {LONG_TERM_DATA.targets.ratio}]</p></div>)}
+        </div>
+      </div>
+
+      {/* School Detail View */}
+      <div className="card" style={{
+        background: 'var(--class-retention-surface)',
+        border: '1px solid var(--class-retention-border)',
+        borderRadius: '18px',
+        boxShadow: 'var(--class-retention-shadow)',
+        padding: '24px',
+        marginBottom: '16px'
+      }}>
+        <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Detailansicht Schule</h2>
+        <small style={{ color: 'var(--class-retention-text)', fontSize: '0.85rem' }}>Eine Schule auswählen (Karte oder Liste), um Ampeln und Kennzahlen zu sehen.</small>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '16px' }}>
+          {filteredSchools.slice(0, 8).map(school => (
+            <button key={school.id} onClick={() => setSelectedSchoolId(school.id)} className={selectedSchoolId === school.id ? 'is-active' : ''} style={{ padding: '6px 12px', border: '1px solid var(--class-retention-border)', borderRadius: '999px', background: selectedSchoolId === school.id ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)', color: selectedSchoolId === school.id ? '#fff' : 'var(--class-retention-text)', fontSize: '0.75rem', cursor: 'pointer' }}>{school.name}</button>
+          ))}
+        </div>
+        {selectedSchool ? (
+          <div style={{ marginTop: '20px', padding: '16px', background: 'var(--class-retention-bg)', borderRadius: '12px', border: '1px solid var(--class-retention-border)' }}>
+            <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>{selectedSchool.name}</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px' }}>
+              <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Schüler:innen</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.students}</div></div>
+              <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Sozialindex</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.sozialindex}</div></div>
+              <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>VERA Mathe</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.veraMat.toFixed(1)}</div></div>
+              <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>VERA Deutsch</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.veraDeu.toFixed(1)}</div></div>
+              <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Schüler/Lehrer</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.teacherRatio.toFixed(1)}</div></div>
+              <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Versorgung</div><div style={{ fontSize: '0.85rem', fontWeight: '600', color: selectedSchool.supplyCategory === 'gut' ? AMPEL_COLORS.green : selectedSchool.supplyCategory === 'angespannt' ? AMPEL_COLORS.yellow : AMPEL_COLORS.red }}>{SUPPLY_CATEGORIES[selectedSchool.supplyCategory].label}</div></div>
+              <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Startchancen</div><div style={{ fontSize: '0.85rem', fontWeight: '600' }}>{selectedSchool.startchancen === 'Startchancen-Schule' ? '✓' : '–'}</div></div>
+            </div>
+          </div>
+        ) : (
+          <div style={{ marginTop: '16px', color: 'var(--class-retention-text)', fontSize: '0.85rem', fontStyle: 'italic' }}>Noch keine Schule ausgewählt.</div>
+        )}
       </div>
     </div>
   )
 }
 
-export const SAmtView = memo(SAmtViewComponent)
+export const SAmtPage = memo(SAmtPageComponent)

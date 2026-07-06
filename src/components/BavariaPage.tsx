@@ -1,10 +1,10 @@
 import { memo, useState } from 'react'
-import { bavariaMetrics, regions } from '../data/bavaria.ts'
-import { COMMON_STYLES } from '../config/chartConfig.ts'
-import { InterpretationBox } from './InterpretationBox.tsx'
-import { RegierungsbezirkeMap } from './charts/RegierungsMap.tsx'
-import { ViewSwitcher } from './controls/ViewSwitcher.tsx'
-import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons.tsx'
+import { bavariaMetrics, regions } from '../data/bavaria'
+import { COMMON_STYLES } from '../config/chartConfig'
+import { InterpretationBox } from './InterpretationBox'
+import { RegierungsbezirkeMap } from './charts/RegierungsMap'
+import { ViewSwitcher } from './controls/ViewSwitcher'
+import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons'
 
 
 type MetricKey = 'students' | 'avgClassSize' | 'teachersFTE' | 'schools'

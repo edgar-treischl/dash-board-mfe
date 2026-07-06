@@ -8,7 +8,7 @@ import {
   formatNumber,
   type SchoolType,
   type RetentionDatum,
-} from '../../retention.ts'
+} from '../../retention'
 
 /**
  * LineChart component - Multi-series line chart for retention trends over time

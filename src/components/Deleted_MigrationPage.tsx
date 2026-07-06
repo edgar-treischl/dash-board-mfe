@@ -2,10 +2,10 @@ import { memo } from 'react'
 import {
   type SchoolYear,
   getMigrationData,
-} from '../retention.ts'
-import { CITIZENSHIP_LEGEND_ITEMS } from '../config/chartConfig.ts'
-import { MIGRATION_INTERPRETATION } from '../config/interpretationContent.tsx'
-import { DimensionalDataView } from './DimensionalDataView.tsx'
+} from '../retention'
+import { CITIZENSHIP_LEGEND_ITEMS } from '../config/chartConfig'
+import { MIGRATION_INTERPRETATION } from '../config/interpretationContent'
+import { DimensionalDataView } from './DimensionalDataView'
 
 type MigrationViewProps = {
   selectedYear: SchoolYear

@@ -4,7 +4,7 @@
  */
 
 import { type ReactNode } from 'react'
-import { COMMON_STYLES } from './chartConfig.ts'
+import { COMMON_STYLES } from './chartConfig'
 
 export type InterpretationContent = {
   befund: { label: string; content: ReactNode }

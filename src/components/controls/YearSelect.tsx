@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { SCHOOL_YEARS, type SchoolYear } from '../../retention.ts'
+import { SCHOOL_YEARS, type SchoolYear } from '../../retention'
 import { SelectIcon } from './SelectIcon'
 import './YearSelect.css'
 

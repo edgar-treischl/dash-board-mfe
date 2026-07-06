@@ -1,8 +1,8 @@
 import { memo, type ReactNode } from 'react'
-import { type SchoolYear, type DisaggregatedDatum } from '../retention.ts'
-import { StackedBarChart, StackedBarChartLegend } from './charts/StackedBarChart.tsx'
+import { type SchoolYear, type DisaggregatedDatum } from '../retention'
+import { StackedBarChart, StackedBarChartLegend } from './charts/StackedBarChart'
 import { YearSelect } from './controls'
-import { InterpretationBox } from './InterpretationBox.tsx'
+import { InterpretationBox } from './InterpretationBox'
 
 export type LegendItem = {
   label: string

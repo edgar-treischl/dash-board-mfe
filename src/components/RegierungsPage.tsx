@@ -1,11 +1,11 @@
 import { memo, useState } from 'react'
-import { bavariaMetrics, regions } from '../data/bavaria.ts'
-import { COMMON_STYLES } from '../config/chartConfig.ts'
-import { InterpretationBox } from './InterpretationBox.tsx'
-import { OfficesLeafletMap } from './charts/OfficesLeafletMap.tsx'
-import { ViewSwitcher } from './controls/ViewSwitcher.tsx'
-import { RegionIcon } from './controls/RegionIcon.tsx'
-import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons.tsx'
+import { bavariaMetrics, regions } from '../data/bavaria'
+import { COMMON_STYLES } from '../config/chartConfig'
+import { InterpretationBox } from './InterpretationBox'
+import { OfficesLeafletMap } from './charts/OfficesLeafletMap'
+import { ViewSwitcher } from './controls/ViewSwitcher'
+import { RegionIcon } from './controls/RegionIcon'
+import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons'
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
 

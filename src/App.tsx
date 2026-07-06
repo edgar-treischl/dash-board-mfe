@@ -1,27 +1,22 @@
 import { useState } from 'react'
-import { BavariaView } from './components/BavariaPage.tsx'
-import { RegierungsView } from './components/RegierungsPage.tsx'
-import { HeroView } from './components/HeroPage.tsx'
-import { InfoView } from './components/InfoPage.tsx'
-import { SAmtView } from './components/SAmtPage.tsx'
-import { ErrorBoundary } from './components/ErrorBoundary.tsx'
-import {
-  SCHOOL_YEARS,
-  type SchoolYear,
-} from './retention.ts'
+import { BavariaView } from './components/BavariaPage'
+import { RegierungsView } from './components/RegierungsPage'
+import { HeroView } from './components/HeroPage'
+import { InfoView } from './components/InfoPage'
+import { SAmtPage } from './components/SAmtPage'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import {
   VIEW_OPTIONS,
   VIEW_METADATA,
   CLASS_NAMES,
   ARIA_LABELS,
-} from './constants.ts'
+} from './constants'
 import './App.css'
 
 type ViewKey = (typeof VIEW_OPTIONS)[number]['key']
 
 export default function App() {
   const [view, setView] = useState<ViewKey>('home')
-  const [selectedYear, setSelectedYear] = useState<SchoolYear>(SCHOOL_YEARS[0])
 
   const title = VIEW_METADATA[view]
 
@@ -69,7 +64,7 @@ export default function App() {
             </ErrorBoundary>
           ) : view === 'sex' ? (
             <ErrorBoundary>
-              <SAmtView/>
+              <SAmtPage/>
             </ErrorBoundary>
           ) : (
             <ErrorBoundary>

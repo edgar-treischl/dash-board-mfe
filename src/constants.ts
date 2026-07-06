@@ -25,7 +25,6 @@ export const VIEW_METADATA: Record<
   retention: 'Bayern',
   trends: 'Regierungsbezirke',
   sex: 'Klassenwiederholungen nach Geschlecht',
-  migration: 'Klassenwiederholungen nach Herkunft',
   data: 'Über diese App',
 }
 

@@ -2,7 +2,7 @@
  * Year calculation utilities for school year formatting and manipulation
  */
 
-import { type SchoolYear } from '../retention.ts'
+import { type SchoolYear } from '../retention'
 
 /**
  * Formats a numeric year to school year abbreviation format (e.g., 2024 -> "24")

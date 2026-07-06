@@ -6,7 +6,7 @@ import {
   formatPercent,
   SCHOOL_TYPE_COLORS,
   type SchoolType,
-} from '../../retention.ts'
+} from '../../retention'
 
 type BarData = {
   type: SchoolType

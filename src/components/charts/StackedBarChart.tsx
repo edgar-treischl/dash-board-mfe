@@ -5,7 +5,7 @@ import {
   CHART_WIDTH,
   SCHOOL_TYPES,
   type SchoolType,
-} from '../../retention.ts'
+} from '../../retention'
 
 type SegmentData = {
   syear: string

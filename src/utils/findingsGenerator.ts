@@ -2,7 +2,7 @@
  * Utilities for generating findings and insights from retention data
  */
 
-import { type SchoolType } from '../retention.ts'
+import { type SchoolType } from '../retention'
 
 export type BarChartStat = {
   type: SchoolType

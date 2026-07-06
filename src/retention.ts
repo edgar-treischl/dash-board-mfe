@@ -1,7 +1,7 @@
 import retentionData from './data/retention.json'
 import sexData from './data/sex.json'
 import migrationData from './data/migration.json'
-import { getPreviousSchoolYear } from './utils/yearCalculations.ts'
+import { getPreviousSchoolYear } from './utils/yearCalculations'
 
 export const SCHOOL_TYPES = ['GS', 'MS', 'RS', 'GY', 'IGS'] as const
 

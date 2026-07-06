@@ -1,0 +1,1132 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Schulamts-Dashboard – Staatliches Schulamt München-Stadt (Demo)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    crossorigin=""
+  />
+
+  <style>
+    :root {
+      --blue: #0b5fa5;
+      --blue-dark: #084579;
+      --bg: #f4f6fb;
+      --card-bg: #ffffff;
+      --muted: #6b7280;
+      --border-radius: 14px;
+      --green: #16a34a;
+      --yellow: #eab308;
+      --red: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: #111827;
+    }
+    header {
+      background: linear-gradient(120deg, #084579, #0b5fa5);
+      color: #fff;
+      padding: 16px 18px 14px;
+      box-shadow: 0 2px 10px rgba(15,23,42,0.35);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    header h1 { margin: 0; font-size: 1.25rem; }
+    header p { margin: 4px 0 0; font-size: 0.86rem; opacity: 0.96; }
+    .badge-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+    .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.16);padding:3px 10px;border-radius:999px;font-size:0.72rem;}
+
+    .container { max-width: 1120px; margin: 18px auto 32px; padding: 0 14px 18px; }
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 14px 16px 16px;
+      box-shadow: 0 4px 16px rgba(15,23,42,0.08);
+      border: 1px solid #d1d5db;
+      margin-bottom: 14px;
+    }
+    h2 { margin: 0 0 6px; font-size: 1.05rem; display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+    h3 { margin: 8px 0 4px; font-size: 0.98rem; }
+    small { color: var(--muted); font-size: 0.8rem; }
+
+    .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:6px;}
+    .summary-item{border-radius:12px;border:1px solid #e5e7eb;background:#f9fafb;padding:6px 8px;font-size:0.8rem;}
+    .summary-item strong{display:block;font-size:0.85rem;margin-bottom:2px;}
+    .kpi-large{font-size:1.05rem;font-weight:700;}
+
+    .toggle-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px;}
+    .toggle-row span.label{font-size:0.8rem;color:var(--muted);margin-right:4px;}
+    .btn-chip{border-radius:999px;border:1px solid #cbd5e1;background:#f9fafb;padding:3px 9px;font-size:0.78rem;cursor:pointer;}
+    .btn-chip.active{background:#0b5fa5;color:#fff;border-color:#084579;}
+
+    #map {
+      height: 360px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #d4d4d8;
+      margin-top: 10px;
+    }
+    .leaflet-container { font-size: 0.78rem; }
+
+    .two-col{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px;margin-top:8px;}
+    .bar-list{margin-top:4px;}
+    .bar-row{display:flex;align-items:center;gap:6px;margin:2px 0;font-size:0.78rem;}
+    .bar-label{flex:0 0 150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .bar-track{flex:1;height:7px;border-radius:999px;background:#e5e7eb;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:999px;background:#0b5fa5;}
+    .bar-value{flex:0 0 52px;text-align:right;font-variant-numeric:tabular-nums;}
+
+    .pill-row{display:flex;flex-wrap:wrap;gap:6px;}
+    .pill{border-radius:999px;border:1px solid #cbd5e1;padding:4px 10px;font-size:0.75rem;cursor:pointer;background:#f9fafb;color:#111827;}
+    .pill.active{background:#0b5fa5;color:#fff;border-color:#084579;}
+
+    .muted{color:var(--muted);font-size:0.76rem;}
+    .ampel{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:999px;border:1px solid #e5e7eb;background:#f9fafb;font-size:0.76rem;}
+    .ampel-dot{width:10px;height:10px;border-radius:999px;background:#9ca3af;}
+    .ampel-green .ampel-dot{background:#16a34a;}
+    .ampel-yellow .ampel-dot{background:#eab308;}
+    .ampel-red .ampel-dot{background:#dc2626;}
+
+    .nav-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;margin-bottom:6px;}
+    .nav-tab{border-radius:999px;border:1px solid #cbd5e1;background:#f9fafb;padding:5px 11px;font-size:0.8rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+    .nav-tab.active{background:#0b5fa5;color:#fff;border-color:#084579;}
+    .nav-tab span.icon{font-size:0.9rem;}
+    #navContent{margin-top:6px;font-size:0.82rem;}
+    .nav-section-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.2fr);gap:10px;margin-top:4px;}
+    @media (max-width:900px){.nav-section-grid{grid-template-columns:minmax(0,1fr);}}
+    .nav-block{border-radius:12px;border:1px solid #e5e7eb;background:#f9fafb;padding:6px 8px;}
+    .nav-block h4{margin:0 0 4px;font-size:0.9rem;}
+    .nav-kpi-row{display:flex;flex-wrap:wrap;gap:8px;font-size:0.8rem;margin-top:2px;}
+    .nav-kpi{padding:3px 7px;border-radius:999px;background:#e5e7eb33;}
+    .nav-reco-list{margin:4px 0 2px;padding-left:16px;}
+    .nav-reco-list li{margin-bottom:2px;}
+    .trend-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 7px;border-radius:999px;background:#eef2ff;border:1px solid #c7d2fe;font-size:0.78rem;}
+
+    .spark-wrapper{margin-top:6px;}
+    .spark-title{font-size:0.78rem;color:var(--muted);margin-bottom:2px;}
+    .spark{width:100%;height:40px;display:block;color:#0b5fa5;}
+
+    .nav-year-select{margin-top:6px;font-size:0.8rem;display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+    .nav-year-select select{font-size:0.8rem;padding:3px 6px;border-radius:999px;border:1px solid #cbd5e1;background:#fff;}
+
+    @media (max-width:860px){
+      .two-col{grid-template-columns:minmax(0,1fr);}
+      #map{height:320px;}
+      .bar-label{flex-basis:130px;}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Schulamts-Dashboard – Staatliches Schulamt München-Stadt (Demo)</h1>
+  <p>Fiktives Steuerungstool für Grund- und Mittelschulen im eigenen Schulamtsbezirk.</p>
+  <div class="badge-row">
+    <div class="badge">🏛️ Ebene: Staatliches Schulamt</div>
+    <div class="badge">📍 Fokus: München-Stadt (Beispiel)</div>
+    <div class="badge">🗺️ Interaktive Karte · Ampeln · Trends · 10-Jahres-Statistik</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="card">
+    <h2>Filter und Überblick im Schulamtsbezirk</h2>
+    <small>Alle Daten sind fiktiv, orientieren sich aber an typischen Größenordnungen für Grund- und Mittelschulen in Bayern.</small>
+    <div class="toggle-row" style="margin-top:8px;">
+      <span class="label">Schulart:</span>
+      <button class="btn-chip active" data-type="Alle" onclick="setSchoolTypeFilter('Alle')">Alle</button>
+      <button class="btn-chip" data-type="Grundschule" onclick="setSchoolTypeFilter('Grundschule')">Grundschule</button>
+      <button class="btn-chip" data-type="Mittelschule" onclick="setSchoolTypeFilter('Mittelschule')">Mittelschule</button>
+    </div>
+    <div class="toggle-row">
+      <span class="label">Startchancen:</span>
+      <button class="btn-chip active" data-start="Alle" onclick="setStartFilter('Alle')">Alle</button>
+      <button class="btn-chip" data-start="Startchancen-Schule" onclick="setStartFilter('Startchancen-Schule')">Nur Startchancen-Schulen</button>
+    </div>
+    <div class="toggle-row">
+      <span class="label">Fach (Lernstand):</span>
+      <button class="btn-chip active" data-subject="mat" onclick="setSubject('mat')">Mathematik</button>
+      <button class="btn-chip" data-subject="deu" onclick="setSubject('deu')">Deutsch</button>
+    </div>
+    <div class="toggle-row">
+      <span class="label">Ampel-Fokus (Karte & Liste):</span>
+      <button class="btn-chip active" data-ampel="vera" onclick="setAmpelMode('vera')">Leistungen (VERA)</button>
+      <button class="btn-chip" data-ampel="supply" onclick="setAmpelMode('supply')">Lehrerversorgung</button>
+      <button class="btn-chip" data-ampel="satisfaction" onclick="setAmpelMode('satisfaction')">Lehrerzufriedenheit</button>
+    </div>
+    <div class="summary-grid" id="summaryGrid"></div>
+  </div>
+
+  <div class="card">
+    <h2>Karte – Schulen im Schulamtsbezirk</h2>
+    <small>
+      Jeder Punkt ist eine Schule. Farbe = Ampel nach gewähltem Fokus.
+      Die Karte reagiert auf die Filter oben (Schulart, Startchancen).
+    </small>
+    <div id="map"></div>
+  </div>
+
+  <div class="card">
+    <h2>Auswertung nach Schule</h2>
+    <div class="toggle-row" style="margin-top:4px;">
+      <span class="label">Schulart (Schnellwahl):</span>
+      <button class="btn-chip" data-type="Alle" onclick="setSchoolTypeFilter('Alle')">Alle</button>
+      <button class="btn-chip" data-type="Grundschule" onclick="setSchoolTypeFilter('Grundschule')">Grundschule</button>
+      <button class="btn-chip" data-type="Mittelschule" onclick="setSchoolTypeFilter('Mittelschule')">Mittelschule</button>
+    </div>
+    <div class="two-col">
+      <div>
+        <h3 id="leftPanelTitle">Schulen – VERA Mathematik (Durchschnitt)</h3>
+        <div class="bar-list" id="leftBarList"></div>
+      </div>
+      <div>
+        <h3 id="rightPanelTitle">Schulen – Lehrerversorgung (Schüler je Lehrer)</h3>
+        <div class="bar-list" id="rightBarList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Steuerungs-Navigation: Lernstand · Belastung · Ressourcen</h2>
+    <small>Die Auswertungen beziehen sich auf die aktuell gefilterten Schulen. Ergänzt um eine 10-Jahres-Entwicklung auf Schulamtsebene.</small>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-nav="lernstand" onclick="setNavSection('lernstand')">
+        <span class="icon">📊</span><span>Lernstand</span>
+      </button>
+      <button class="nav-tab" data-nav="belastung" onclick="setNavSection('belastung')">
+        <span class="icon">⚖️</span><span>Belastung & Zusammensetzung</span>
+      </button>
+      <button class="nav-tab" data-nav="ressourcen" onclick="setNavSection('ressourcen')">
+        <span class="icon">🧩</span><span>Ressourcenverteilung</span>
+      </button>
+    </div>
+    <div id="navContent"></div>
+  </div>
+
+  <div class="card">
+    <h2>Detailansicht Schule</h2>
+    <small>Eine Schule auswählen (Karte oder Liste), um Ampeln und Kennzahlen zu sehen.</small>
+    <div class="toggle-row" style="margin-top:8px;">
+      <span class="label">Schule:</span>
+      <div class="pill-row" id="schoolPills"></div>
+    </div>
+    <div id="schoolDetails" style="margin-top:10px;" class="muted">
+      Noch keine Schule ausgewählt.
+    </div>
+  </div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+<script>
+// ---------------------------
+// Fiktive Daten – ein Schulamtsbezirk München-Stadt
+// ---------------------------
+
+// Einfache Pseudo-Zufallsfunktion (reproduzierbar)
+function mulberry32(a){return function(){var t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+const rng=mulberry32(123456);
+function rand(){return rng();}
+function randInt(min,max){return Math.floor(rand()*(max-min+1))+min;}
+function randn(){let u=0,v=0;while(u===0)u=rand();while(v===0)v=rand();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function clamp(x,lo,hi){return Math.min(hi,Math.max(lo,x));}
+
+const schools=[];
+
+function makeHistory(current,dir){
+  const n1=randn()*1.2;
+  const n2=randn()*1.0;
+  if(dir==="up"){
+    return [clamp(current-4+n1,20,90),clamp(current-2+n2,20,90),current];
+  }else if(dir==="down"){
+    return [clamp(current+4+n1,20,90),clamp(current+2+n2,20,90),current];
+  }
+  return [clamp(current+n1,20,90),clamp(current+n2,20,90),current];
+}
+
+// Daten aufbauen: ca. 26 Schulen im Schulamtsbereich
+(function buildData(){
+  const centerLat=48.137;
+  const centerLon=11.575;
+  let id=20000;
+  for(let i=0;i<26;i++){
+    id++;
+    const type=i%2===0?"Grundschule":"Mittelschule";
+    const students=type==="Grundschule"?randInt(120,320):randInt(220,620);
+    const sozialindex=clamp(Math.round(2.6+randn()*1.2),1,5);
+    const migShare=clamp(randn()*0.06+(0.10+0.14*sozialindex),0.03,0.95);
+    const dazShare=clamp(randn()*0.05+(0.05+0.10*sozialindex),0.01,0.75);
+    const baseLevel=60-sozialindex*3.8;
+    const veraDeu=clamp(randn()*6.5+baseLevel,20,90);
+    const veraMat=clamp(randn()*6.5+baseLevel+1,20,90);
+    const jgstDeu=clamp(randn()*6+baseLevel+1.5,20,95);
+    const jgstMat=clamp(randn()*6+baseLevel+2,20,95);
+
+    const teachers=clamp(students/randInt(18,24),8,90);
+    const teacherRatio=students/teachers;
+    let supplyCategory;
+    if(teacherRatio<=18)supplyCategory="gut";
+    else if(teacherRatio<=22)supplyCategory="angespannt";
+    else supplyCategory="kritisch";
+
+    const trainees=clamp(Math.round(randn()*1+(0.6+sozialindex*0.3)),0,8);
+    const socialFte=clamp(randn()*0.3+(0.2+0.30*sozialindex),0,4.0);
+    const supportHours=clamp(randn()*5+(6+sozialindex*4.0),0,55);
+
+    const startchancen=sozialindex>=4 && rand()<0.7 ? "Startchancen-Schule" : "keine Startchancen-Schule";
+
+    const lat=centerLat + randn()*0.03;
+    const lon=centerLon + randn()*0.05;
+
+    let trendDir;
+    const p=rand();
+    if(p<0.33)trendDir="up";
+    else if(p<0.66)trendDir="flat";
+    else trendDir="down";
+    const veraDeuHist=makeHistory(veraDeu,trendDir);
+    const veraMatHist=makeHistory(veraMat,trendDir);
+
+    let perfAvg=(veraDeu+veraMat)/2;
+    let teacherSatisfaction=70+randn()*9;
+    if(supplyCategory==="gut")teacherSatisfaction+=6;
+    else if(supplyCategory==="angespannt")teacherSatisfaction-=5;
+    else teacherSatisfaction-=12;
+    if(perfAvg<45)teacherSatisfaction-=6;
+    else if(perfAvg>62)teacherSatisfaction+=4;
+    teacherSatisfaction=clamp(teacherSatisfaction,20,95);
+
+    const name=`${type} München-Stadt ${i+1}`;
+
+    schools.push({
+      id,
+      name,
+      type,
+      lat,
+      lon,
+      students,
+      sozialindex,
+      migShare,
+      dazShare,
+      veraDeu,
+      veraMat,
+      jgstDeu,
+      jgstMat,
+      veraDeuHist,
+      veraMatHist,
+      trendDir,
+      teachers,
+      teacherRatio,
+      supplyCategory,
+      trainees,
+      socialFte,
+      supportHours,
+      teacherSatisfaction,
+      startchancen
+    });
+  }
+})();
+
+// ---------------------------
+// Langfristige 10-Jahres-Serien (Schulamtsgesamt, fiktiv)
+// ---------------------------
+const longTerm = {
+  years: [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+  lernstand: [56.0,56.5,57.2,57.8,58.1,57.5,58.3,59.0,59.4,60.1],
+  belastung: [2.6,2.65,2.7,2.8,2.9,3.0,3.05,3.08,3.1,3.12],
+  ratio: [20.8,20.6,20.4,20.2,20.0,19.8,19.6,19.4,19.2,19.0],
+  targets: {
+    lernstand: 60.0,
+    belastung: 3.0,
+    ratio: 18.0
+  }
+};
+
+let navYearIndex = longTerm.years.length - 1; // aktuelles Jahr
+
+// ---------------------------
+// Zustand & Helper
+// ---------------------------
+let schoolTypeFilter="Alle";
+let startFilter="Alle";
+let veraSubject="mat";
+let ampelMode="vera";
+let navSection="lernstand";
+let selectedSchoolId=null;
+let map, schoolLayer;
+
+function getFilteredSchools(){
+  return schools.filter(s=>{
+    if(schoolTypeFilter!=="Alle" && s.type!==schoolTypeFilter) return false;
+    if(startFilter!=="Alle" && s.startchancen!==startFilter) return false;
+    return true;
+  });
+}
+
+function getAmpelColorForSchool(s){
+  if(ampelMode==="vera"){
+    const perf=(s.veraDeu+s.veraMat)/2;
+    if(perf>=60)return"green";
+    if(perf>=45)return"yellow";
+    return"red";
+  }else if(ampelMode==="supply"){
+    if(s.supplyCategory==="gut")return"green";
+    if(s.supplyCategory==="angespannt")return"yellow";
+    return"red";
+  }else{
+    const sat=s.teacherSatisfaction;
+    if(sat>=70)return"green";
+    if(sat>=50)return"yellow";
+    return"red";
+  }
+}
+
+// Kleine SVG-Zeitreihen
+function sparkline(values){
+  const w=160, h=40, pad=4;
+  const min=Math.min.apply(null,values);
+  const max=Math.max.apply(null,values);
+  const span=(max-min)||1;
+  const step=(w-2*pad)/(values.length-1||1);
+  let pts="";
+  for(let i=0;i<values.length;i++){
+    const x=pad+i*step;
+    const y=h-pad-((values[i]-min)/span)*(h-2*pad);
+    pts+= (i>0?" ":"") + x.toFixed(1)+","+y.toFixed(1);
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" class="spark">
+    <polyline fill="none" stroke="currentColor" stroke-width="1.5" points="${pts}" />
+  </svg>`;
+}
+
+// ---------------------------
+// Summary
+// ---------------------------
+function renderSummary(){
+  const grid=document.getElementById("summaryGrid");
+  const all=getFilteredSchools();
+  if(!all.length){
+    grid.innerHTML='<div class="summary-item"><strong>Keine Daten</strong><span>Filter anpassen, um Schulen anzuzeigen.</span></div>';
+    return;
+  }
+  const students=all.reduce((sum,s)=>sum+s.students,0);
+  const avgSozial=all.reduce((sum,s)=>sum+s.sozialindex,0)/all.length;
+  const avgVeraMat=all.reduce((sum,s)=>sum+s.veraMat,0)/all.length;
+  const avgVeraDeu=all.reduce((sum,s)=>sum+s.veraDeu,0)/all.length;
+  const startShare=all.filter(s=>s.startchancen==="Startchancen-Schule").length/all.length;
+  const avgRatio=all.reduce((sum,s)=>sum+s.teacherRatio,0)/all.length;
+  const gs=all.filter(s=>s.type==="Grundschule");
+  const ms=all.filter(s=>s.type==="Mittelschule");
+  const gsCount=gs.length;
+  const msCount=ms.length;
+  const gsAvgDeu=gsCount?gs.reduce((sum,s)=>sum+s.veraDeu,0)/gsCount:null;
+  const gsAvgMat=gsCount?gs.reduce((sum,s)=>sum+s.veraMat,0)/gsCount:null;
+  const msAvgDeu=msCount?ms.reduce((sum,s)=>sum+s.veraDeu,0)/msCount:null;
+  const msAvgMat=msCount?ms.reduce((sum,s)=>sum+s.veraMat,0)/msCount:null;
+
+  grid.innerHTML=`
+    <div class="summary-item">
+      <strong>Schulen im Filter</strong>
+      <div class="kpi-large">${all.length}</div>
+      <div class="muted">Grundschulen: ${gsCount} · Mittelschulen: ${msCount}</div>
+    </div>
+    <div class="summary-item">
+      <strong>Schüler im Filter</strong>
+      <div class="kpi-large">${students.toLocaleString("de-DE")}</div>
+      <div class="muted">fiktive Größenordnung</div>
+    </div>
+    <div class="summary-item">
+      <strong>Durchschnittlicher Sozialindex</strong>
+      <div class="kpi-large">${avgSozial.toFixed(2)}</div>
+      <div class="muted">1 = gering, 5 = hoch</div>
+    </div>
+    <div class="summary-item">
+      <strong>Durchschnitt VERA Mathematik</strong>
+      <div class="kpi-large">${avgVeraMat.toFixed(1)}</div>
+      <div class="muted">alle Schulen im Filter</div>
+    </div>
+    <div class="summary-item">
+      <strong>Durchschnitt VERA Deutsch</strong>
+      <div class="kpi-large">${avgVeraDeu.toFixed(1)}</div>
+      <div class="muted">alle Schulen im Filter</div>
+    </div>
+    <div class="summary-item">
+      <strong>Startchancen-Schulen</strong>
+      <div class="kpi-large">${(startShare*100).toFixed(1)} %</div>
+      <div class="muted">Anteil im aktuellen Filter</div>
+    </div>
+    <div class="summary-item">
+      <strong>Schüler je Lehrer (Ø)</strong>
+      <div class="kpi-large">${avgRatio.toFixed(1)}</div>
+      <div class="muted">Indikator Lehrerversorgung</div>
+    </div>
+    <div class="summary-item">
+      <strong>Grundschulen – VERA Ø</strong>
+      <div class="kpi-large">${gsCount?gsAvgDeu.toFixed(1)+"/"+gsAvgMat.toFixed(1):"–"}</div>
+      <div class="muted">Deutsch / Mathematik</div>
+    </div>
+    <div class="summary-item">
+      <strong>Mittelschulen – VERA Ø</strong>
+      <div class="kpi-large">${msCount?msAvgDeu.toFixed(1)+"/"+msAvgMat.toFixed(1):"–"}</div>
+      <div class="muted">Deutsch / Mathematik</div>
+    </div>
+  `;
+}
+
+// ---------------------------
+// Karte
+// ---------------------------
+function initMap(){
+  if(typeof L==="undefined"){
+    const m=document.getElementById("map");
+    m.innerHTML="<div style='padding:8px;font-size:0.8rem;'>Karte konnte nicht geladen werden. Prüfen Sie, ob eine Internetverbindung besteht und JavaScript erlaubt ist.</div>";
+    return;
+  }
+  map=L.map("map").setView([48.137,11.575],11);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:18,
+    attribution:"&copy; OpenStreetMap-Mitwirkende"
+  }).addTo(map);
+  schoolLayer=L.layerGroup().addTo(map);
+  renderMap();
+}
+
+function renderMap(){
+  if(!map || !schoolLayer) return;
+  schoolLayer.clearLayers();
+  const all=getFilteredSchools();
+  const markers=[];
+  for(const s of all){
+    const col=getAmpelColorForSchool(s);
+    let colorCode="#16a34a";
+    if(col==="yellow")colorCode="#eab308";
+    if(col==="red")colorCode="#dc2626";
+    const marker=L.circleMarker([s.lat,s.lon],{
+      radius:6,
+      color:"#111827",
+      weight:0.7,
+      fillColor:colorCode,
+      fillOpacity:0.9
+    });
+    marker.bindPopup(`<b>${s.name}</b><br>Schulart: ${s.type}<br>Schüler: ${s.students}<br>Sozialindex: ${s.sozialindex}`);
+    marker.on("click",()=>{
+      selectedSchoolId=s.id;
+      renderSchoolDetails();
+    });
+    marker.addTo(schoolLayer);
+    markers.push(marker);
+  }
+  if(markers.length){
+    const group=L.featureGroup(markers);
+    map.fitBounds(group.getBounds().pad(0.2));
+  }
+}
+
+// ---------------------------
+// Balkendiagramme pro Schule
+// ---------------------------
+function renderBars(){
+  const leftTitle=document.getElementById("leftPanelTitle");
+  const rightTitle=document.getElementById("rightPanelTitle");
+  const left=document.getElementById("leftBarList");
+  const right=document.getElementById("rightBarList");
+  left.innerHTML=""; right.innerHTML="";
+
+  const all=getFilteredSchools();
+  if(!all.length){
+    leftTitle.textContent="Keine Schulen im aktuellen Filter";
+    rightTitle.textContent="";
+    left.innerHTML="<div class='muted'>Filter anpassen, um Schulen anzuzeigen.</div>";
+    return;
+  }
+
+  const fach=veraSubject==="mat"?"Mathematik":"Deutsch";
+  rightTitle.textContent="Schulen – Lehrerversorgung (Schüler je Lehrer)";
+
+  if(schoolTypeFilter==="Alle"){
+    leftTitle.textContent="VERA – bitte Schulart wählen";
+    left.innerHTML="<div class='muted'>VERA-Ergebnisse werden getrennt für Grundschulen und Mittelschulen betrachtet. Bitte oben oder in der Schnellwahl eine Schulart auswählen.</div>";
+  } else {
+    leftTitle.textContent=`Schulen – VERA ${fach} (Durchschnitt)`;
+    const sortedByVera=all.slice().sort((a,b)=>{
+      const va=veraSubject==="mat"?a.veraMat:a.veraDeu;
+      const vb=veraSubject==="mat"?b.veraMat:b.veraDeu;
+      return vb-va;
+    });
+    const maxVera=Math.max(...sortedByVera.map(s=>veraSubject==="mat"?s.veraMat:s.veraDeu));
+
+    for(const s of sortedByVera){
+      const v=veraSubject==="mat"?s.veraMat:s.veraDeu;
+      const row=document.createElement("div");
+      row.className="bar-row";
+      row.innerHTML=`
+        <div class="bar-label">${s.name}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${(v/maxVera*100).toFixed(1)}%"></div>
+        </div>
+        <div class="bar-value">${v.toFixed(1)}</div>
+      `;
+      left.appendChild(row);
+    }
+  }
+
+  const sortedByRatio=all.slice().sort((a,b)=>a.teacherRatio-b.teacherRatio);
+  const maxRatio=Math.max(...sortedByRatio.map(s=>s.teacherRatio));
+
+  for(const s of sortedByRatio){
+    const rVal=s.teacherRatio;
+    const row=document.createElement("div");
+    row.className="bar-row";
+    row.innerHTML=`
+      <div class="bar-label">${s.name}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${(rVal/maxRatio*100).toFixed(1)}%"></div>
+      </div>
+      <div class="bar-value">${rVal.toFixed(1)}</div>
+    `;
+    right.appendChild(row);
+  }
+}
+
+// ---------------------------
+// Schul-Liste & Details
+// ---------------------------
+function renderSchoolPills(){
+  const schoolPills=document.getElementById("schoolPills");
+  const all=getFilteredSchools().slice().sort((a,b)=>a.name.localeCompare(b.name));
+  schoolPills.innerHTML="";
+  for(const s of all){
+    const btn=document.createElement("button");
+    btn.className="pill"+(selectedSchoolId===s.id?" active":"");
+    btn.textContent=s.name;
+    btn.addEventListener("click",()=>{
+      selectedSchoolId=selectedSchoolId===s.id?null:s.id;
+      renderSchoolDetails();
+    });
+    schoolPills.appendChild(btn);
+  }
+}
+
+function renderSchoolDetails(){
+  const box=document.getElementById("schoolDetails");
+  if(!selectedSchoolId){
+    box.innerHTML='<span class="muted">Noch keine Schule ausgewählt.</span>';
+    return;
+  }
+  const s=schools.find(x=>x.id===selectedSchoolId);
+  if(!s){
+    box.innerHTML='<span class="muted">Schule nicht gefunden.</span>';
+    return;
+  }
+  const socialPer100=s.socialFte/s.students*100;
+  const supportPer100=s.supportHours/s.students*100;
+  const perfAvg=(s.veraDeu+s.veraMat)/2;
+
+  let supplyClass="ampel-yellow",supplyText="";
+  if(s.supplyCategory==="gut"){supplyClass="ampel-green";supplyText="Lehrerversorgung gut (Schüler je Lehrer: "+s.teacherRatio.toFixed(1)+")";}
+  else if(s.supplyCategory==="angespannt"){supplyClass="ampel-yellow";supplyText="Lehrerversorgung angespannt (Schüler je Lehrer: "+s.teacherRatio.toFixed(1)+")";}
+  else{supplyClass="ampel-red";supplyText="Lehrerversorgung kritisch (Schüler je Lehrer: "+s.teacherRatio.toFixed(1)+")";}
+
+  let perfClass="ampel-yellow",perfText="";
+  if(perfAvg>=60){perfClass="ampel-green";perfText="Leistungen insgesamt eher gut (Durchschnitt VERA ca. "+perfAvg.toFixed(1)+")";}
+  else if(perfAvg>=45){perfClass="ampel-yellow";perfText="Leistungen im Mittelfeld (Durchschnitt VERA ca. "+perfAvg.toFixed(1)+")";}
+  else{perfClass="ampel-red";perfText="Leistungen deutlich unterdurchschnittlich (Durchschnitt VERA ca. "+perfAvg.toFixed(1)+")";}
+
+  let satClass="ampel-yellow",satText="";
+  if(s.teacherSatisfaction>=70){satClass="ampel-green";satText="Lehrerzufriedenheit hoch ("+s.teacherSatisfaction.toFixed(0)+" von 100 Punkten).";}
+  else if(s.teacherSatisfaction>=50){satClass="ampel-yellow";satText="Lehrerzufriedenheit mittel ("+s.teacherSatisfaction.toFixed(0)+" von 100 Punkten).";}
+  else{satClass="ampel-red";satText="Lehrerzufriedenheit eher gering ("+s.teacherSatisfaction.toFixed(0)+" von 100 Punkten).";}
+
+  let trendSymbol="▶",trendText="weitgehend stabil";
+  if(s.trendDir==="up"){trendSymbol="▲";trendText="verbessert sich";}
+  else if(s.trendDir==="down"){trendSymbol="▼";trendText="verschlechtert sich";}
+
+  const[vd2,vd1,vd0]=s.veraDeuHist;
+  const[vm2,vm1,vm0]=s.veraMatHist;
+
+  box.innerHTML=`
+    <div class="summary-grid">
+      <div class="summary-item">
+        <strong>Schnellblick Ampeln</strong>
+        <div class="ampel ${supplyClass}" style="margin-bottom:4px;">
+          <span class="ampel-dot"></span><span>${supplyText}</span>
+        </div>
+        <div class="ampel ${perfClass}" style="margin-bottom:4px;">
+          <span class="ampel-dot"></span><span>Leistungen (VERA) ${trendSymbol} ${trendText}</span>
+        </div>
+        <div class="ampel ${satClass}">
+          <span class="ampel-dot"></span><span>${satText}</span>
+        </div>
+      </div>
+      <div class="summary-item">
+        <strong>Rahmendaten Schule</strong>
+        <div>Schule: <b>${s.name}</b></div>
+        <div>Schulart: <b>${s.type}</b></div>
+        <div>Schüler: <b>${s.students}</b></div>
+        <div>Startchancen-Status: <b>${s.startchancen}</b></div>
+      </div>
+      <div class="summary-item">
+        <strong>Lernstand (VERA, fiktiv)</strong>
+        <div>Deutsch aktuell: <b>${s.veraDeu.toFixed(1)}</b></div>
+        <div>Mathematik aktuell: <b>${s.veraMat.toFixed(1)}</b></div>
+        <div style="margin-top:4px;font-size:0.75rem;">
+          Trend Deutsch: ${vd2.toFixed(0)} → ${vd1.toFixed(0)} → <b>${vd0.toFixed(0)}</b><br>
+          Trend Mathematik: ${vm2.toFixed(0)} → ${vm1.toFixed(0)} → <b>${vm0.toFixed(0)}</b>
+        </div>
+      </div>
+      <div class="summary-item">
+        <strong>Belastung und Zusammensetzung</strong>
+        <div>Sozialindex: <b>${s.sozialindex}</b></div>
+        <div>Migrationsanteil: <b>${(s.migShare*100).toFixed(1)} %</b></div>
+        <div>DaZ-Anteil: <b>${(s.dazShare*100).toFixed(1)} %</b></div>
+      </div>
+      <div class="summary-item">
+        <strong>Ressourcen</strong>
+        <div>Lehrer (VZÄ): <b>${s.teachers.toFixed(1)}</b></div>
+        <div>Lehramtsanwärter: <b>${s.trainees}</b></div>
+        <div>Sozialarbeit (VZÄ): <b>${s.socialFte.toFixed(2)}</b></div>
+        <div>Sozialarbeit pro 100 Schüler: <b>${socialPer100.toFixed(2)}</b></div>
+        <div>Förderstunden insgesamt: <b>${s.supportHours.toFixed(1)}</b></div>
+        <div>Förderstunden pro 100 Schüler: <b>${supportPer100.toFixed(1)}</b></div>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:8px;">
+      Diese Detailansicht ermöglicht es dem Schulamt, einzelne Schulen gezielt in den Blick zu nehmen
+      und mit ihnen über Lernstand, Belastung und Ressourcensituation ins Gespräch zu gehen.
+    </p>
+  `;
+}
+
+// ---------------------------
+// Steuerungs-Navigation mit 10-Jahres-Ansicht
+// ---------------------------
+function setNavSection(section){
+  navSection=section;
+  document.querySelectorAll(".nav-tab").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.nav===section);
+  });
+  renderNavPanel();
+}
+
+function handleYearChange(value){
+  const year=parseInt(value,10);
+  const idx=longTerm.years.indexOf(year);
+  if(idx>=0){
+    navYearIndex=idx;
+    renderNavPanel();
+  }
+}
+
+function renderNavPanel(){
+  const container=document.getElementById("navContent");
+  const all=getFilteredSchools();
+  const ctx="Staatliches Schulamt München-Stadt (Demo)";
+  const totalSchools=all.length||schools.length;
+  const totalStudents=(all.length?all:schools).reduce((s,x)=>s+x.students,0);
+
+  if(!totalSchools){
+    container.innerHTML="<p class='muted'>Keine Daten im aktuellen Filter. Bitte Schulart- oder Startchancen-Filter anpassen.</p>";
+    return;
+  }
+
+  const filtered=all.length?all:schools;
+  const avgSozial=filtered.reduce((s,x)=>s+x.sozialindex,0)/filtered.length;
+  const avgMig=filtered.reduce((s,x)=>s+x.migShare,0)/filtered.length;
+  const avgDaz=filtered.reduce((s,x)=>s+x.dazShare,0)/filtered.length;
+  const startShare=filtered.filter(s=>s.startchancen==="Startchancen-Schule").length/filtered.length;
+
+  const avgVeraDeu=filtered.reduce((s,x)=>s+x.veraDeu,0)/filtered.length;
+  const avgVeraMat=filtered.reduce((s,x)=>s+x.veraMat,0)/filtered.length;
+
+  let sumVD0=0,sumVD1=0,sumVD2=0,sumVM0=0,sumVM1=0,sumVM2=0;
+  filtered.forEach(s=>{
+    const [vd2,vd1,vd0]=s.veraDeuHist;
+    const [vm2,vm1,vm0]=s.veraMatHist;
+    sumVD0+=vd0;sumVD1+=vd1;sumVD2+=vd2;
+    sumVM0+=vm0;sumVM1+=vm1;sumVM2+=vm2;
+  });
+  const n=filtered.length;
+  const avgVD0=sumVD0/n;
+  const avgVD1=sumVD1/n;
+  const avgVD2=sumVD2/n;
+  const avgVM0=sumVM0/n;
+  const avgVM1=sumVM1/n;
+  const avgVM2=sumVM2/n;
+  const deltaDeu=avgVD0-avgVD2;
+  const deltaMat=avgVM0-avgVM2;
+  const lernSeries=[(avgVD2+avgVM2)/2,(avgVD1+avgVM1)/2,(avgVD0+avgVM0)/2];
+
+  const totalTeachers=filtered.reduce((s,x)=>s+x.teachers,0);
+  const avgRatio=totalStudents/totalTeachers;
+  const totalSocialFte=filtered.reduce((s,x)=>s+x.socialFte,0);
+  const totalSupportHours=filtered.reduce((s,x)=>s+x.supportHours,0);
+  const socialPer100=totalSocialFte/totalStudents*100;
+  const supportPer100=totalSupportHours/totalStudents*100;
+
+  const ratioTarget=18;
+  const neededTeachers=totalStudents/ratioTarget;
+  const diffTeachers=neededTeachers-totalTeachers;
+
+  const year=longTerm.years[navYearIndex];
+  const yLern=longTerm.lernstand[navYearIndex];
+  const yBelast=longTerm.belastung[navYearIndex];
+  const yRatio=longTerm.ratio[navYearIndex];
+  const tLern=longTerm.targets.lernstand;
+  const tBelast=longTerm.targets.belastung;
+  const tRatio=longTerm.targets.ratio;
+  const dLern=yLern-tLern;
+  const dBelast=yBelast-tBelast;
+  const dRatio=yRatio-tRatio;
+  const yearOptions=longTerm.years.map((y,i)=>`<option value="${y}" ${i===navYearIndex?"selected":""}>${y}</option>`).join("");
+
+  let lernAmpelClass="ampel-yellow",lernText="Leistungen im Mittelfeld.";
+  const lernIndex=(avgVeraDeu+avgVeraMat)/2;
+  if(lernIndex>=60){lernAmpelClass="ampel-green";lernText="Leistungen insgesamt eher gut (über 60 Punkte im Schnitt).";}
+  else if(lernIndex<45){lernAmpelClass="ampel-red";lernText="Leistungen deutlich unterdurchschnittlich (unter 45 Punkte im Schnitt).";}
+
+  let lernTrendSymbol="▶",lernTrendText="weitgehend stabil";
+  if(deltaDeu+deltaMat>2){lernTrendSymbol="▲";lernTrendText="Tendenz insgesamt leicht steigend (Deutsch/Mathe).";}
+  else if(deltaDeu+deltaMat<-2){lernTrendSymbol="▼";lernTrendText="Tendenz insgesamt leicht rückläufig (Deutsch/Mathe).";}
+
+  let belastAmpelClass="ampel-yellow",belastText="Belastung und Heterogenität im mittleren Bereich.";
+  if(avgSozial<=2.2 && avgMig<0.25){belastAmpelClass="ampel-green";belastText="Belastung insgesamt eher gering, Heterogenität gut handhabbar (Sozialindex niedrig).";}
+  else if(avgSozial>=3.7 || avgMig>0.35 || avgDaz>0.25){belastAmpelClass="ampel-red";belastText="Belastung deutlich erhöht (hoher Sozialindex, hoher Migrations-/DaZ-Anteil).";}
+
+  let belastTrendSymbol="▶",belastTrendText="Belastung aktuell als stabil modelliert (Demo, nur leichte Veränderungen).";
+
+  let resAmpelClass="ampel-yellow",resText="Ressourcenausstattung im mittleren Bereich.";
+  if(avgRatio<=18){resAmpelClass="ampel-green";resText="Lehrerversorgung insgesamt gut (Schüler je Lehrer ≤ 18).";}
+  else if(avgRatio>22){resAmpelClass="ampel-red";resText="Lehrerversorgung deutlich angespannt (Schüler je Lehrer > 22).";}
+
+  let resTrendSymbol="▶",resTrendText="Versorgung im aktuellen Stand modelliert, leichte Verbesserung gegenüber Vorjahren.";
+
+  let lernEmpf=[
+    "Mit allen Schulen systematisch in die Arbeit mit VERA-/Jahrgangsstufentest-Ergebnissen einsteigen.",
+    "Schwerpunkte pro Jahrgang und Fach sichtbar machen (z. B. Lesekompetenz, Basiskompetenzen Mathematik).",
+    "Fortbildungsplanung auf die identifizierten Lernschwerpunkte ausrichten."
+  ];
+  if(lernAmpelClass==="ampel-red"){
+    lernEmpf=[
+      "Mit ausgewählten Schulen verbindliche Zielvereinbarungen zu Unterrichtsqualität und Basiskompetenzen vereinbaren.",
+      "Förderstunden gezielt an Klassen mit schwachem Lernstand koppeln (Startchancen-Schulen priorisieren).",
+      "Multiprofessionelle Teams in Schulen mit großen Lernrückständen stärken (z. B. Leseförderung, Mathe-Basis)."
+    ];
+  }else if(lernAmpelClass==="ampel-green"){
+    lernEmpf=[
+      "Gute Praxis schulübergreifend sichtbar machen (Hospitation, Netzwerke, Transferformate).",
+      "Starke Jahrgänge/Klassen als Lernlabor nutzen – z. B. kollegiale Hospitation und Peer-Learning.",
+      "Die guten Ergebnisse nutzen, um neue Schwerpunkte behutsam zu erproben."
+    ];
+  }
+
+  let belastEmpf=[
+    "Schulen mit hohem Sozialindex klar markieren und als besondere Zielgruppe im Schulamtsbereich benennen.",
+    "Kooperationen mit Jugendhilfe, Beratungsdiensten und Schulsozialarbeit systematisch aufbauen.",
+    "Belastungen transparent machen (z. B. in Schulamtskonferenzen) und gemeinsam Prioritäten vereinbaren."
+  ];
+  if(belastAmpelClass==="ampel-red"){
+    belastEmpf=[
+      "Multiprofessionelle Teams gezielt an die Schulen mit höchster Belastung und Heterogenität lenken.",
+      "Stabilisierungsteams (z. B. Sozialarbeit, Krisenintervention) für Standorte mit besonderen Herausforderungen priorisieren.",
+      "Regionale Netzwerke speziell für Schulen mit hohem Sozialindex und hohem DaZ-Anteil aufbauen."
+    ];
+  }else if(belastAmpelClass==="ampel-green"){
+    belastEmpf=[
+      "Stabile Standorte als Partner für stärker belastete Schulen gewinnen (Tandems, Mentoring, Hospitation).",
+      "Räumliche und personelle Reserven für temporäre Entlastung anderer Schulen einplanen.",
+      "Veränderungen in der Zusammensetzung frühzeitig beobachten und mit der Kommune im Austausch bleiben."
+    ];
+  }
+
+  let resEmpf=[
+    "Schülerschaft, Sozialindex und Startchancen-Status gemeinsam mit der Ressourcenausstattung betrachten.",
+    "Förderstunden und Sozialarbeit priorisiert an Schulen mit hoher Belastung und niedrigen Lernständen ausrichten.",
+    "Entwicklung der Lehrerversorgung mittelfristig planen (Anwärtersteuerung, Funktionsstellen, Abordnungen)."
+  ];
+  if(resAmpelClass==="ampel-red"){
+    resEmpf=[
+      "Kurzfristig: Mehrstunden, mobile Reserven und Abordnungen gezielt an die angespanntesten Schulen geben.",
+      "Mittelfristig: Steuerung der Stellenbesetzung so ausrichten, dass besonders belastete Schulen gestärkt werden.",
+      "Mit den betroffenen Schulen klare Prioritäten im Leistungsangebot vereinbaren (Fokus auf Kernbereiche)."
+    ];
+  }else if(resAmpelClass==="ampel-green"){
+    resEmpf=[
+      "Mögliche Reserven für Schulentwicklungsprojekte nutzen (z. B. Teamzeiten, Diagnostik, Förderbänder).",
+      "Schulen mit stabiler Versorgung bei der Unterstützung anderer Standorte einbinden (z. B. Kooperationsstunden).",
+      "Transparenz darüber herstellen, wie Ressourcen nach Kriterien verteilt werden."
+    ];
+  }
+
+  let resNextYearText="";
+  if(diffTeachers>1){
+    resNextYearText=`Um einen Zielwert von ca. ${ratioTarget.toFixed(0)} Schülern je Lehrer zu erreichen, wären im Schulamtsbereich rechnerisch rund <b>${diffTeachers.toFixed(1)} VZÄ</b> zusätzlich nötig (fiktive Berechnung).`;
+  }else if(diffTeachers<-1){
+    resNextYearText=`Im Vergleich zum Zielwert von ca. ${ratioTarget.toFixed(0)} Schülern je Lehrer ergibt sich rechnerisch eine Reserve von etwa <b>${Math.abs(diffTeachers).toFixed(1)} VZÄ</b> – diese könnte gezielt zur Qualitätsentwicklung eingesetzt werden.`;
+  }else{
+    resNextYearText=`Die aktuelle Lehrerversorgung liegt in der Nähe des Zielwertes von ca. ${ratioTarget.toFixed(0)} Schülern je Lehrer. Größere Verschiebungen sind aus Steuerungssicht nicht zwingend notwendig.`;
+  }
+
+  if(navSection==="lernstand"){
+    const deltaText = dLern>=0
+      ? `liegt der Lernstand-Index um <b>${dLern.toFixed(1)} Punkte über</b> dem Zielwert von ${tLern.toFixed(1)}.`
+      : `liegt der Lernstand-Index um <b>${Math.abs(dLern).toFixed(1)} Punkte unter</b> dem Zielwert von ${tLern.toFixed(1)}.`;
+
+    container.innerHTML=`
+      <p class="muted">Kontext: ${ctx} · Schulen im Filter: ${totalSchools} · Schüler: ${totalStudents.toLocaleString("de-DE")}</p>
+      <div class="nav-section-grid">
+        <div class="nav-block">
+          <h4>Lernstand – Ampel, Trend und 3-Jahres-Zeitreihe</h4>
+          <div class="nav-kpi-row">
+            <div class="nav-kpi">Ø VERA Deutsch: <b>${avgVeraDeu.toFixed(1)}</b></div>
+            <div class="nav-kpi">Ø VERA Mathematik: <b>${avgVeraMat.toFixed(1)}</b></div>
+          </div>
+          <div style="margin-top:6px;">
+            <div class="ampel ${lernAmpelClass}" style="margin-bottom:4px;">
+              <span class="ampel-dot"></span>
+              <span>${lernText}</span>
+            </div>
+            <div class="trend-pill">
+              <span>${lernTrendSymbol}</span>
+              <span>${lernTrendText}</span>
+            </div>
+          </div>
+          <div class="spark-wrapper">
+            <div class="spark-title">Entwicklung Lernstand (Deutsch/Mathe, 3 Jahre – aktuelle Kohorten)</div>
+            ${sparkline(lernSeries)}
+          </div>
+          <p class="muted" style="margin-top:4px;">
+            Grundlage sind fiktive VERA-Trends über drei Jahre (Deutsch und Mathematik) im aktuellen Filterkontext.
+          </p>
+          <div class="nav-block" style="margin-top:8px;">
+            <h4>Langfristige 10-Jahres-Entwicklung · Zielvergleich</h4>
+            <div class="nav-year-select">
+              <span>Jahr auswählen:</span>
+              <select onchange="handleYearChange(this.value)">${yearOptions}</select>
+            </div>
+            <div class="nav-kpi-row" style="margin-top:6px;">
+              <div class="nav-kpi">Lernstand-Index ${year}: <b>${yLern.toFixed(1)}</b></div>
+              <div class="nav-kpi">Zielwert: <b>${tLern.toFixed(1)}</b></div>
+            </div>
+            <p style="margin-top:4px;font-size:0.8rem;">
+              Im gewählten Jahr ${year} ${deltaText}
+            </p>
+            <div class="spark-wrapper">
+              <div class="spark-title">Lernstand-Index (Deutsch/Mathe) im Schulamtsbereich 2015–2024</div>
+              ${sparkline(longTerm.lernstand)}
+            </div>
+          </div>
+        </div>
+        <div class="nav-block">
+          <h4>Mögliche Handlungsschwerpunkte für das Schulamt</h4>
+          <ul class="nav-reco-list">
+            ${lernEmpf.map(t=>`<li>${t}</li>`).join("")}
+          </ul>
+          <p class="muted">
+            Die Vorschläge unterstützen das Schulamt bei der Schwerpunktsetzung, ersetzen aber keine schulindividuellen Zielvereinbarungen.
+          </p>
+        </div>
+      </div>
+    `;
+  }else if(navSection==="belastung"){
+    const deltaText = dBelast>=0
+      ? `liegt der durchschnittliche Sozialindex um <b>${dBelast.toFixed(2)} Punkte über</b> dem Zielwert von ${tBelast.toFixed(2)}.`
+      : `liegt der durchschnittliche Sozialindex um <b>${Math.abs(dBelast).toFixed(2)} Punkte unter</b> dem Zielwert von ${tBelast.toFixed(2)}.`;
+
+    container.innerHTML=`
+      <p class="muted">Kontext: ${ctx} · Schulen im Filter: ${totalSchools} · Schüler: ${totalStudents.toLocaleString("de-DE")}</p>
+      <div class="nav-section-grid">
+        <div class="nav-block">
+          <h4>Belastung & Zusammensetzung – Ampel und 3-Jahres-Zeitreihe</h4>
+          <div class="nav-kpi-row">
+            <div class="nav-kpi">Ø Sozialindex: <b>${avgSozial.toFixed(2)}</b></div>
+            <div class="nav-kpi">Ø Migrationsanteil: <b>${(avgMig*100).toFixed(1)} %</b></div>
+            <div class="nav-kpi">Ø DaZ-Anteil: <b>${(avgDaz*100).toFixed(1)} %</b></div>
+            <div class="nav-kpi">Startchancen-Schulen: <b>${(startShare*100).toFixed(1)} %</b></div>
+          </div>
+          <div style="margin-top:6px;">
+            <div class="ampel ${belastAmpelClass}" style="margin-bottom:4px;">
+              <span class="ampel-dot"></span>
+              <span>${belastText}</span>
+            </div>
+            <div class="trend-pill">
+              <span>${belastTrendSymbol}</span>
+              <span>${belastTrendText}</span>
+            </div>
+          </div>
+          <div class="spark-wrapper">
+            <div class="spark-title">Entwicklung Sozialindex (vereinfacht, 3 Jahre – aktuelle Kohorten)</div>
+            ${sparkline([avgSozial-0.05,avgSozial-0.02,avgSozial])}
+          </div>
+          <p class="muted" style="margin-top:4px;">
+            Sozialindex, Migrations- und DaZ-Anteil werden hier zu einem Belastungsbild zusammengeführt. In einer echten Anwendung
+            könnten dafür ASD-Daten über mehrere Jahre genutzt werden.
+          </p>
+          <div class="nav-block" style="margin-top:8px;">
+            <h4>Langfristige 10-Jahres-Entwicklung · Zielvergleich</h4>
+            <div class="nav-year-select">
+              <span>Jahr auswählen:</span>
+              <select onchange="handleYearChange(this.value)">${yearOptions}</select>
+            </div>
+            <div class="nav-kpi-row" style="margin-top:6px;">
+              <div class="nav-kpi">Ø Sozialindex ${year}: <b>${yBelast.toFixed(2)}</b></div>
+              <div class="nav-kpi">Zielwert: <b>${tBelast.toFixed(2)}</b></div>
+            </div>
+            <p style="margin-top:4px;font-size:0.8rem;">
+              Im gewählten Jahr ${year} ${deltaText}
+            </p>
+            <div class="spark-wrapper">
+              <div class="spark-title">Sozialindex im Schulamtsbereich 2015–2024</div>
+              ${sparkline(longTerm.belastung)}
+            </div>
+          </div>
+        </div>
+        <div class="nav-block">
+          <h4>Mögliche Steuerungsimpulse für das Schulamt</h4>
+          <ul class="nav-reco-list">
+            ${belastEmpf.map(t=>`<li>${t}</li>`).join("")}
+          </ul>
+          <p class="muted">
+            Ziel ist, Ressourcen nachvollziehbar zu den am stärksten belasteten Standorten zu lenken und diese bei Schul- und
+            Unterrichtsentwicklung eng zu begleiten.
+          </p>
+        </div>
+      </div>
+    `;
+  }else if(navSection==="ressourcen"){
+    const deltaText = dRatio<=0
+      ? `liegt das Verhältnis Schüler je Lehrer um <b>${Math.abs(dRatio).toFixed(2)} Punkte besser</b> als der Zielwert von ${tRatio.toFixed(1)}.`
+      : `liegt das Verhältnis Schüler je Lehrer um <b>${dRatio.toFixed(2)} Punkte über</b> dem Zielwert von ${tRatio.toFixed(1)} (mehr Schüler pro Lehrer).`;
+
+    container.innerHTML=`
+      <p class="muted">Kontext: ${ctx} · Schulen im Filter: ${totalSchools} · Schüler: ${totalStudents.toLocaleString("de-DE")}</p>
+      <div class="nav-section-grid">
+        <div class="nav-block">
+          <h4>Ressourcen – Ampel, 3-Jahres-Zeitreihe und VZÄ-Bedarf</h4>
+          <div class="nav-kpi-row">
+            <div class="nav-kpi">Schüler je Lehrer (Ø): <b>${avgRatio.toFixed(1)}</b></div>
+            <div class="nav-kpi">Sozialarbeit (VZÄ/100 SuS): <b>${socialPer100.toFixed(2)}</b></div>
+            <div class="nav-kpi">Förderstunden (Std./100 SuS): <b>${supportPer100.toFixed(1)}</b></div>
+          </div>
+          <div style="margin-top:6px;">
+            <div class="ampel ${resAmpelClass}" style="margin-bottom:4px;">
+              <span class="ampel-dot"></span>
+              <span>${resText}</span>
+            </div>
+            <div class="trend-pill">
+              <span>${resTrendSymbol}</span>
+              <span>${resTrendText}</span>
+            </div>
+          </div>
+          <div class="spark-wrapper">
+            <div class="spark-title">Entwicklung Lehrerversorgung (vereinfacht, 3 Jahre – aktuelle Kohorten)</div>
+            ${sparkline([avgRatio+0.4,avgRatio+0.2,avgRatio])}
+          </div>
+          <p style="margin-top:6px;">${resNextYearText}</p>
+          <p class="muted" style="margin-top:4px;">
+            Die VZÄ-Berechnung ist eine vereinfachte Steuerungslogik: Sie setzt die aktuelle Schülerzahl in Beziehung zu einem
+            Ziel-Schüler:Lehrer-Verhältnis und weist auf mögliche zusätzliche bzw. umschichtbare VZÄ hin.
+          </p>
+          <div class="nav-block" style="margin-top:8px;">
+            <h4>Langfristige 10-Jahres-Entwicklung · Zielvergleich</h4>
+            <div class="nav-year-select">
+              <span>Jahr auswählen:</span>
+              <select onchange="handleYearChange(this.value)">${yearOptions}</select>
+            </div>
+            <div class="nav-kpi-row" style="margin-top:6px;">
+              <div class="nav-kpi">Schüler je Lehrer ${year}: <b>${yRatio.toFixed(1)}</b></div>
+              <div class="nav-kpi">Zielwert: <b>${tRatio.toFixed(1)}</b></div>
+            </div>
+            <p style="margin-top:4px;font-size:0.8rem;">
+              Im gewählten Jahr ${year} ${deltaText}
+            </p>
+            <div class="spark-wrapper">
+              <div class="spark-title">Schüler-Lehrer-Verhältnis im Schulamtsbereich 2015–2024</div>
+              ${sparkline(longTerm.ratio)}
+            </div>
+          </div>
+        </div>
+        <div class="nav-block">
+          <h4>Ressourcenschwerpunkte für das kommende Schuljahr</h4>
+          <ul class="nav-reco-list">
+            ${resEmpf.map(t=>`<li>${t}</li>`).join("")}
+          </ul>
+          <p class="muted">
+            In einer echten Umsetzung könnten hier die geplanten Zuweisungen für das nächste Schuljahr eingeblendet und mit
+            Lernstand und Belastung verknüpft werden (z. B. Prioritätsschulen im Rahmen von Startchancen).
+          </p>
+        </div>
+      </div>
+    `;
+  }
+}
+
+// ---------------------------
+// Steuerfunktionen (Filter)
+// ---------------------------
+function setSchoolTypeFilter(type){
+  schoolTypeFilter=type;
+  document.querySelectorAll(".btn-chip[data-type]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.type===type);
+  });
+  selectedSchoolId=null;
+  renderAll();
+}
+
+function setStartFilter(val){
+  startFilter=val;
+  document.querySelectorAll(".btn-chip[data-start]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.start===val);
+  });
+  selectedSchoolId=null;
+  renderAll();
+}
+
+function setSubject(subj){
+  veraSubject=subj;
+  document.querySelectorAll(".btn-chip[data-subject]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.subject===subj);
+  });
+  renderBars();
+  renderNavPanel();
+}
+
+function setAmpelMode(mode){
+  ampelMode=mode;
+  document.querySelectorAll(".btn-chip[data-ampel]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.ampel===mode);
+  });
+  renderMap();
+}
+
+// ---------------------------
+// Gesamtrendering
+// ---------------------------
+function renderAll(){
+  renderSummary();
+  renderMap();
+  renderBars();
+  renderSchoolPills();
+  renderSchoolDetails();
+  renderNavPanel();
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+  renderSummary();
+  renderBars();
+  renderSchoolPills();
+  renderSchoolDetails();
+  renderNavPanel();
+  initMap();
+});
+</script>
+</body>
+</html>
