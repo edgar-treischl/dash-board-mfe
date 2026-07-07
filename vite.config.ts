@@ -15,14 +15,7 @@ export default defineConfig({
         './DashBoardApp': './src/App.tsx',
       },
 
-      shared: {
-        react: {
-          requiredVersion: false,
-        },
-        'react-dom': {
-          requiredVersion: false,
-        },
-      },
+      shared: ['react', 'react-dom'],
 
     }),
   ],
