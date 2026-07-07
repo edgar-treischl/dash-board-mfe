@@ -15,7 +15,16 @@ export default defineConfig({
         './DashBoardApp': './src/App.tsx',
       },
 
-      shared: ['react', 'react-dom']
+      shared: {
+        react: {
+          shareScope: 'default',
+          import: false,
+        },
+        'react-dom': {
+          shareScope: 'default',
+          import: false,
+        },
+      }
 
     }),
   ],
