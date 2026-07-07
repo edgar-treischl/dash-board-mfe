@@ -1,37 +1,80 @@
-You had the image working before when loaded standalone, but it broke when consumed as a Module Federation micro-frontend. Here's why and how we fixed it:
+# Module Federation Image Handling
 
-The Problem
+## Problem
 
-Before (with ?url):
+Images broke when this MFE was consumed via Module Federation because the shell app couldn't resolve relative file paths to assets in the remote module.
 
- import heroSvg from '../assets/hero.svg?url';
- <img src={heroSvg} />  // Points to a file path
+## Solution: Use `?url` Import for All Images
 
-This tells the browser: "Go to /assets/hero.svg to get the image"
+All images (PNG, JPG, SVG) are imported with the `?url` parameter, which tells Vite to emit the asset with a hashed filename and return the correct path.
 
- - ✅ Works on localhost: Browser finds the file in /assets/
- - ❌ Breaks in Module Federation: The shell app doesn't know where your /assets/ folder is
+### PNG/JPG Images
 
-The Solution
+```tsx
+import heroImage from '../assets/hero.png?url';
+<img src={heroImage} alt="Hero" />
+```
 
-After (with ?raw):
+### SVG Images
 
- import heroSvg from '../assets/hero.svg?raw';
- <div dangerouslySetInnerHTML={{ __html: heroSvg }} />  // Contains the image code
+```tsx
+import oberbayernSvg from '../../assets/regions/oberbayern.svg?url';
 
-This now says: "Here's the SVG code embedded directly in this component"
+const REGION_SVG_MAP: Record<string, string> = {
+  oberbayern: oberbayernSvg,
+  // ... other regions
+}
 
- - ✅ Works on localhost: Image code is right there
- - ✅ Works in Module Federation: Image code travels with the component, no external file needed
+<img src={REGION_SVG_MAP[regionId]} alt="Region" />
+```
 
-The Difference
+## How It Works
+
+1. **Import with `?url`**: Vite processes the import and emits the file to `dist/assets/` with a content hash
+2. **Path Resolution**: The import resolves to the correct relative path from wherever the bundle is loaded
+3. **Module Federation**: The shell app receives the correct path relative to where the MFE is deployed
+
+## Single Source of Truth
+
+**All images live in `src/assets/`:**
+
+```
+src/
+├── assets/
+│   ├── hero.png              # Hero image (use ?url)
+│   └── regions/              # Region SVG files (use ?url)
+│       ├── oberbayern.svg
+│       ├── niederbayern.svg
+│       ├── oberpfalz.svg
+│       ├── oberfranken.svg
+│       ├── mittelfranken.svg
+│       ├── unterfranken.svg
+│       └── schwaben.svg
+```
+
+**Do NOT duplicate images in `public/`** — Vite handles asset emission automatically with `?url`.
+
+## Build Output
+
+```
+dist/
+├── assets/
+│   ├── hero-BqxwW46-.png              # Hero image with hash
+│   ├── oberbayern-X7k2Lp9-.svg        # Region SVGs with hash
+│   ├── niederbayern-Y3m9Qq1-.svg
+│   └── ... (other hashed assets)
+```
+
+## Compatibility
 
 ┌──────────────────┬──────────────────────────────────┬─────────────────────────┐
-│ Approach         │ Localhost                        │ Module Federation       │
+│ Scenario         │ Hero Image (PNG)                 │ Region Icons (SVG)      │
 ├──────────────────┼──────────────────────────────────┼─────────────────────────┤
-│ ?url (file path) │ ✅ Browser finds                 │ ❌ Shell app can't find │
-│                  │ /assets/hero.svg                 │ it                      │
+│ GitHub Pages     │ ✅ Resolves to                   │ ✅ Resolves to          │
+│ (standalone)     │ /dash-board-mfe/assets/hero-*.png│ /dash-board-mfe/assets/ │
+│                  │                                  │ oberbayern-*.svg        │
 ├──────────────────┼──────────────────────────────────┼─────────────────────────┤
-│ ?raw (embedded)  │ ✅ Image code is in the JS       │ ✅ Image code is in the │
-│                  │                                  │ JS                      │
+│ Module Federation│ ✅ Shell app gets correct path   │ ✅ Shell app gets       │
+│ (shell app)      │ to MFE's deployed assets         │ correct path to MFE's   │
+│                  │                                  │ deployed assets         │
 └──────────────────┴──────────────────────────────────┴─────────────────────────┘

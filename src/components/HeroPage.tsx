@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import heroSvg from '../assets/hero.png';
+import heroSvg from '../assets/hero.png?url';
 
 function HeroViewComponent() {
   return (

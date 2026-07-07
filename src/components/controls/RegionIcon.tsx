@@ -1,4 +1,11 @@
 import './RegionIcon.css'
+import oberbayernSvg from '../../assets/regions/oberbayern.svg?url'
+import niederbayernSvg from '../../assets/regions/niederbayern.svg?url'
+import oberpfalzSvg from '../../assets/regions/oberpfalz.svg?url'
+import oberfrankenSvg from '../../assets/regions/oberfranken.svg?url'
+import mittelfrankenSvg from '../../assets/regions/mittelfranken.svg?url'
+import unterfrankenSvg from '../../assets/regions/unterfranken.svg?url'
+import schwabenSvg from '../../assets/regions/schwaben.svg?url'
 
 interface RegionIconProps {
   regionId: string
@@ -6,25 +13,22 @@ interface RegionIconProps {
   height?: number
 }
 
-const REGION_SVG_NAMES: Record<string, string> = {
-  oberbayern: 'oberbayern.svg',
-  niederbayern: 'niederbayern.svg',
-  oberpfalz: 'oberpfalz.svg',
-  oberfranken: 'oberfranken.svg',
-  mittelfranken: 'mittelfranken.svg',
-  unterfranken: 'unterfranken.svg',
-  schwaben: 'schwaben.svg',
+const REGION_SVG_MAP: Record<string, string> = {
+  oberbayern: oberbayernSvg,
+  niederbayern: niederbayernSvg,
+  oberpfalz: oberpfalzSvg,
+  oberfranken: oberfrankenSvg,
+  mittelfranken: mittelfrankenSvg,
+  unterfranken: unterfrankenSvg,
+  schwaben: schwabenSvg,
 }
 
 export function RegionIcon({ regionId, width = 24, height = 24 }: RegionIconProps) {
-  const svgName = REGION_SVG_NAMES[regionId]
+  const svgPath = REGION_SVG_MAP[regionId]
   
-  if (!svgName) {
+  if (!svgPath) {
     return null
   }
-
-  // Construct path with BASE_URL to work with base: '/dash-board-mfe/'
-  const svgPath = `${import.meta.env.BASE_URL}${svgName}`
 
   return (
     <img
