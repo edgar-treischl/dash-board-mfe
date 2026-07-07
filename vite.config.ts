@@ -15,16 +15,7 @@ export default defineConfig({
         './DashBoardApp': './src/App.tsx',
       },
 
-      shared: {
-        react: {
-          singleton: true,
-          requiredVersion: false,
-        },
-        'react-dom': {
-          singleton: true,
-          requiredVersion: false,
-        },
-      }
+      shared: ['react', 'react-dom']
 
     }),
   ],
