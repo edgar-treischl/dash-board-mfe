@@ -1,5 +1,6 @@
 import { memo, useState } from 'react'
 import { SCHULEN, DISTRICT_METADATA, AMPEL_COLORS, SUPPLY_CATEGORIES, LONG_TERM_DATA } from '../data/SAmt'
+import { SchoolsLeafletMap } from './charts/SchoolsLeafletMap'
 
 type SchoolTypeFilter = 'Alle' | 'Grundschule' | 'Mittelschule'
 type StartchancenFilter = 'Alle' | 'Startchancen-Schule'
@@ -206,10 +207,15 @@ function SAmtPageComponent() {
         <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
           <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Karte – Schulen im Schulamtsbezirk</h2>
           <small style={{ color: 'var(--class-retention-text)', fontSize: '0.85rem' }}>
-            Jeder Punkt ist eine Schule. Farbe = Ampel nach gewähltem Fokus.
+            Jeder Punkt ist eine Schule. Farbe = Ampel nach gewähltem Fokus. Klick auf die Marker zum Auswählen.
           </small>
-          <div style={{ height: '360px', background: 'var(--class-retention-bg)', border: '1px solid var(--class-retention-border)', borderRadius: '12px', marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--class-retention-text)' }}>
-            [Karte: {filteredSchools.length} Schulen]
+          <div style={{ marginTop: '12px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--class-retention-border)' }}>
+            <SchoolsLeafletMap
+              schools={filteredSchools}
+              selectedSchoolId={selectedSchoolId}
+              ampelMode={ampelMode}
+              onSchoolSelect={setSelectedSchoolId}
+            />
           </div>
         </div>
 

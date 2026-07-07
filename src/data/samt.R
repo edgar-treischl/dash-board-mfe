@@ -7,9 +7,24 @@ samtdata <- fromJSON("src/data/SAmt-generated.json")
 schul_samt <- samtdata$SCHULEN
 
 schul_samt$veraDeu
+schul_samt$veraMat
+
 
 #Make a boxplot for veraDeu
 library(ggplot2)
+
+ggplot(schul_samt, aes(x = "", y = veraDeu)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of veraDeu Scores", y = "veraDeu Scores") +
+  theme_minimal()
+
+
+ggplot(schul_samt, aes(x = "", y = veraMat)) +
+  geom_boxplot() +
+  geom_point(aes(color = sozialindex), position = position_jitter(width = 0.1), alpha = 0.5) +
+  labs(title = "Boxplot of veraMat Scores", y = "veraMat Scores") +
+  theme_minimal()
+
 
 ggplot(schul_samt, aes(x = "", y = veraDeu)) +
   geom_boxplot() +
