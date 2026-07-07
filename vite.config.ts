@@ -17,12 +17,12 @@ export default defineConfig({
 
       shared: {
         react: {
-          shareScope: 'default',
-          import: false,
+          singleton: true,
+          requiredVersion: false,
         },
         'react-dom': {
-          shareScope: 'default',
-          import: false,
+          singleton: true,
+          requiredVersion: false,
         },
       }
 
