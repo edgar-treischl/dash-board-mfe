@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import heroSvg from '../assets/hero.png?url';
+import heroSvg from '../assets/hero.svg?raw';
 
 
 function InfoViewComponent() {
@@ -41,7 +41,7 @@ function InfoViewComponent() {
           </section>
         </div>
         <div className="class-retention-mfe__hero-image">
-          <img src={heroSvg} alt="Hero Illustration" />
+          <img src={`data:image/svg+xml;base64,${btoa(heroSvg)}`} alt="Hero Illustration" />
         </div>
       </div>
     </div>
