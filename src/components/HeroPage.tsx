@@ -6,21 +6,37 @@ function HeroViewComponent() {
     <div className="class-retention-mfe__hero-container">
       <div className="class-retention-mfe__hero-content">
         <div className="class-retention-mfe__hero-text">
-          <p className="class-retention-mfe__eyebrow">Dash Control Center</p>
+          <p className="class-retention-mfe__eyebrow">DEMO APP</p>
           <h1>
             <span className="class-retention-mfe__hero-highlight">ByDash</span>
           </h1>
           <p>
-            ByDash ist ein Demo-Version für ein Steuerungstool für den Freistaat Bayern. 
+            ByDash ist ein Demo-App dass ein Steuerungstool für den Freistaat Bayern erprobt. 
           </p>
           <p>
-            Die App soll einen Überblick über Bayern, einzelne Regierungsbezirke und soll ein Ankerpunkt für Schulaufsichten sein.
+            Die App soll einen Überblick über Bayern und Regierungsbezirke sein und ein Ankerpunkt für Schulaufsichten setzen.
           </p>
+
+          <div className="class-retention-mfe__hero-callout">
+            <div className="class-retention-mfe__callout-icon">⚠️</div>
+            <div className="class-retention-mfe__callout-content">
+              <strong>Keine echten Daten!</strong>
+              <p>Alle Daten dieser App sind fiktiv und dienen nur zu Demonstrationszwecken.</p>
+            </div>
+          </div>
 
           <div className="class-retention-mfe__hero-features">
             <div className="class-retention-mfe__feature">
-              <strong>Keine echten Daten!</strong>
-              <p>Alle Daten dieser App sind fiktiv und dienen nur zu Demonstrationszwecken.</p>
+              <strong>Demo-App</strong>
+              <p>Eine Demo-App die selbst noch in der Entwicklung steckt.</p>
+            </div>
+            <div className="class-retention-mfe__feature">
+              <strong>Beispiel Visualisierung</strong>
+              <p>Erkunden Sie examplarische Analyseebenen und Visualalisierung.</p>
+            </div>
+            <div className="class-retention-mfe__feature">
+              <strong>Dash</strong>
+              <p>ByDash ist als ein Modul für Dashboarding Plattform konzipiert.</p>
             </div>
           </div>
         </div>

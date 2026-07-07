@@ -7,7 +7,6 @@ import { SAmtPage } from './components/SAmtPage'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import {
   VIEW_OPTIONS,
-  VIEW_METADATA,
   CLASS_NAMES,
   ARIA_LABELS,
 } from './constants'
@@ -17,8 +16,6 @@ type ViewKey = (typeof VIEW_OPTIONS)[number]['key']
 
 export default function App() {
   const [view, setView] = useState<ViewKey>('home')
-
-  const title = VIEW_METADATA[view]
 
   return (
     <ErrorBoundary>
@@ -41,14 +38,6 @@ export default function App() {
               </button>
             ))}
           </nav>
-
-          {view !== 'home' && (
-            <header className={CLASS_NAMES.panelHeader}>
-              <div>
-                <h1>{title}</h1>
-              </div>
-            </header>
-          )}
 
           {view === 'home' ? (
             <ErrorBoundary>

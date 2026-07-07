@@ -10,7 +10,7 @@ export const VIEW_OPTIONS = [
   { key: 'home' as const, label: 'Startseite' },
   { key: 'retention' as const, label: 'Bayern' },
   { key: 'trends' as const, label: 'Regierungsbezirke' },
-  { key: 'sex' as const, label: 'Geschlecht' },
+  { key: 'sex' as const, label: 'Dashboard Schulamt' },
   { key: 'data' as const, label: 'Info' },
 ] as const
 
@@ -38,7 +38,6 @@ export const CLASS_NAMES = {
   viewSwitch: 'class-retention-mfe__view-switch',
   viewTab: 'class-retention-mfe__view-tab',
   viewTabActive: 'class-retention-mfe__view-tab--active',
-  panelHeader: 'class-retention-mfe__panel-header',
   explorerLayout: 'class-retention-mfe__explorer-layout',
   explorerLeft: 'class-retention-mfe__explorer-left',
   chartCard: 'class-retention-mfe__chart-card',

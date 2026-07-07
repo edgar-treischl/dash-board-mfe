@@ -1,5 +1,6 @@
 import { memo } from 'react'
-import heroSvg from '../assets/hero.svg?raw'
+import heroSvg from '../assets/hero.png';
+
 
 function InfoViewComponent() {
   return (
@@ -12,30 +13,22 @@ function InfoViewComponent() {
           
           <section className="class-retention-mfe__info-section">
             <p className="class-retention-mfe__info-text">
-              Die Daten stammen aus der jährlichen Dokumentation <strong>„Bayerns Schulen in Zahlen"</strong> vom Bayerischen Staatsministerium für Unterricht und Kultus. Diese bietet einen umfassenden Überblick über die statistischen Daten zum bayerischen Schulwesen anhand von Tabellen und Grafiken.
-            </p>
-            
-            <p className="class-retention-mfe__info-text">
-              Diese App zeigt die Entwicklung der Klassenwiederholungsquoten in Bayern von <strong>2018 bis 2024</strong>. Die Daten sind nach Schultyp, Geschlecht und Migrationshintergrund differenziert.
+              Hier könnte eine kurze Beschreibung über die Datenquelle und den Hintergrund des Projekts stehen. Dies ist eine Demo App, die keine echten Daten verwendet. Die Informationen dienen nur zu Demonstrationszwecken.
             </p>
             
             <div className="class-retention-mfe__info-features">
               <div className="class-retention-mfe__info-feature">
                 <strong>Datenumfang</strong>
-                <p>7 Schuljahre (2018–2024)</p>
+                <p>Kein echten Daten</p>
               </div>
               <div className="class-retention-mfe__info-feature">
                 <strong>Schultypen</strong>
-                <p>Grund-, Mittel-, Real-, Gymnasien & Gesamtschulen</p>
-              </div>
-              <div className="class-retention-mfe__info-feature">
-                <strong>Gliederungen</strong>
-                <p>Nach Geschlecht & Migrationshintergrund</p>
+                <p>Keine echte Schultypen</p>
               </div>
             </div>
 
             <p className="class-retention-mfe__info-text">
-              Weitere Informationen zur Datenquelle finden Sie unter:{' '}
+              Echte Daten über das bayrische Schulsystem finden Sie in:{' '}
               <a 
                 href="https://www.km.bayern.de/ministerium/statistik-und-forschung/bayerns-schulen-in-zahlen" 
                 target="_blank" 
@@ -47,9 +40,8 @@ function InfoViewComponent() {
             </p>
           </section>
         </div>
-        
-        <div className="class-retention-mfe__info-hero-image">
-          <div dangerouslySetInnerHTML={{ __html: heroSvg }} />
+        <div className="class-retention-mfe__hero-image">
+          <img src={heroSvg} alt="Hero Illustration" />
         </div>
       </div>
     </div>

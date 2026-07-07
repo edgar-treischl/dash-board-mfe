@@ -1,12 +1,16 @@
 import { memo, useState } from 'react'
 import { SCHULEN, DISTRICT_METADATA, AMPEL_COLORS, SUPPLY_CATEGORIES, LONG_TERM_DATA } from '../data/SAmt'
+import { COMMON_STYLES } from '../config/chartConfig'
 import { SchoolsLeafletMap } from './charts/SchoolsLeafletMap'
+import { ViewSwitcher } from './controls/ViewSwitcher'
+import { InterpretationBox } from './InterpretationBox'
 
 type SchoolTypeFilter = 'Alle' | 'Grundschule' | 'Mittelschule'
 type StartchancenFilter = 'Alle' | 'Startchancen-Schule'
 type SubjectType = 'mat' | 'deu'
 type AmpelMode = 'vera' | 'supply' | 'satisfaction'
 type NavSection = 'lernstand' | 'belastung' | 'ressourcen'
+type AnalysisViewType = 'map' | 'chart'
 
 function SAmtPageComponent() {
   const [schoolTypeFilter, setSchoolTypeFilter] = useState<SchoolTypeFilter>('Alle')
@@ -15,6 +19,7 @@ function SAmtPageComponent() {
   const [ampelMode, setAmpelMode] = useState<AmpelMode>('vera')
   const [navSection, setNavSection] = useState<NavSection>('lernstand')
   const [selectedSchoolId, setSelectedSchoolId] = useState<number | null>(null)
+  const [analysisView, setAnalysisView] = useState<AnalysisViewType>('map')
 
   // Filter schools based on current filters
   const filteredSchools = SCHULEN.filter(school => {
@@ -72,22 +77,13 @@ function SAmtPageComponent() {
         {/* Filter and Overview Section */}
         <div style={{ padding: '24px' }}>
           {/* School Type Filter */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', marginRight: '8px' }}>Schulart:</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--class-retention-text)' }}>Schulart:</span>
             {(['Alle', 'Grundschule', 'Mittelschule'] as SchoolTypeFilter[]).map(type => (
               <button
                 key={type}
                 onClick={() => setSchoolTypeFilter(type)}
-                className={schoolTypeFilter === type ? 'is-active' : ''}
-                style={{
-                  padding: '6px 14px',
-                  border: '1px solid var(--class-retention-border)',
-                  borderRadius: '999px',
-                  background: schoolTypeFilter === type ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)',
-                  color: schoolTypeFilter === type ? '#fff' : 'var(--class-retention-text)',
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
+                className={`class-retention-mfe__filter-pill ${schoolTypeFilter === type ? 'is-active' : ''}`}
               >
                 {type}
               </button>
@@ -95,22 +91,13 @@ function SAmtPageComponent() {
           </div>
 
           {/* Startchancen Filter */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginTop: '12px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', marginRight: '8px' }}>Startchancen:</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--class-retention-text)' }}>Startchancen:</span>
             {(['Alle', 'Startchancen-Schule'] as StartchancenFilter[]).map(filter => (
               <button
                 key={filter}
+                className={`class-retention-mfe__filter-pill ${startFilter === filter ? 'is-active' : ''}`}
                 onClick={() => setStartFilter(filter)}
-                className={startFilter === filter ? 'is-active' : ''}
-                style={{
-                  padding: '6px 14px',
-                  border: '1px solid var(--class-retention-border)',
-                  borderRadius: '999px',
-                  background: startFilter === filter ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)',
-                  color: startFilter === filter ? '#fff' : 'var(--class-retention-text)',
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
               >
                 {filter === 'Alle' ? 'Alle' : 'Nur Startchancen-Schulen'}
               </button>
@@ -118,22 +105,13 @@ function SAmtPageComponent() {
           </div>
 
           {/* Subject Filter */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginTop: '12px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', marginRight: '8px' }}>Fach (Lernstand):</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--class-retention-text)' }}>Fach (Lernstand):</span>
             {(['mat', 'deu'] as SubjectType[]).map(subj => (
               <button
                 key={subj}
+                className={`class-retention-mfe__filter-pill ${subject === subj ? 'is-active' : ''}`}
                 onClick={() => setSubject(subj)}
-                className={subject === subj ? 'is-active' : ''}
-                style={{
-                  padding: '6px 14px',
-                  border: '1px solid var(--class-retention-border)',
-                  borderRadius: '999px',
-                  background: subject === subj ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)',
-                  color: subject === subj ? '#fff' : 'var(--class-retention-text)',
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
               >
                 {subj === 'mat' ? 'Mathematik' : 'Deutsch'}
               </button>
@@ -141,22 +119,13 @@ function SAmtPageComponent() {
           </div>
 
           {/* Ampel Mode Filter */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginTop: '12px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', marginRight: '8px' }}>Ampel-Fokus:</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--class-retention-text)' }}>Ampel-Fokus:</span>
             {(['vera', 'supply', 'satisfaction'] as AmpelMode[]).map(mode => (
               <button
                 key={mode}
+                className={`class-retention-mfe__filter-pill ${ampelMode === mode ? 'is-active' : ''}`}
                 onClick={() => setAmpelMode(mode)}
-                className={ampelMode === mode ? 'is-active' : ''}
-                style={{
-                  padding: '6px 14px',
-                  border: '1px solid var(--class-retention-border)',
-                  borderRadius: '999px',
-                  background: ampelMode === mode ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)',
-                  color: ampelMode === mode ? '#fff' : 'var(--class-retention-text)',
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
               >
                 {mode === 'vera' ? 'Leistungen (VERA)' : mode === 'supply' ? 'Lehrerversorgung' : 'Lehrerzufriedenheit'}
               </button>
@@ -203,101 +172,213 @@ function SAmtPageComponent() {
           </div>
         </div>
 
-        {/* Map Section */}
+        {/* Graph/Map Section */}
         <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
-          <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Karte – Schulen im Schulamtsbezirk</h2>
-          <small style={{ color: 'var(--class-retention-text)', fontSize: '0.85rem' }}>
-            Jeder Punkt ist eine Schule. Farbe = Ampel nach gewähltem Fokus. Klick auf die Marker zum Auswählen.
-          </small>
-          <div style={{ marginTop: '12px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--class-retention-border)' }}>
-            <SchoolsLeafletMap
-              schools={filteredSchools}
-              selectedSchoolId={selectedSchoolId}
-              ampelMode={ampelMode}
-              onSchoolSelect={setSelectedSchoolId}
-            />
-          </div>
-        </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '60% 40%',
+              gap: '20px',
+              alignItems: 'stretch',
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+              {/* Analysis Card */}
+              <div style={{
+                border: '1px solid var(--class-retention-border)',
+                borderRadius: '12px',
+                background: 'var(--class-retention-bg)',
+                overflow: 'hidden'
+              }}>
+                {/* Card Header */}
+                <div className="class-retention-mfe__story-header">
+                  <h3 className="class-retention-mfe__story-heading">Schulen im Schulamtsbezirk</h3>
+                </div>
 
-        {/* School Analysis - Two Column Bars */}
-        <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
-          <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Auswertung nach Schule</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '16px' }}>
-            <div>
-              <h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Schulen – VERA {subject === 'mat' ? 'Mathematik' : 'Deutsch'}</h3>
-              <div style={{ fontSize: '0.8rem' }}>
-                {filteredSchools.sort((a, b) => (subject === 'mat' ? b.veraMat - a.veraMat : b.veraDeu - a.veraDeu)).slice(0, 10).map(school => {
-                  const value = subject === 'mat' ? school.veraMat : school.veraDeu
-                  return (
-                    <div key={school.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                      <div style={{ flex: '0 0 180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{school.name}</div>
-                      <div style={{ flex: '1', height: '8px', background: '#e5e7eb', borderRadius: '999px', overflow: 'hidden' }}>
-                        <div style={{ width: `${(value / 100) * 100}%`, height: '100%', background: 'var(--class-retention-primary)', borderRadius: '999px' }} />
-                      </div>
-                      <div style={{ flex: '0 0 50px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{value.toFixed(1)}</div>
+                {/* View selector */}
+                <ViewSwitcher
+                  options={[
+                    { key: 'map', label: 'Karte' },
+                    { key: 'chart', label: 'Auswertung' },
+                  ]}
+                  activeKey={analysisView}
+                  onSelect={(selectedView) => setAnalysisView(selectedView as AnalysisViewType)}
+                  ariaLabel="Ansichtsauswahl für Schulanalyse"
+                  variant="underline"
+                />
+                <div className="class-retention-mfe__card-heading"></div>
+
+                <div className="class-retention-mfe__chart-frame">
+                  {analysisView === 'map' && (
+                    <div style={{ borderRadius: '0 0 12px 12px', overflow: 'hidden', border: 'none' }}>
+                      <SchoolsLeafletMap
+                        schools={filteredSchools}
+                        selectedSchoolId={selectedSchoolId}
+                        ampelMode={ampelMode}
+                        onSchoolSelect={setSelectedSchoolId}
+                      />
                     </div>
-                  )
-                })}
+                  )}
+
+                  {analysisView === 'chart' && (
+                    <div style={{ padding: '16px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div>
+                          <h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Schulen – VERA {subject === 'mat' ? 'Mathematik' : 'Deutsch'}</h3>
+                          <div style={{ fontSize: '0.8rem' }}>
+                            {filteredSchools.sort((a, b) => (subject === 'mat' ? b.veraMat - a.veraMat : b.veraDeu - a.veraDeu)).slice(0, 10).map(school => {
+                              const value = subject === 'mat' ? school.veraMat : school.veraDeu
+                              return (
+                                <div key={school.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                                  <div style={{ flex: '0 0 180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{school.name}</div>
+                                  <div style={{ flex: '1', height: '8px', background: '#e5e7eb', borderRadius: '999px', overflow: 'hidden' }}>
+                                    <div style={{ width: `${(value / 100) * 100}%`, height: '100%', background: 'var(--class-retention-primary)', borderRadius: '999px' }} />
+                                  </div>
+                                  <div style={{ flex: '0 0 50px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{value.toFixed(1)}</div>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
+                        <div>
+                          <h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Schulen – Lehrerversorgung (Schüler/Lehrer)</h3>
+                          <div style={{ fontSize: '0.8rem' }}>
+                            {filteredSchools.sort((a, b) => a.teacherRatio - b.teacherRatio).slice(0, 10).map(school => (
+                              <div key={school.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                                <div style={{ flex: '0 0 180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{school.name}</div>
+                                <div style={{ flex: '1', height: '8px', background: '#e5e7eb', borderRadius: '999px', overflow: 'hidden' }}>
+                                  <div style={{ width: `${(school.teacherRatio / 30) * 100}%`, height: '100%', background: school.supplyCategory === 'gut' ? AMPEL_COLORS.green : school.supplyCategory === 'angespannt' ? AMPEL_COLORS.yellow : AMPEL_COLORS.red, borderRadius: '999px' }} />
+                                </div>
+                                <div style={{ flex: '0 0 50px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{school.teacherRatio.toFixed(1)}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            <div>
-              <h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Schulen – Lehrerversorgung (Schüler/Lehrer)</h3>
-              <div style={{ fontSize: '0.8rem' }}>
-                {filteredSchools.sort((a, b) => a.teacherRatio - b.teacherRatio).slice(0, 10).map(school => (
-                  <div key={school.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                    <div style={{ flex: '0 0 180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{school.name}</div>
-                    <div style={{ flex: '1', height: '8px', background: '#e5e7eb', borderRadius: '999px', overflow: 'hidden' }}>
-                      <div style={{ width: `${(school.teacherRatio / 30) * 100}%`, height: '100%', background: school.supplyCategory === 'gut' ? AMPEL_COLORS.green : school.supplyCategory === 'angespannt' ? AMPEL_COLORS.yellow : AMPEL_COLORS.red, borderRadius: '999px' }} />
-                    </div>
-                    <div style={{ flex: '0 0 50px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{school.teacherRatio.toFixed(1)}</div>
-                  </div>
-                ))}
-              </div>
+
+            {/* Interpretation Container - Right column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <InterpretationBox 
+                tabs={{
+                  befund: {
+                    label: 'Befund',
+                    content: (
+                      <div>
+                        <p className="class-retention-mfe__story-text">
+                          Das Schulamts-Dashboard des {DISTRICT_METADATA.name} zeigt die Verteilung der Schulen, Schüler:innen und Ressourcen im Bezirk. Die Ampel-Kodierung visualisiert den Status nach dem gewählten Fokus.
+                        </p>
+                        <ul className="class-retention-mfe__story-text" style={COMMON_STYLES.bulletList}>
+                          <li style={COMMON_STYLES.listItem}>
+                            <strong>Insgesamt {filteredSchools.length} Schulen</strong> mit {summaryMetrics.totalStudents.toLocaleString()} Schüler:innen
+                          </li>
+                          <li style={COMMON_STYLES.listItem}>
+                            <strong>Durchschnittlicher Sozialindex:</strong> {summaryMetrics.avgSozialindex.toFixed(2)}
+                          </li>
+                          <li style={COMMON_STYLES.listItem}>
+                            <strong>Lehrerversorgung (Ø Schüler/Lehrer):</strong> {summaryMetrics.avgTeacherRatio.toFixed(1)}
+                          </li>
+                        </ul>
+                      </div>
+                    ),
+                  },
+                  hinweis: {
+                    label: 'Hinweis',
+                    content: (
+                      <p className="class-retention-mfe__story-text class-retention-mfe__story-text--italic">
+                        Die Daten sind fiktiv, orientieren sich aber an typischen Größenordnungen. Die Ampel-Kodierung berücksichtigt sowohl Leistungsindikatoren (VERA) als auch Ressourcen (Lehrerversorgung) und Zufriedenheit. Nutzen Sie die Filter zum Erkunden verschiedener Schularten und Startchancen-Schulen.
+                      </p>
+                    ),
+                  },
+                }}
+                defaultTab="befund"
+              />
             </div>
           </div>
         </div>
 
         {/* Navigation Tabs - Lernstand/Belastung/Ressourcen */}
         <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
-          <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Steuerungs-Navigation: Lernstand · Belastung · Ressourcen</h2>
-          <small style={{ color: 'var(--class-retention-text)', fontSize: '0.85rem' }}>
-            Die Auswertungen beziehen sich auf die aktuell gefilterten Schulen. Ergänzt um eine 10-Jahres-Entwicklung auf Schulamtsebene.
-          </small>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '16px' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <h2 className="class-retention-mfe__selection-title" style={{ marginBottom: '6px' }}>Steuerungs-Navigation</h2>
+            <small style={{ color: 'var(--class-retention-text)', fontSize: '0.875rem' }}>
+              Die Auswertungen beziehen sich auf die aktuell gefilterten Schulen. Ergänzt um eine 10-Jahres-Entwicklung auf Schulamtsebene.
+            </small>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
             {(['lernstand', 'belastung', 'ressourcen'] as NavSection[]).map(section => (
-              <button key={section} onClick={() => setNavSection(section)} className={navSection === section ? 'is-active' : ''} style={{ padding: '8px 16px', border: '1px solid var(--class-retention-border)', borderRadius: '999px', background: navSection === section ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)', color: navSection === section ? '#fff' : 'var(--class-retention-text)', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <button 
+                key={section} 
+                onClick={() => setNavSection(section)} 
+                className={`class-retention-mfe__filter-pill ${navSection === section ? 'is-active' : ''}`}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
                 <span>{section === 'lernstand' ? '📊' : section === 'belastung' ? '⚖️' : '🧩'}</span>
                 <span>{section === 'lernstand' ? 'Lernstand' : section === 'belastung' ? 'Belastung & Zusammensetzung' : 'Ressourcenverteilung'}</span>
               </button>
             ))}
           </div>
-          <div style={{ marginTop: '16px', padding: '16px', background: 'var(--class-retention-bg)', borderRadius: '12px', border: '1px solid var(--class-retention-border)' }}>
-            {navSection === 'lernstand' && (<div><h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Lernstand (10-Jahres-Trend)</h3><p style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)' }}>[Chart: Lernstand über Zeit - Ziel: {LONG_TERM_DATA.targets.lernstand}]</p></div>)}
-            {navSection === 'belastung' && (<div><h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Belastung & Zusammensetzung (10-Jahres-Trend)</h3><p style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)' }}>[Chart: Sozialindex über Zeit - Ziel: {LONG_TERM_DATA.targets.belastung}]</p></div>)}
-            {navSection === 'ressourcen' && (<div><h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Ressourcenverteilung (10-Jahres-Trend)</h3><p style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)' }}>[Chart: Schüler/Lehrer-Verhältnis über Zeit - Ziel: {LONG_TERM_DATA.targets.ratio}]</p></div>)}
+          <div style={{ padding: '20px', background: 'var(--class-retention-bg)', borderRadius: '12px', border: '1px solid var(--class-retention-border)' }}>
+            {navSection === 'lernstand' && (<div><h3 style={{ margin: '0 0 12px', fontSize: '1rem', color: 'var(--class-retention-heading)' }}>Lernstand (10-Jahres-Trend)</h3><p style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', margin: 0 }}>[Chart: Lernstand über Zeit - Ziel: {LONG_TERM_DATA.targets.lernstand}]</p></div>)}
+            {navSection === 'belastung' && (<div><h3 style={{ margin: '0 0 12px', fontSize: '1rem', color: 'var(--class-retention-heading)' }}>Belastung & Zusammensetzung (10-Jahres-Trend)</h3><p style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', margin: 0 }}>[Chart: Sozialindex über Zeit - Ziel: {LONG_TERM_DATA.targets.belastung}]</p></div>)}
+            {navSection === 'ressourcen' && (<div><h3 style={{ margin: '0 0 12px', fontSize: '1rem', color: 'var(--class-retention-heading)' }}>Ressourcenverteilung (10-Jahres-Trend)</h3><p style={{ fontSize: '0.85rem', color: 'var(--class-retention-text)', margin: 0 }}>[Chart: Schüler/Lehrer-Verhältnis über Zeit - Ziel: {LONG_TERM_DATA.targets.ratio}]</p></div>)}
           </div>
         </div>
 
         {/* School Detail View */}
         <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
-          <h2 style={{ margin: '0 0 8px', fontSize: '1.2rem' }}>Detailansicht Schule</h2>
-          <small style={{ color: 'var(--class-retention-text)', fontSize: '0.85rem' }}>Eine Schule auswählen (Karte oder Liste), um Ampeln und Kennzahlen zu sehen.</small>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '16px' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <h2 className="class-retention-mfe__selection-title" style={{ marginBottom: '6px' }}>Detailansicht Schule</h2>
+            <small style={{ color: 'var(--class-retention-text)', fontSize: '0.875rem' }}>Eine Schule auswählen (Karte oder Liste), um Ampeln und Kennzahlen zu sehen.</small>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
             {filteredSchools.slice(0, 8).map(school => (
-              <button key={school.id} onClick={() => setSelectedSchoolId(school.id)} className={selectedSchoolId === school.id ? 'is-active' : ''} style={{ padding: '6px 12px', border: '1px solid var(--class-retention-border)', borderRadius: '999px', background: selectedSchoolId === school.id ? 'var(--class-retention-primary)' : 'var(--class-retention-bg)', color: selectedSchoolId === school.id ? '#fff' : 'var(--class-retention-text)', fontSize: '0.75rem', cursor: 'pointer' }}>{school.name}</button>
+              <button 
+                key={school.id} 
+                onClick={() => setSelectedSchoolId(school.id)} 
+                className={`class-retention-mfe__filter-pill ${selectedSchoolId === school.id ? 'is-active' : ''}`}
+                style={{ fontSize: '0.8rem' }}
+              >
+                {school.name}
+              </button>
             ))}
           </div>
           {selectedSchool ? (
-            <div style={{ marginTop: '20px', padding: '16px', background: 'var(--class-retention-bg)', borderRadius: '12px', border: '1px solid var(--class-retention-border)' }}>
-              <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>{selectedSchool.name}</h3>
+            <div style={{ padding: '20px', background: 'var(--class-retention-bg)', borderRadius: '12px', border: '1px solid var(--class-retention-border)' }}>
+              <h3 style={{ margin: '0 0 16px', fontSize: '1.1rem', color: 'var(--class-retention-heading)' }}>{selectedSchool.name}</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px' }}>
-                <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Schüler:innen</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.students}</div></div>
-                <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Sozialindex</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.sozialindex}</div></div>
-                <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>VERA Mathe</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.veraMat.toFixed(1)}</div></div>
-                <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>VERA Deutsch</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.veraDeu.toFixed(1)}</div></div>
-                <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Schüler/Lehrer</div><div style={{ fontSize: '1rem', fontWeight: '600' }}>{selectedSchool.teacherRatio.toFixed(1)}</div></div>
-                <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Versorgung</div><div style={{ fontSize: '0.85rem', fontWeight: '600', color: selectedSchool.supplyCategory === 'gut' ? AMPEL_COLORS.green : selectedSchool.supplyCategory === 'angespannt' ? AMPEL_COLORS.yellow : AMPEL_COLORS.red }}>{SUPPLY_CATEGORIES[selectedSchool.supplyCategory].label}</div></div>
-                <div><div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '4px' }}>Startchancen</div><div style={{ fontSize: '0.85rem', fontWeight: '600' }}>{selectedSchool.startchancen === 'Startchancen-Schule' ? '✓' : '–'}</div></div>
+                <div style={{ padding: '12px', background: 'var(--class-retention-surface)', borderRadius: '8px', border: '1px solid var(--class-retention-border)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '6px', fontWeight: '500' }}>Schüler:innen</div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--class-retention-heading)' }}>{selectedSchool.students}</div>
+                </div>
+                <div style={{ padding: '12px', background: 'var(--class-retention-surface)', borderRadius: '8px', border: '1px solid var(--class-retention-border)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '6px', fontWeight: '500' }}>Sozialindex</div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--class-retention-heading)' }}>{selectedSchool.sozialindex}</div>
+                </div>
+                <div style={{ padding: '12px', background: 'var(--class-retention-surface)', borderRadius: '8px', border: '1px solid var(--class-retention-border)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '6px', fontWeight: '500' }}>VERA Mathe</div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--class-retention-heading)' }}>{selectedSchool.veraMat.toFixed(1)}</div>
+                </div>
+                <div style={{ padding: '12px', background: 'var(--class-retention-surface)', borderRadius: '8px', border: '1px solid var(--class-retention-border)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '6px', fontWeight: '500' }}>VERA Deutsch</div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--class-retention-heading)' }}>{selectedSchool.veraDeu.toFixed(1)}</div>
+                </div>
+                <div style={{ padding: '12px', background: 'var(--class-retention-surface)', borderRadius: '8px', border: '1px solid var(--class-retention-border)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '6px', fontWeight: '500' }}>Schüler/Lehrer</div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--class-retention-heading)' }}>{selectedSchool.teacherRatio.toFixed(1)}</div>
+                </div>
+                <div style={{ padding: '12px', background: 'var(--class-retention-surface)', borderRadius: '8px', border: '1px solid var(--class-retention-border)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '6px', fontWeight: '500' }}>Versorgung</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: '600', color: selectedSchool.supplyCategory === 'gut' ? AMPEL_COLORS.green : selectedSchool.supplyCategory === 'angespannt' ? AMPEL_COLORS.yellow : AMPEL_COLORS.red }}>{SUPPLY_CATEGORIES[selectedSchool.supplyCategory].label}</div>
+                </div>
+                <div style={{ padding: '12px', background: 'var(--class-retention-surface)', borderRadius: '8px', border: '1px solid var(--class-retention-border)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--class-retention-text)', marginBottom: '6px', fontWeight: '500' }}>Startchancen</div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--class-retention-heading)' }}>{selectedSchool.startchancen === 'Startchancen-Schule' ? '✓' : '–'}</div>
+                </div>
               </div>
             </div>
           ) : (
