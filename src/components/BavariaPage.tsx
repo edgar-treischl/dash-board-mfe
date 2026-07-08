@@ -2,7 +2,7 @@ import { memo, useState } from 'react'
 import { bavariaMetrics, regions } from '../data/bavaria'
 import { COMMON_STYLES } from '../config/chartConfig'
 import { InterpretationBox } from './InterpretationBox'
-import { RegierungsbezirkeMap } from './charts/RegierungsMap'
+import { RegierungsbezirkeMapLeaflet as RegierungsbezirkeMap } from './charts/RegierungsMapLeaflet'
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons'
 
