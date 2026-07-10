@@ -6,6 +6,7 @@ import { feature } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
 import type { GeoJsonObject, Feature } from "geojson";
 import type { Layer } from "leaflet";
+import topoJsonUrl from "../../../public/bavaria-regierungsbezirke-dissolved.topojson?url";
 import "leaflet/dist/leaflet.css";
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
@@ -20,7 +21,7 @@ type RegierungsMapProps = {
   }>
 }
 
-const REGIERUNGSBEZIRKE_TOPOJSON = `${import.meta.env.BASE_URL}bavaria-regierungsbezirke-dissolved.topojson`;
+const REGIERUNGSBEZIRKE_TOPOJSON = topoJsonUrl;
 
 function formatValue(value: number): string {
   return value.toLocaleString('de-DE', {
