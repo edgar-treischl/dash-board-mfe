@@ -1,231 +1,116 @@
-import { memo, useEffect, useMemo } from "react";
-import { MapContainer, GeoJSON, TileLayer, useMap } from "react-leaflet";
+import { memo, useMemo, useEffect, useRef } from "react";
+import { MapContainer, GeoJSON } from "react-leaflet";
+import type { GeoJSON as LeafletGeoJSON } from "leaflet";
 import { scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { feature } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
-import type { GeoJsonObject, Feature } from "geojson";
-import type { Layer } from "leaflet";
+import type { FeatureCollection } from "geojson";
 import bavariaTopoJSONRaw from "../../data/bavaria-regierungsbezirke-dissolved.topojson?raw";
 import "leaflet/dist/leaflet.css";
 
-type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
+type MetricKey =
+  | "schools"
+  | "students"
+  | "teachersFTE"
+  | "avgClassSize";
 
 type RegierungsMapProps = {
-  selectedMetric: MetricKey
+  selectedMetric: MetricKey;
   regions: Array<{
-    id: string
-    name: string
-    shortName: string
-    metrics: Record<MetricKey, number>
-  }>
-}
+    id: string;
+    name: string;
+    shortName: string;
+    metrics: Record<MetricKey, number>;
+  }>;
+};
 
-function formatValue(value: number): string {
-  return value.toLocaleString('de-DE', {
-    maximumFractionDigits: 0,
-  });
-}
+function RegierungsbezirkeMapLeafletComponent({
+  selectedMetric,
+  regions,
+}: RegierungsMapProps) {
+  const layerRef = useRef<LeafletGeoJSON>(null);
 
-// Component to fit bounds when data changes
-function FitBounds({ geojson }: { geojson: GeoJsonObject | null }) {
-  const map = useMap();
-  
-  useEffect(() => {
-    if (geojson) {
-      const L = (window as unknown as { L: typeof import('leaflet') }).L;
-      const geoJsonLayer = new L.GeoJSON(geojson);
-      const bounds = geoJsonLayer.getBounds();
-      if (bounds.isValid()) {
-        map.fitBounds(bounds, { padding: [20, 20] });
-      }
-    }
-  }, [geojson, map]);
-  
-  return null;
-}
+  const geojson = useMemo(() => {
+    const topology = JSON.parse(
+      bavariaTopoJSONRaw
+    ) as Topology;
 
-function RegierungsbezirkeMapLeafletComponent({ selectedMetric, regions }: RegierungsMapProps) {
-  // Convert TopoJSON to GeoJSON once on mount
-  const geojson = useMemo<GeoJsonObject | null>(() => {
-    try {
-      console.log('[RegierungsbezirkeMapLeaflet] Converting TopoJSON...');
-      const topology = JSON.parse(bavariaTopoJSONRaw) as Topology;
-      console.log('[RegierungsbezirkeMapLeaflet] Topology parsed:', topology.type);
-      
-      // Get the first object from topology (bavaria-regierungsbezirke)
-      const objectName = Object.keys(topology.objects)[0];
-      const geometryCollection = topology.objects[objectName] as GeometryCollection;
-      console.log('[RegierungsbezirkeMapLeaflet] Object name:', objectName);
-      
-      // Convert to GeoJSON FeatureCollection
-      const geoJsonData = feature(topology, geometryCollection);
-      console.log('[RegierungsbezirkeMapLeaflet] GeoJSON converted, features:', geoJsonData.features?.length);
-      return geoJsonData as GeoJsonObject;
-    } catch (error) {
-      console.error("[RegierungsbezirkeMapLeaflet] Error converting map data:", error);
-      return null;
-    }
+    const object = topology.objects[
+      Object.keys(topology.objects)[0]
+    ] as GeometryCollection;
+
+    return feature(topology, object) as FeatureCollection;
   }, []);
 
-  console.log('[RegierungsbezirkeMapLeaflet] geojson status:', geojson ? 'loaded' : 'null');
+  useEffect(() => {
+    if (!layerRef.current) return;
 
-  // Build mapping from region shortName to metric value
-  const regionDataMap: Record<string, number | null> = {};
-  regions.forEach((region) => {
-    const value = region.metrics[selectedMetric];
-    regionDataMap[region.shortName] = value !== null && value !== undefined ? value : null;
-  });
+    const bounds = layerRef.current.getBounds();
+    const map = (layerRef.current as unknown as { _map: unknown })._map;
 
-  // Calculate min/max for color scale (excluding missing values)
-  const validValues = Object.values(regionDataMap).filter(
-    (v): v is number => v !== null
-  );
+    if (bounds.isValid()) {
+      (map as { fitBounds: (b: unknown, o: unknown) => void }).fitBounds(bounds, {
+        padding: [20, 20],
+      });
+    }
+  }, [geojson]);
 
-  const minValue = validValues.length > 0 ? Math.min(...validValues) : 0;
-  const maxValue = validValues.length > 0 ? Math.max(...validValues) : 0;
+  const regionValues = useMemo(() => {
+    return Object.fromEntries(
+      regions.map((r) => [
+        r.shortName,
+        r.metrics[selectedMetric],
+      ])
+    );
+  }, [regions, selectedMetric]);
 
-  const colorScale = scaleSequential(interpolateViridis)
-    .domain([minValue, maxValue]);
+  const values = Object.values(regionValues);
 
-  const getFeatureColor = (feature: Feature) => {
-    const name = feature.properties?.name;
-    const value = regionDataMap[name as keyof typeof regionDataMap];
-    return value == null ? "#E5E5E5" : colorScale(value);
-  };
-
-  const onEachFeature = (feature: Feature, layer: Layer) => {
-    const name = feature.properties?.name;
-    const value = regionDataMap[name as keyof typeof regionDataMap];
-    
-    const tooltipContent = value !== null && value !== undefined
-      ? `${name}: ${value.toLocaleString('de-DE')}`
-      : `${name}: Keine Daten`;
-    
-    layer.bindTooltip(tooltipContent, {
-      sticky: true,
-      className: 'regierung-tooltip'
-    });
-
-    layer.on({
-      mouseover: (e) => {
-        const targetLayer = e.target;
-        targetLayer.setStyle({
-          weight: 2,
-          color: '#1f2937',
-          fillOpacity: 0.7
-        });
-      },
-      mouseout: (e) => {
-        const targetLayer = e.target;
-        targetLayer.setStyle({
-          weight: 1,
-          color: '#fff',
-          fillOpacity: 0.7
-        });
-      }
-    });
-  };
-
-  if (!geojson) {
-    return <div style={{ textAlign: 'center', padding: '40px', color: '#ef4444' }}>Fehler beim Laden der Karte</div>;
-  }
+  const color = scaleSequential(interpolateViridis).domain([
+    Math.min(...values),
+    Math.max(...values),
+  ]);
 
   return (
-    <>
-      {/* Map - full width */}
-      <div style={{ position: 'relative', marginBottom: '20px' }}>
-        <div style={{ width: '100%', height: '600px', border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' }}>
-          <MapContainer
-            center={[49.0, 11.5]}
-            zoom={7}
-            style={{ width: '100%', height: '100%' }}
-            scrollWheelZoom={false}
-            dragging={true}
-            zoomControl={true}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              opacity={0.3}
-            />
-            <FitBounds geojson={geojson} />
-            <GeoJSON
-              data={geojson}
-              style={(feature) => ({
-                fillColor: feature ? getFeatureColor(feature) : '#E5E5E5',
-                weight: 1,
-                opacity: 1,
-                color: '#fff',
-                fillOpacity: 0.7
-              })}
-              onEachFeature={onEachFeature}
-            />
-          </MapContainer>
-        </div>
-      </div>
+    <MapContainer
+      style={{ height: 600 }}
+      zoom={7}
+      center={[49, 11.5]}
+      scrollWheelZoom={false}
+    >
+      <GeoJSON
+        ref={layerRef}
+        data={geojson}
+        style={(feature) => {
+          const value =
+            regionValues[
+              feature?.properties?.name as string
+            ];
 
-      {/* Horizontal legend at bottom (ggplot2 style) */}
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        gap: '16px',
-        paddingTop: '16px',
-        borderTop: '1px solid #e5e7eb'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Horizontal gradient bar */}
-          <div
-            style={{
-              width: '300px',
-              height: '20px',
-              borderRadius: '4px',
-              border: '1px solid #d1d5db',
-              background: `linear-gradient(
-                to right,
-                ${interpolateViridis(0)},
-                ${interpolateViridis(0.125)},
-                ${interpolateViridis(0.25)},
-                ${interpolateViridis(0.375)},
-                ${interpolateViridis(0.5)},
-                ${interpolateViridis(0.625)},
-                ${interpolateViridis(0.75)},
-                ${interpolateViridis(0.875)},
-                ${interpolateViridis(1)}
-              )`
-            }}
-          />
-          {/* Labels */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#374151' }}>
-            <span>{formatValue(minValue)}</span>
-            <span>–</span>
-            <span>{formatValue(maxValue)}</span>
-          </div>
-        </div>
-        {/* No data indicator */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#6b7280', marginLeft: '16px' }}>
-          <div style={{ width: '20px', height: '20px', borderRadius: '2px', backgroundColor: "#E5E5E5", border: '1px solid #d1d5db' }} />
-          <span>Keine Daten</span>
-        </div>
-      </div>
+          return {
+            fillColor:
+              value == null ? "#ddd" : color(value),
+            fillOpacity: 0.8,
+            color: "#fff",
+            weight: 1,
+          };
+        }}
+        onEachFeature={(feature, layer) => {
+          const value =
+            regionValues[
+              feature.properties?.name as string
+            ];
 
-      <style>{`
-        .regierung-tooltip {
-          background-color: #111827;
-          color: white;
-          padding: 8px 12px;
-          border-radius: 4px;
-          font-size: 14px;
-          border: none;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .regierung-tooltip::before {
-          display: none;
-        }
-      `}</style>
-    </>
+          layer.bindTooltip(
+            value == null
+              ? `${feature.properties?.name}: Keine Daten`
+              : `${feature.properties?.name}: ${value.toLocaleString("de-DE")}`
+          );
+        }}
+      />
+    </MapContainer>
   );
 }
 
-export const RegierungsbezirkeMapLeaflet = memo(RegierungsbezirkeMapLeafletComponent);
+export default memo(RegierungsbezirkeMapLeafletComponent);
