@@ -1,4 +1,3 @@
-
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 
 import { memo, useState } from "react";
@@ -18,10 +17,9 @@ type RegierungsMapProps = {
   }>
 }
 
-// Use the dissolved Regierungsbezirke TopoJSON file (internal boundaries removed, single shape per region)
-// File is bundled with the code to avoid CORS issues when consumed as a Module Federation remote
-// Based on NUTS2 data for Bavaria (DE2*): GISCO 2021, resolution 20m
-const REGIERUNGSBEZIRKE_TOPOJSON = JSON.parse(bavariaTopoJSONRaw);
+// Create a data URL from the raw TopoJSON string (works for both dev and production)
+// This avoids CORS issues when consumed as a Module Federation remote
+const REGIERUNGSBEZIRKE_TOPOJSON_DATA_URL = `data:application/json;base64,${btoa(bavariaTopoJSONRaw)}`;
 
 function formatValue(value: number): string {
   return value.toLocaleString('de-DE', {
@@ -113,7 +111,7 @@ const colorScale = scaleSequential(interpolateViridis)
               height={600}
               style={{ width: '100%', height: 'auto', maxWidth: '100%' }}
             >
-              <Geographies geography={REGIERUNGSBEZIRKE_TOPOJSON}>
+              <Geographies geography={REGIERUNGSBEZIRKE_TOPOJSON_DATA_URL}>
                 {({ geographies }: { geographies: Record<string, unknown>[] }) => {
                   return (
                     <>

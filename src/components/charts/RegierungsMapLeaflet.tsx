@@ -1,5 +1,5 @@
-import { memo, useMemo } from "react";
-import { MapContainer, GeoJSON, useMap } from "react-leaflet";
+import { memo, useEffect, useMemo } from "react";
+import { MapContainer, GeoJSON, TileLayer, useMap } from "react-leaflet";
 import { scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { feature } from "topojson-client";
@@ -31,7 +31,7 @@ function formatValue(value: number): string {
 function FitBounds({ geojson }: { geojson: GeoJsonObject | null }) {
   const map = useMap();
   
-  useMemo(() => {
+  useEffect(() => {
     if (geojson) {
       const L = (window as unknown as { L: typeof import('leaflet') }).L;
       const geoJsonLayer = new L.GeoJSON(geojson);
@@ -49,19 +49,26 @@ function RegierungsbezirkeMapLeafletComponent({ selectedMetric, regions }: Regie
   // Convert TopoJSON to GeoJSON once on mount
   const geojson = useMemo<GeoJsonObject | null>(() => {
     try {
+      console.log('[RegierungsbezirkeMapLeaflet] Converting TopoJSON...');
       const topology = JSON.parse(bavariaTopoJSONRaw) as Topology;
+      console.log('[RegierungsbezirkeMapLeaflet] Topology parsed:', topology.type);
+      
       // Get the first object from topology (bavaria-regierungsbezirke)
       const objectName = Object.keys(topology.objects)[0];
       const geometryCollection = topology.objects[objectName] as GeometryCollection;
+      console.log('[RegierungsbezirkeMapLeaflet] Object name:', objectName);
       
       // Convert to GeoJSON FeatureCollection
       const geoJsonData = feature(topology, geometryCollection);
+      console.log('[RegierungsbezirkeMapLeaflet] GeoJSON converted, features:', geoJsonData.features?.length);
       return geoJsonData as GeoJsonObject;
     } catch (error) {
-      console.error("Error converting map data:", error);
+      console.error("[RegierungsbezirkeMapLeaflet] Error converting map data:", error);
       return null;
     }
   }, []);
+
+  console.log('[RegierungsbezirkeMapLeaflet] geojson status:', geojson ? 'loaded' : 'null');
 
   // Build mapping from region shortName to metric value
   const regionDataMap: Record<string, number | null> = {};
@@ -137,6 +144,11 @@ function RegierungsbezirkeMapLeafletComponent({ selectedMetric, regions }: Regie
             dragging={true}
             zoomControl={true}
           >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              opacity={0.3}
+            />
             <FitBounds geojson={geojson} />
             <GeoJSON
               data={geojson}
