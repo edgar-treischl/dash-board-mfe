@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useMemo } from "react";
 import { MapContainer, GeoJSON, useMap } from "react-leaflet";
 import { scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
@@ -6,7 +6,7 @@ import { feature } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
 import type { GeoJsonObject, Feature } from "geojson";
 import type { Layer } from "leaflet";
-import topoJsonUrl from "../../../public/bavaria-regierungsbezirke-dissolved.topojson?url";
+import bavariaTopoJSONRaw from "../../data/bavaria-regierungsbezirke-dissolved.topojson?raw";
 import "leaflet/dist/leaflet.css";
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
@@ -21,8 +21,6 @@ type RegierungsMapProps = {
   }>
 }
 
-const REGIERUNGSBEZIRKE_TOPOJSON = topoJsonUrl;
-
 function formatValue(value: number): string {
   return value.toLocaleString('de-DE', {
     maximumFractionDigits: 0,
@@ -33,9 +31,10 @@ function formatValue(value: number): string {
 function FitBounds({ geojson }: { geojson: GeoJsonObject | null }) {
   const map = useMap();
   
-  useEffect(() => {
+  useMemo(() => {
     if (geojson) {
-      const geoJsonLayer = new (window as any).L.GeoJSON(geojson);
+      const L = (window as unknown as { L: typeof import('leaflet') }).L;
+      const geoJsonLayer = new L.GeoJSON(geojson);
       const bounds = geoJsonLayer.getBounds();
       if (bounds.isValid()) {
         map.fitBounds(bounds, { padding: [20, 20] });
@@ -47,8 +46,22 @@ function FitBounds({ geojson }: { geojson: GeoJsonObject | null }) {
 }
 
 function RegierungsbezirkeMapLeafletComponent({ selectedMetric, regions }: RegierungsMapProps) {
-  const [geojson, setGeojson] = useState<GeoJsonObject | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Convert TopoJSON to GeoJSON once on mount
+  const geojson = useMemo<GeoJsonObject | null>(() => {
+    try {
+      const topology = JSON.parse(bavariaTopoJSONRaw) as Topology;
+      // Get the first object from topology (bavaria-regierungsbezirke)
+      const objectName = Object.keys(topology.objects)[0];
+      const geometryCollection = topology.objects[objectName] as GeometryCollection;
+      
+      // Convert to GeoJSON FeatureCollection
+      const geoJsonData = feature(topology, geometryCollection);
+      return geoJsonData as GeoJsonObject;
+    } catch (error) {
+      console.error("Error converting map data:", error);
+      return null;
+    }
+  }, []);
 
   // Build mapping from region shortName to metric value
   const regionDataMap: Record<string, number | null> = {};
@@ -67,28 +80,6 @@ function RegierungsbezirkeMapLeafletComponent({ selectedMetric, regions }: Regie
 
   const colorScale = scaleSequential(interpolateViridis)
     .domain([minValue, maxValue]);
-
-  // Load TopoJSON and convert to GeoJSON
-  useEffect(() => {
-    fetch(REGIERUNGSBEZIRKE_TOPOJSON)
-      .then(res => res.json())
-      .then((topology: Topology) => {
-        // Convert TopoJSON to GeoJSON using topojson-client
-        // Get the first object from topology (bavaria-regierungsbezirke)
-        const objectName = Object.keys(topology.objects)[0];
-        const geometryCollection = topology.objects[objectName] as GeometryCollection;
-        
-        // Convert to GeoJSON FeatureCollection
-        const geoJsonData = feature(topology, geometryCollection);
-        
-        setGeojson(geoJsonData as GeoJsonObject);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error("Error loading map data:", error);
-        setLoading(false);
-      });
-  }, []);
 
   const getFeatureColor = (feature: Feature) => {
     const name = feature.properties?.name;
@@ -128,10 +119,6 @@ function RegierungsbezirkeMapLeafletComponent({ selectedMetric, regions }: Regie
       }
     });
   };
-
-  if (loading) {
-    return <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>Karte wird geladen...</div>;
-  }
 
   if (!geojson) {
     return <div style={{ textAlign: 'center', padding: '40px', color: '#ef4444' }}>Fehler beim Laden der Karte</div>;

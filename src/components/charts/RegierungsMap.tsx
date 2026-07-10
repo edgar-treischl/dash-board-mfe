@@ -4,6 +4,7 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { memo, useState } from "react";
 import { scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
+import bavariaTopoJSONRaw from "../../data/bavaria-regierungsbezirke-dissolved.topojson?raw";
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
 
@@ -18,9 +19,9 @@ type RegierungsMapProps = {
 }
 
 // Use the dissolved Regierungsbezirke TopoJSON file (internal boundaries removed, single shape per region)
-// Shapefile is saved in public/ folder and served at BASE_URL + filename
+// File is bundled with the code to avoid CORS issues when consumed as a Module Federation remote
 // Based on NUTS2 data for Bavaria (DE2*): GISCO 2021, resolution 20m
-const REGIERUNGSBEZIRKE_TOPOJSON = `${import.meta.env.BASE_URL}bavaria-regierungsbezirke-dissolved.topojson`;
+const REGIERUNGSBEZIRKE_TOPOJSON = JSON.parse(bavariaTopoJSONRaw);
 
 function formatValue(value: number): string {
   return value.toLocaleString('de-DE', {
