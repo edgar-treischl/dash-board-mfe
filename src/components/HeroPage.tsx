@@ -11,10 +11,7 @@ function HeroViewComponent() {
             <span className="class-retention-mfe__hero-highlight">ByDash</span>
           </h1>
           <p>
-            ByDash ist ein Demo-App dass ein Steuerungstool für den Freistaat Bayern erprobt. 
-          </p>
-          <p>
-            Die App soll einen Überblick über Bayern und Regierungsbezirke sein und ein Ankerpunkt für Schulaufsichten setzen.
+            ByDash ist eine Demo-App dass ein Steuerungstool für den Freistaat Bayern erprobt. 
           </p>
 
           <div className="class-retention-mfe__hero-callout">
@@ -32,7 +29,7 @@ function HeroViewComponent() {
             </div>
             <div className="class-retention-mfe__feature">
               <strong>Beispiel Visualisierung</strong>
-              <p>Erkunden Sie examplarische Analyseebenen und Visualalisierung.</p>
+              <p>Erkunden Sie examplarische Analyseebenen und Visualisierungen.</p>
             </div>
             <div className="class-retention-mfe__feature">
               <strong>Dash</strong>

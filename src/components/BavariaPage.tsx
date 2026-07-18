@@ -15,14 +15,14 @@ type BavariaViewProps = {
   onMetricChange?: (metric: MetricKey) => void
 }
 
-type ViewType = 'chart' | 'map' | 'table'
+type ViewType = 'map' | 'chart' | 'table'
 
 function BavariaViewComponent({
   selectedMetric: propSelectedMetric,
   onMetricChange: propOnMetricChange,
 }: BavariaViewProps) {
   const [internalMetric, setInternalMetric] = useState<MetricKey>('students')
-  const [view, setView] = useState<ViewType>('chart')
+  const [view, setView] = useState<ViewType>('map')
   
   const selectedMetric = propSelectedMetric || internalMetric
   const onMetricChange = propOnMetricChange || setInternalMetric
@@ -169,8 +169,8 @@ function BavariaViewComponent({
             {/* View selector using semantic nav element */}
             <ViewSwitcher
               options={[
-                { key: 'chart', label: 'Diagramm' },
                 { key: 'map', label: 'Karte' },
+                { key: 'chart', label: 'Diagramm' },
                 { key: 'table', label: 'Daten' },
               ]}
               activeKey={view}
@@ -181,6 +181,11 @@ function BavariaViewComponent({
             <div className="class-retention-mfe__card-heading"></div>
 
             <div className="class-retention-mfe__chart-frame">
+
+              {view === 'map' && (
+                <RegierungsbezirkeMap selectedMetric={selectedMetric} regions={regions} />
+              )}
+              
               {view === 'chart' && (
                 <svg width="100%" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet" style={{ overflow: 'visible' }}>
                   
@@ -272,10 +277,6 @@ function BavariaViewComponent({
                     Wert
                   </text>
                 </svg>
-              )}
-
-              {view === 'map' && (
-                <RegierungsbezirkeMap selectedMetric={selectedMetric} regions={regions} />
               )}
 
               {view === 'table' && (
