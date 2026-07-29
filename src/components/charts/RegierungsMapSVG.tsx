@@ -16,14 +16,19 @@ import mittelfrankenIcon from "../../assets/regions/mittelfranken.svg?url";
 import unterfrankeniIcon from "../../assets/regions/unterfranken.svg?url";
 import schwabenIcon from "../../assets/regions/schwaben.svg?url";
 
+const getRegionIconUrl = (iconPath: string): string => {
+  // Resolve asset URL relative to the module location for both standalone and federated contexts
+  return new URL(iconPath, import.meta.url).href;
+};
+
 const regionIconMap: Record<string, string> = {
-  "Oberbayern": oberbayernIcon,
-  "Niederbayern": niederbayernIcon,
-  "Oberpfalz": oberpfalzIcon,
-  "Oberfranken": oberfrankeniIcon,
-  "Mittelfranken": mittelfrankenIcon,
-  "Unterfranken": unterfrankeniIcon,
-  "Schwaben": schwabenIcon,
+  "Oberbayern": getRegionIconUrl(oberbayernIcon),
+  "Niederbayern": getRegionIconUrl(niederbayernIcon),
+  "Oberpfalz": getRegionIconUrl(oberpfalzIcon),
+  "Oberfranken": getRegionIconUrl(oberfrankeniIcon),
+  "Mittelfranken": getRegionIconUrl(mittelfrankenIcon),
+  "Unterfranken": getRegionIconUrl(unterfrankeniIcon),
+  "Schwaben": getRegionIconUrl(schwabenIcon),
 };
 
 type MetricKey =
