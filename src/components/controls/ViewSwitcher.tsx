@@ -19,15 +19,15 @@ export function ViewSwitcher({
   variant = 'pill',
 }: ViewSwitcherProps) {
   const navClassName = variant === 'underline' 
-    ? 'class-retention-mfe__story-tabs' 
-    : 'class-retention-mfe__view-switcher'
+    ? 'bydash-mfe__story-tabs' 
+    : 'bydash-mfe__view-switcher'
   
   const tabClassName = variant === 'underline' 
-    ? 'class-retention-mfe__story-tab'
-    : 'class-retention-mfe__view-tab'
+    ? 'bydash-mfe__story-tab'
+    : 'bydash-mfe__view-tab'
   
   const activeClassName = variant === 'underline'
-    ? 'class-retention-mfe__story-tab--active'
+    ? 'bydash-mfe__story-tab--active'
     : 'is-active'
   
   return (

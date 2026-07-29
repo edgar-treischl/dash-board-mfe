@@ -1,25 +1,25 @@
-.class-retention-mfe {
+.bydash-mfe {
   /* Scoped CSS Custom Properties */
-  --class-retention-text: #6b6375;
-  --class-retention-heading: #08060d;
-  --class-retention-bg: #fff;
-  --class-retention-surface: #fff;
-  --class-retention-elevated: #fff;
-  --class-retention-border: #e5e4e7;
-  --class-retention-accent: #008dc9; 
-  --class-retention-grid-line: rgba(107, 99, 117, 0.18);
-  --class-retention-shadow:
+  --bydash-text: #6b6375;
+  --bydash-heading: #08060d;
+  --bydash-bg: #fff;
+  --bydash-surface: #fff;
+  --bydash-elevated: #fff;
+  --bydash-border: #e5e4e7;
+  --bydash-accent: #008dc9; 
+  --bydash-grid-line: rgba(107, 99, 117, 0.18);
+  --bydash-shadow:
     rgba(15, 23, 42, 0.08) 0 10px 20px -12px, rgba(15, 23, 42, 0.06) 0 4px 10px -6px;
 
-  --class-retention-font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --class-retention-font-heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --bydash-font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --bydash-font-heading: system-ui, 'Segoe UI', Roboto, sans-serif;
 
   /* Modern fluid typography with clamp() */
-  font: clamp(15px, 1vw + 14px, 16px) / 1.5 var(--class-retention-font-sans);
+  font: clamp(15px, 1vw + 14px, 16px) / 1.5 var(--bydash-font-sans);
   letter-spacing: 0.18px;
   color-scheme: light;
-  color: var(--class-retention-text);
-  background: var(--class-retention-bg);
+  color: var(--bydash-text);
+  background: var(--bydash-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -27,59 +27,59 @@
 }
 
 /* Component-scoped box-sizing */
-.class-retention-mfe,
-.class-retention-mfe * {
+.bydash-mfe,
+.bydash-mfe * {
   box-sizing: border-box;
 }
 
-.class-retention-mfe__body {
+.bydash-mfe__body {
   margin: 0;
 }
 
-.class-retention-mfe__root {
+.bydash-mfe__root {
   min-height: 100svh;
 }
 
-.class-retention-mfe {
+.bydash-mfe {
   width: 100%;
-  color: var(--class-retention-text);
-  background: var(--class-retention-bg);
+  color: var(--bydash-text);
+  background: var(--bydash-bg);
 }
 
-.class-retention-mfe h1,
-.class-retention-mfe h2 {
-  font-family: var(--class-retention-font-heading);
+.bydash-mfe h1,
+.bydash-mfe h2 {
+  font-family: var(--bydash-font-heading);
   font-weight: 600;
-  color: var(--class-retention-heading);
+  color: var(--bydash-heading);
 }
 
-.class-retention-mfe h1 {
+.bydash-mfe h1 {
   margin: 0;
   font-size: clamp(2rem, 3vw, 2.75rem);
   line-height: 1.05;
   letter-spacing: -0.04em;
 }
 
-.class-retention-mfe h2 {
+.bydash-mfe h2 {
   margin: 0;
   font-size: 1.1rem;
   line-height: 1.2;
 }
 
-.class-retention-mfe p {
+.bydash-mfe p {
   margin: 0;
 }
 
-.class-retention-mfe button,
-.class-retention-mfe input,
-.class-retention-mfe select,
-.class-retention-mfe textarea {
+.bydash-mfe button,
+.bydash-mfe input,
+.bydash-mfe select,
+.bydash-mfe textarea {
   font: inherit;
-  color: var(--class-retention-heading);
+  color: var(--bydash-heading);
 }
 
 /* Error Boundary Styles */
-.class-retention-mfe__error-boundary {
+.bydash-mfe__error-boundary {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,7 +90,7 @@
   margin: 1rem;
 }
 
-.class-retention-mfe__error-content {
+.bydash-mfe__error-content {
   background: white;
   padding: 2rem;
   border-radius: 8px;
@@ -99,21 +99,21 @@
   max-width: 500px;
 }
 
-.class-retention-mfe__error-title {
+.bydash-mfe__error-title {
   font-size: 1.5rem;
   font-weight: 600;
   color: #e74c3c;
   margin: 0 0 1rem 0;
 }
 
-.class-retention-mfe__error-message {
+.bydash-mfe__error-message {
   color: #666;
   font-size: 1rem;
   margin: 0 0 1.5rem 0;
   line-height: 1.5;
 }
 
-.class-retention-mfe__error-button {
+.bydash-mfe__error-button {
   background-color: #3498db;
   color: white;
   border: none;
@@ -124,10 +124,10 @@
   transition: background-color 0.2s ease;
 }
 
-.class-retention-mfe__error-button:hover {
+.bydash-mfe__error-button:hover {
   background-color: #2980b9;
 }
 
-.class-retention-mfe__error-button:active {
+.bydash-mfe__error-button:active {
   transform: scale(0.98);
 }

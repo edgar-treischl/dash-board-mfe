@@ -1,31 +1,27 @@
 /**
- * Application-wide constants and configuration
- */
-
-/**
  * View options for the main navigation
  * Each view represents a different data visualization or info page
  */
 export const VIEW_OPTIONS = [
   { key: 'home' as const, label: 'Startseite' },
-  { key: 'retention' as const, label: 'Bayern' },
-  { key: 'trends' as const, label: 'Regierungsbezirke' },
-  { key: 'sex' as const, label: 'Dashboard Schulamt' },
-  { key: 'data' as const, label: 'Info' },
+  { key: 'bavaria' as const, label: 'Bayern' },
+  { key: 'regierung' as const, label: 'Regierungsbezirke' },
+  { key: 'samt' as const, label: 'Dashboard Schulamt' },
+  { key: 'info' as const, label: 'Info' },
 ] as const
 
 /**
- * View metadata: titles and descriptions for each view
+ * View metadata
  */
 export const VIEW_METADATA: Record<
   (typeof VIEW_OPTIONS)[number]['key'],
   string
 > = {
-  home: 'Klassenwiederholung',
-  retention: 'Bayern',
-  trends: 'Regierungsbezirke',
-  sex: 'Klassenwiederholungen nach Geschlecht',
-  data: 'Über diese App',
+  home: 'ByDash',
+  bavaria: 'Bayern',
+  regierung: 'Regierungsbezirke',
+  samt: 'Schulamt',
+  info: 'Über diese App',
 }
 
 /**
@@ -33,17 +29,17 @@ export const VIEW_METADATA: Record<
  * Using BEM-like naming convention
  */
 export const CLASS_NAMES = {
-  root: 'class-retention-mfe',
-  panel: 'class-retention-mfe__panel',
-  viewSwitch: 'class-retention-mfe__view-switch',
-  viewTab: 'class-retention-mfe__view-tab',
-  viewTabActive: 'class-retention-mfe__view-tab--active',
-  explorerLayout: 'class-retention-mfe__explorer-layout',
-  explorerLeft: 'class-retention-mfe__explorer-left',
-  chartCard: 'class-retention-mfe__chart-card',
-  cardHeading: 'class-retention-mfe__card-heading',
-  controlsSection: 'class-retention-mfe__controls-section',
-  controlGroup: 'class-retention-mfe__control-group',
+  root: 'bydash-mfe',
+  panel: 'bydash-mfe__panel',
+  viewSwitch: 'bydash-mfe__view-switch',
+  viewTab: 'bydash-mfe__view-tab',
+  viewTabActive: 'bydash-mfe__view-tab--active',
+  explorerLayout: 'bydash-mfe__explorer-layout',
+  explorerLeft: 'bydash-mfe__explorer-left',
+  chartCard: 'bydash-mfe__chart-card',
+  cardHeading: 'bydash-mfe__card-heading',
+  controlsSection: 'bydash-mfe__controls-section',
+  controlGroup: 'bydash-mfe__control-group',
 } as const
 
 /**

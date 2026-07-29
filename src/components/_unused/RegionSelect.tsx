@@ -30,18 +30,18 @@ function RegionSelectComponent({
   const currentRegion = regions.find(r => r.id === selectedRegionId) || regions[0]
 
   return (
-    <div className="class-retention-mfe__region-control-wrapper">
-      <div className="class-retention-mfe__region-control-group">
-        <div className="class-retention-mfe__region-control-label">
+    <div className="bydash-mfe__region-control-wrapper">
+      <div className="bydash-mfe__region-control-group">
+        <div className="bydash-mfe__region-control-label">
           <span>{label}</span>
         </div>
-        <div className="class-retention-mfe__region-control-pair">
-          <label htmlFor="region-select" className="class-retention-mfe__region-control-short-label">
+        <div className="bydash-mfe__region-control-pair">
+          <label htmlFor="region-select" className="bydash-mfe__region-control-short-label">
             Region
           </label>
           <select
             id="region-select"
-            className="class-retention-mfe__region-control-select"
+            className="bydash-mfe__region-control-select"
             value={selectedRegionId}
             onChange={(e) => onRegionChange(e.target.value)}
             disabled={disabled}
@@ -54,7 +54,7 @@ function RegionSelectComponent({
           </select>
         </div>
       </div>
-      <div className="class-retention-mfe__region-icon-container">
+      <div className="bydash-mfe__region-icon-container">
         <RegionIcon regionId={currentRegion.id} width={96} height={96} />
       </div>
     </div>

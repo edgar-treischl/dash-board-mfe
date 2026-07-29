@@ -5,7 +5,26 @@ import { feature } from "topojson-client";
 import { geoMercator, geoPath } from "d3-geo";
 import type { Topology, GeometryCollection } from "topojson-specification";
 import type { FeatureCollection } from "geojson";
-import bavariaTopoJSONRaw from "../../data/bavaria-regierungsbezirke-dissolved.topojson?raw";
+import bavariaTopoJSONRaw from "../../data/bavaria.topojson?raw";
+
+// Region icon imports
+import oberbayernIcon from "../../assets/regions/oberbayern.svg?url";
+import niederbayernIcon from "../../assets/regions/niederbayern.svg?url";
+import oberpfalzIcon from "../../assets/regions/oberpfalz.svg?url";
+import oberfrankeniIcon from "../../assets/regions/oberfranken.svg?url";
+import mittelfrankenIcon from "../../assets/regions/mittelfranken.svg?url";
+import unterfrankeniIcon from "../../assets/regions/unterfranken.svg?url";
+import schwabenIcon from "../../assets/regions/schwaben.svg?url";
+
+const regionIconMap: Record<string, string> = {
+  "Oberbayern": oberbayernIcon,
+  "Niederbayern": niederbayernIcon,
+  "Oberpfalz": oberpfalzIcon,
+  "Oberfranken": oberfrankeniIcon,
+  "Mittelfranken": mittelfrankenIcon,
+  "Unterfranken": unterfrankeniIcon,
+  "Schwaben": schwabenIcon,
+};
 
 type MetricKey =
   | "schools"
@@ -143,7 +162,7 @@ function RegierungsMapSVGComponent({
         viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
         preserveAspectRatio="xMidYMid meet"
         style={{
-          background: "var(--class-retention-bg)",
+          background: "var(--bydash-bg)",
           display: "block",
         }}
       >
@@ -243,20 +262,49 @@ function RegierungsMapSVGComponent({
             transform: "translate(-50%, -100%)",
             background: "rgba(0, 0, 0, 0.9)",
             color: "#fff",
-            padding: "8px 12px",
-            borderRadius: "6px",
+            padding: "12px",
+            borderRadius: "8px",
             fontSize: "13px",
             fontWeight: "500",
-            whiteSpace: "nowrap",
             pointerEvents: "none",
             zIndex: 10,
             marginTop: "-8px",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "8px",
+            minWidth: "140px",
           }}
         >
-          {renderData.regionValues[hoveredRegion] == null
-            ? `${hoveredRegion}: Keine Daten`
-            : `${hoveredRegion}: ${renderData.regionValues[hoveredRegion].toLocaleString("de-DE")}`}
+          {regionIconMap[hoveredRegion] && (
+            <img
+              src={regionIconMap[hoveredRegion]}
+              alt={hoveredRegion}
+              style={{
+                width: "48px",
+                height: "48px",
+                objectFit: "contain",
+              }}
+            />
+          )}
+          <div style={{ textAlign: "center", fontWeight: "600" }}>
+            {hoveredRegion}
+          </div>
+          <div style={{ textAlign: "center", fontSize: "12px", opacity: 0.9 }}>
+            {selectedMetric === "students"
+              ? "Schüler und Schülerinnen"
+              : selectedMetric === "schools"
+                ? "Schulen"
+                : selectedMetric === "teachersFTE"
+                  ? "Lehrkräfte"
+                  : "Klassengröße"}
+          </div>
+          <div style={{ textAlign: "center", fontWeight: "700" }}>
+            {renderData.regionValues[hoveredRegion] == null
+              ? "Keine Daten"
+              : renderData.regionValues[hoveredRegion].toLocaleString("de-DE")}
+          </div>
         </div>
       )}
     </div>

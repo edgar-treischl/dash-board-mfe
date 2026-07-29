@@ -21,13 +21,13 @@ const getVariantStyles = (variant: TextBoxVariant) => {
       return {
         ...baseStyles,
         backgroundColor: 'white',
-        border: '1px solid var(--class-retention-accent)',
+        border: '1px solid var(--bydash-accent)',
       }
     case 'conclusion':
       return {
         ...baseStyles,
         backgroundColor: 'white',
-        borderLeft: '4px solid var(--class-retention-text)',
+        borderLeft: '4px solid var(--bydash-text)',
         fontStyle: 'italic',
         paddingLeft: '1rem',
       }
@@ -41,13 +41,13 @@ function TextBoxComponent({ variant, children, title }: TextBoxProps) {
     <div style={getVariantStyles(variant)}>
       {title && (
         <h4
-          className="class-retention-mfe__story-text"
+          className="bydash-mfe__story-text"
           style={{ fontWeight: 600, marginTop: 0, marginBottom: '1rem' }}
         >
           {title}
         </h4>
       )}
-      <div className="class-retention-mfe__story-text">{children}</div>
+      <div className="bydash-mfe__story-text">{children}</div>
     </div>
   )
 }

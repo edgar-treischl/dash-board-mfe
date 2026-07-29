@@ -71,7 +71,7 @@ dist/
 │ Scenario         │ Hero Image (PNG)                 │ Region Icons (SVG)      │
 ├──────────────────┼──────────────────────────────────┼─────────────────────────┤
 │ GitHub Pages     │ ✅ Resolves to                   │ ✅ Resolves to          │
-│ (standalone)     │ /dash-board-mfe/assets/hero-*.png│ /dash-board-mfe/assets/ │
+│ (standalone)     │ /bydash-mfe/assets/hero-*.png    │ /bydash-mfe/assets/     │
 │                  │                                  │ oberbayern-*.svg        │
 ├──────────────────┼──────────────────────────────────┼─────────────────────────┤
 │ Module Federation│ ✅ Shell app gets correct path   │ ✅ Shell app gets       │

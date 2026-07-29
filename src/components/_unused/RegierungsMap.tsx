@@ -3,7 +3,7 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { memo, useState } from "react";
 import { scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
-import bavariaTopoJSONRaw from "../../data/bavaria-regierungsbezirke-dissolved.topojson?raw";
+import bavariaTopoJSONRaw from "../../data/bavaria.topojson?raw";
 
 type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
 

@@ -35,10 +35,10 @@ function RegierungsViewComponent() {
   }
 
   const metricIcons: Record<MetricKey, React.ReactNode> = {
-    schools: <SchoolsIcon className="class-retention-mfe__grid-icon" />,
-    students: <PupilsIcon className="class-retention-mfe__grid-icon" />,
-    teachersFTE: <TeachersIcon className="class-retention-mfe__grid-icon" />,
-    avgClassSize: <ClassSizeIcon className="class-retention-mfe__grid-icon" />,
+    schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
+    students: <PupilsIcon className="bydash-mfe__grid-icon" />,
+    teachersFTE: <TeachersIcon className="bydash-mfe__grid-icon" />,
+    avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
   }
 
   // Build interpretation tabs
@@ -47,10 +47,10 @@ function RegierungsViewComponent() {
       label: 'Befund',
       content: (
         <div>
-          <p className="class-retention-mfe__story-text">
+          <p className="bydash-mfe__story-text">
             Die Verteilung der Bildungsressourcen in Bayern nach Regierungsbezirken zeigt deutliche regionale Unterschiede. Die dargestellten Daten umfassen Schulen, Schülerinnen und Schüler sowie Lehrkräfte (Vollzeitäquivalente).
           </p>
-          <ul className="class-retention-mfe__story-text" style={COMMON_STYLES.bulletList}>
+          <ul className="bydash-mfe__story-text" style={COMMON_STYLES.bulletList}>
             <li style={COMMON_STYLES.listItem}>
               Vergleichen Sie die Staatlichen Schulämter der einzelnen Regionen in der Tabelle.
             </li>
@@ -64,7 +64,7 @@ function RegierungsViewComponent() {
     hinweis: {
       label: 'Hinweis',
       content: (
-        <p className="class-retention-mfe__story-text class-retention-mfe__story-text--italic">
+        <p className="bydash-mfe__story-text bydash-mfe__story-text--italic">
           Die Daten basieren auf den sieben Regierungsbezirken Bayerns: Oberbayern, Niederbayern, Oberpfalz, Oberfranken, Mittelfranken, Unterfranken und Schwaben. Die Unterschiede spiegeln sowohl die Bevölkerungsdichte als auch die Bildungsinfrastruktur wider.
         </p>
       ),
@@ -72,31 +72,31 @@ function RegierungsViewComponent() {
   }
 
   return (
-    <div className="class-retention-mfe__bavaria-container" style={{ width: '100%', margin: '0', padding: '24px', boxSizing: 'border-box' }}>
+    <div className="bydash-mfe__bavaria-container" style={{ width: '100%', margin: '0', padding: '24px', boxSizing: 'border-box' }}>
       
       {/* Main Card Container */}
       <div style={{
-        background: 'var(--class-retention-surface)',
-        border: '1px solid var(--class-retention-border)',
+        background: 'var(--bydash-surface)',
+        border: '1px solid var(--bydash-border)',
         borderRadius: '18px',
-        boxShadow: 'var(--class-retention-shadow)',
+        boxShadow: 'var(--bydash-shadow)',
         overflow: 'hidden'
       }}>
         
         {/* Region Selection Header */}
         <div style={{
           padding: '24px 24px 20px 24px',
-          borderBottom: '1px solid var(--class-retention-border)',
+          borderBottom: '1px solid var(--bydash-border)',
           background: 'linear-gradient(to bottom, rgba(37, 99, 235, 0.02), transparent)'
         }}>
-          <h1 className="class-retention-mfe__selection-title" style={{ marginBottom: '6px' }}>Regierungsbezirke</h1>
-          <small style={{ color: 'var(--class-retention-text)', fontSize: '0.875rem' }}>Bitte wählen Sie einen Regierungsbezirk zur Analyse.</small>
+          <h1 className="bydash-mfe__selection-title" style={{ marginBottom: '6px' }}>Regierungsbezirke</h1>
+          <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>Bitte wählen Sie einen Regierungsbezirk zur Analyse.</small>
         </div>
 
         {/* Region Selection Grid */}
         <div style={{ padding: '24px' }}>
           <div 
-            className="class-retention-mfe__selection-grid"
+            className="bydash-mfe__selection-grid"
             style={{
               gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
               gap: '12px'
@@ -105,7 +105,7 @@ function RegierungsViewComponent() {
             {regions.map((region) => (
               <button
                 key={region.id}
-                className={`class-retention-mfe__level-select-btn ${selectedRegion === region.id ? 'is-active' : ''}`}
+                className={`bydash-mfe__level-select-btn ${selectedRegion === region.id ? 'is-active' : ''}`}
                 onClick={() => setSelectedRegion(region.id)}
                 style={{ 
                   display: 'flex', 
@@ -126,21 +126,21 @@ function RegierungsViewComponent() {
         </div>
 
         {/* Region-specific Metrics Section */}
-        <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
+        <div style={{ padding: '24px', borderTop: '1px solid var(--bydash-border)' }}>
           <div style={{
             padding: '0 0 20px 0',
           }}>
-            <h2 className="class-retention-mfe__selection-title" style={{ marginBottom: '6px' }}>{currentRegion.shortName} in Zahlen</h2>
-            <small style={{ color: 'var(--class-retention-text)', fontSize: '0.875rem' }}>Kennzahlen für den ausgewählten Regierungsbezirk</small>
+            <h2 className="bydash-mfe__selection-title" style={{ marginBottom: '6px' }}>{currentRegion.shortName} in Zahlen</h2>
+            <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>Kennzahlen für den ausgewählten Regierungsbezirk</small>
           </div>
 
-          <div className="class-retention-mfe__selection-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '24px' }}>
+          <div className="bydash-mfe__selection-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '24px' }}>
             {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
               <div
                 key={key}
                 style={{
-                  background: 'var(--class-retention-bg)',
-                  border: '1px solid var(--class-retention-border)',
+                  background: 'var(--bydash-bg)',
+                  border: '1px solid var(--bydash-border)',
                   borderRadius: '12px',
                   padding: '16px',
                   display: 'flex',
@@ -149,11 +149,11 @@ function RegierungsViewComponent() {
                   gap: '12px'
                 }}
               >
-                <div className="class-retention-mfe__grid-icon-wrapper">
+                <div className="bydash-mfe__grid-icon-wrapper">
                   {metricIcons[key]}
                 </div>
                 <strong style={{ fontSize: '0.875rem', textAlign: 'center' }}>{metricLabels[key]}</strong>
-                <span className="class-retention-mfe__level-desc" style={{ fontSize: '0.75rem', opacity: 0.7 }}>{metricDescriptions[key]}</span>
+                <span className="bydash-mfe__level-desc" style={{ fontSize: '0.75rem', opacity: 0.7 }}>{metricDescriptions[key]}</span>
                 <div style={{ 
                   marginTop: '8px', 
                   padding: '8px 12px',
@@ -161,7 +161,7 @@ function RegierungsViewComponent() {
                   borderRadius: '8px',
                   fontSize: '0.875rem',
                   fontWeight: '600',
-                  color: 'var(--class-retention-primary)',
+                  color: 'var(--bydash-primary)',
                   transition: 'all 0.2s ease'
                 }}>
                   {currentRegion.metrics[key].toLocaleString()}
@@ -172,7 +172,7 @@ function RegierungsViewComponent() {
         </div>
 
         {/* Chart/Table and Interpretation Section */}
-        <div style={{ padding: '24px', borderTop: '1px solid var(--class-retention-border)' }}>
+        <div style={{ padding: '24px', borderTop: '1px solid var(--bydash-border)' }}>
           <div
             style={{
               display: 'grid',
@@ -184,14 +184,14 @@ function RegierungsViewComponent() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
               {/* Chart Card */}
               <div style={{
-                border: '1px solid var(--class-retention-border)',
+                border: '1px solid var(--bydash-border)',
                 borderRadius: '12px',
-                background: 'var(--class-retention-bg)',
+                background: 'var(--bydash-bg)',
                 overflow: 'hidden'
               }}>
                 {/* Card Header */}
-                <div className="class-retention-mfe__story-header">
-                  <h3 className="class-retention-mfe__story-heading">Schulämter in {currentRegion.shortName}</h3>
+                <div className="bydash-mfe__story-header">
+                  <h3 className="bydash-mfe__story-heading">Schulämter in {currentRegion.shortName}</h3>
                 </div>
 
                 {/* View selector using semantic nav element */}
@@ -205,9 +205,9 @@ function RegierungsViewComponent() {
                   ariaLabel="Ansichtsauswahl für Regierungsbezirke"
                   variant="underline"
                 />
-                <div className="class-retention-mfe__card-heading"></div>
+                <div className="bydash-mfe__card-heading"></div>
 
-                <div className="class-retention-mfe__chart-frame">
+                <div className="bydash-mfe__chart-frame">
                   {view === 'map' && (
                     <OfficesLeafletMap
                       selectedRegionId={selectedRegion}

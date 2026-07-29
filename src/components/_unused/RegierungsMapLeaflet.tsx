@@ -6,7 +6,7 @@ import { interpolateViridis } from "d3-scale-chromatic";
 import { feature } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
 import type { FeatureCollection } from "geojson";
-import bavariaTopoJSONRaw from "../../data/bavaria-regierungsbezirke-dissolved.topojson?raw";
+import bavariaTopoJSONRaw from "../../data/bavaria.topojson?raw";
 import "leaflet/dist/leaflet.css";
 
 type MetricKey =

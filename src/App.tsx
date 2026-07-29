@@ -43,15 +43,15 @@ export default function App() {
             <ErrorBoundary>
               <HeroView />
             </ErrorBoundary>
-          ) : view === 'retention' ? (
+          ) : view === 'bavaria' ? (
             <ErrorBoundary>
               <BavariaView />
             </ErrorBoundary>
-          ) : view === 'trends' ? (
+          ) : view === 'regierung' ? (
             <ErrorBoundary>
               <RegierungsView />
             </ErrorBoundary>
-          ) : view === 'sex' ? (
+          ) : view === 'samt' ? (
             <ErrorBoundary>
               <SAmtPage/>
             </ErrorBoundary>

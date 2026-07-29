@@ -1,9 +1,4 @@
 /**
- * Shared data validation utilities
- * Consolidates common validation patterns
- */
-
-/**
  * Checks if value is not null and not undefined
  * @param value - Value to check
  * @returns True if value is defined

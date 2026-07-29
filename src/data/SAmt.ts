@@ -10,7 +10,7 @@
  * - Pre-generated from reproducible seed (123456)
  */
 
-import generatedData from './SAmt-generated.json'
+import generatedData from './SAmt.json'
 
 // =====================
 // Type Definitions

@@ -6,7 +6,7 @@
  */
 
 /* Wrapper for entire control - control group on left, icon on far right */
-.class-retention-mfe__region-control-wrapper {
+.bydash-mfe__region-control-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -15,7 +15,7 @@
 }
 
 /* Container for the region SVG icon */
-.class-retention-mfe__region-icon-container {
+.bydash-mfe__region-icon-container {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -23,7 +23,7 @@
 }
 
 /* Control group container */
-.class-retention-mfe__region-control-group {
+.bydash-mfe__region-control-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -32,20 +32,20 @@
 }
 
 /* Main label */
-.class-retention-mfe__region-control-label {
+.bydash-mfe__region-control-label {
   font-size: 18px;
   font-weight: 600;
-  color: var(--class-retention-heading, #333);
+  color: var(--bydash-heading, #333);
   display: flex;
   align-items: center;
 }
 
 /* Select dropdown element */
-.class-retention-mfe__region-control-select {
-  border: 1px solid var(--class-retention-border, #e5e7eb);
+.bydash-mfe__region-control-select {
+  border: 1px solid var(--bydash-border, #e5e7eb);
   border-radius: 12px;
-  background: var(--class-retention-bg, #f9fafb);
-  color: var(--class-retention-heading, #333);
+  background: var(--bydash-bg, #f9fafb);
+  color: var(--bydash-heading, #333);
   padding: 10px 12px;
   font-size: 14px;
   cursor: pointer;
@@ -56,31 +56,31 @@
   background-position: right 10px center;
   padding-right: 32px;
   font-weight: 500;
-  accent-color: var(--class-retention-accent, #008dc9);
+  accent-color: var(--bydash-accent, #008dc9);
 }
 
 /* Focus state */
-.class-retention-mfe__region-control-select:focus-visible {
-  outline: 2px solid var(--class-retention-accent, #008dc9);
+.bydash-mfe__region-control-select:focus-visible {
+  outline: 2px solid var(--bydash-accent, #008dc9);
   outline-offset: 2px;
 }
 
 /* Disabled state */
-.class-retention-mfe__region-control-select:disabled {
+.bydash-mfe__region-control-select:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* Short label for the select field */
-.class-retention-mfe__region-control-short-label {
+.bydash-mfe__region-control-short-label {
   font-size: 12px;
   font-weight: 500;
-  color: var(--class-retention-text, #666);
+  color: var(--bydash-text, #666);
   padding-right: 5px;
 }
 
 /* Container for label + select pair */
-.class-retention-mfe__region-control-pair {
+.bydash-mfe__region-control-pair {
   display: flex;
   align-items: center;
   gap: 8px;

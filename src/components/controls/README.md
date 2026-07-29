@@ -50,19 +50,19 @@ The component uses CSS custom properties for theming. Define these in your app's
 ```css
 :root {
   /* Text color for labels */
-  --class-retention-heading: #333;
+  --bydash-heading: #333;
   
   /* Accent color for focus states */
-  --class-retention-accent: #008dc9;
+  --bydash-accent: #008dc9;
   
   /* Border color for form elements */
-  --class-retention-border: #e5e7eb;
+  --bydash-border: #e5e7eb;
   
   /* Background color for form elements */
-  --class-retention-bg: #f9fafb;
+  --bydash-bg: #f9fafb;
   
   /* Secondary text color */
-  --class-retention-text: #666;
+  --bydash-text: #666;
 }
 ```
 

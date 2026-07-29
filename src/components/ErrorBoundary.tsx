@@ -59,14 +59,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <div className="class-retention-mfe__error-boundary">
-            <div className="class-retention-mfe__error-content">
-              <h2 className="class-retention-mfe__error-title">Oops! Something went wrong</h2>
-              <p className="class-retention-mfe__error-message">
+          <div className="bydash-mfe__error-boundary">
+            <div className="bydash-mfe__error-content">
+              <h2 className="bydash-mfe__error-title">Oops! Something went wrong</h2>
+              <p className="bydash-mfe__error-message">
                 {this.state.error?.message || 'An unexpected error occurred'}
               </p>
               <button
-                className="class-retention-mfe__error-button"
+                className="bydash-mfe__error-button"
                 onClick={this.handleReset}
                 type="button"
               >

@@ -5,8 +5,8 @@ import App from './App'
 
 const rootElement = document.getElementById('root')!
 
-document.body.classList.add('class-retention-mfe__body')
-rootElement.classList.add('class-retention-mfe__root')
+document.body.classList.add('bydash-mfe__body')
+rootElement.classList.add('bydash-mfe__root')
 
 createRoot(rootElement).render(
   <StrictMode>
