@@ -4,12 +4,12 @@ import federation from '@originjs/vite-plugin-federation';
 
 export default defineConfig({
   // IMPORTANT for GitHub Pages deployment
-  base: '/bydash-mfe/',
+  base: '/dash-board-mfe/',
 
   plugins: [
     react(),
     federation({
-      name: 'bydash-mfe',
+      name: 'dash-board-mfe',
       filename: 'remoteEntry.js',
       exposes: {
         './DashBoardApp': './src/App.tsx',
