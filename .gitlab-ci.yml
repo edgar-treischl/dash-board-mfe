@@ -1,0 +1,44 @@
+image: node:22
+
+stages:
+  - test
+  - deploy
+
+variables:
+  YARN_CACHE_FOLDER: .yarn-cache
+  COREPACK_HOME: $CI_PROJECT_DIR/.corepack
+
+cache:
+  key:
+    files:
+      - yarn.lock
+  paths:
+    - .yarn-cache/
+    - -corepack/
+
+test:
+  stage: test
+  before_script:
+    - rm -rf node_modules .corepack
+    - corepack enable
+    - yarn install --frozen-lockfile
+  script:
+    - yarn lint
+    - yarn build
+  artifacts:
+    paths:
+      - dist/
+
+pages:
+  stage: deploy
+  dependencies:
+    - test
+  script:
+    - rm -rf public
+    - mkdir -p public
+    - cp -r dist/. public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
