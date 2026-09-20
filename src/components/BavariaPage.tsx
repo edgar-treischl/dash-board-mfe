@@ -7,8 +7,7 @@ import { ViewSwitcher } from './controls/ViewSwitcher'
 import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, MaleIcon, GlobeIcon } from '../utils/icons'
 
 
-type RegionalMetricKey = 'students' | 'avgClassSize' | 'schools' | 'studentTeacherRatio'
-type KPIKey = 'malePercent' | 'migrantPercent'
+type RegionalMetricKey = 'students_percent' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'malePercent' | 'migrantPercent'
 
 type BavariaViewProps = {
   selectedMetric?: RegionalMetricKey
@@ -21,56 +20,78 @@ function BavariaViewComponent({
   selectedMetric: propSelectedMetric,
   onMetricChange: propOnMetricChange,
 }: BavariaViewProps) {
-  const [internalMetric, setInternalMetric] = useState<RegionalMetricKey>('students')
+  const [internalMetric, setInternalMetric] = useState<RegionalMetricKey>('students_percent')
   const [view, setView] = useState<ViewType>('map')
+
+  // Helper function to safely get metric from bavariaMetrics
+  const getMetricValue = (key: RegionalMetricKey): number => {
+    if (key === 'students_percent') return bavariaMetrics.students
+    return (bavariaMetrics as Record<string, number>)[key] || 0
+  }
+
+  // Helper to format metric value for feature grid display
+  const formatMetricValue = (key: RegionalMetricKey, value: number): string => {
+    if (key === 'studentTeacherRatio') return value.toFixed(2)
+    if (key === 'avgClassSize') return value.toFixed(2)
+    if (key === 'malePercent' || key === 'migrantPercent') return value.toFixed(2) + '%'
+    return value.toLocaleString()
+  }
+
+  // Helper to get table header label with proper unit indication
+  const getTableHeaderLabel = (key: RegionalMetricKey): string => {
+    const baseLabel = metricLabels[key]
+    if (key === 'students_percent' || key === 'malePercent' || key === 'migrantPercent') {
+      return baseLabel + ' in %'
+    }
+    return baseLabel
+  }
+
+  // Helper to format table cell value
+  const formatTableValue = (key: RegionalMetricKey, value: number): string => {
+    if (key === 'students_percent' || key === 'malePercent' || key === 'migrantPercent') {
+      return value.toFixed(2)
+    }
+    if (key === 'avgClassSize' || key === 'studentTeacherRatio') {
+      return value.toFixed(2)
+    }
+    return value.toLocaleString()
+  }
   
   const selectedMetric = propSelectedMetric || internalMetric
   const onMetricChange = propOnMetricChange || setInternalMetric
 
   const metricLabels: Record<RegionalMetricKey, string> = {
-    students: 'Schülerschaft',
+    students_percent: 'Schülerschaft',
     avgClassSize: 'Klassengrößen',
     schools: 'Schulen',
     studentTeacherRatio: 'Relation',
-  }
-
-  const kpiLabels: Record<KPIKey, string> = {
     malePercent: 'Jungen',
     migrantPercent: 'Migrationshintergrund',
   }
 
   const metricDescriptions: Record<RegionalMetricKey, string> = {
     schools: 'Anzahl der Schulen in Bayern:',
-    students: 'Gesamtzahl der Schüler und Schülerinnen (SuS) in Bayern:',
+    students_percent: 'Anteil der Schüler und Schülerinnen (SuS) in Bayern:',
     avgClassSize: 'Durchschnittliche Klassengröße in Bayern:',
     studentTeacherRatio: 'Schüler-Lehrer-Relation in Bayern:',
-  }
-
-  const kpiDescriptions: Record<KPIKey, string> = {
     malePercent: 'Anteil der Jungen in Bayern:',
     migrantPercent: 'Anteil der SuS mit Migrationshintergrund in Bayern:',
   }
 
   const metricColors: Record<RegionalMetricKey, string> = {
     schools: '#3b82f6',
-    students: '#ef4444',
+    students_percent: '#ef4444',
     avgClassSize: '#f59e0b',
     studentTeacherRatio: '#10b981',
-  }
-
-  const metricIcons: Record<RegionalMetricKey, React.ReactNode> = {
-    schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
-    students: <PupilsIcon className="bydash-mfe__grid-icon" />,
-    avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
-    studentTeacherRatio: <StudentTeacherRelationIcon className="bydash-mfe__grid-icon" />,
-  }
-
-  const kpiColors: Record<KPIKey, string> = {
     malePercent: '#8b5cf6',
     migrantPercent: '#06b6d4',
   }
 
-  const kpiIcons: Record<KPIKey, React.ReactNode> = {
+  const metricIcons: Record<RegionalMetricKey, React.ReactNode> = {
+    schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
+    students_percent: <PupilsIcon className="bydash-mfe__grid-icon" />,
+    avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
+    studentTeacherRatio: <StudentTeacherRelationIcon className="bydash-mfe__grid-icon" />,
     malePercent: <MaleIcon className="bydash-mfe__grid-icon" />,
     migrantPercent: <GlobeIcon className="bydash-mfe__grid-icon" />,
   }
@@ -91,10 +112,10 @@ function BavariaViewComponent({
           </p>
           <ul className="bydash-mfe__story-text" style={COMMON_STYLES.bulletList}>
             <li style={COMMON_STYLES.listItem}>
-              <strong>{sortedRegions[0].shortName}</strong> hat mit {sortedRegions[0][selectedMetric].toLocaleString()} die höchste Anzahl an <strong>{metricLabels[selectedMetric]}</strong>.
+              <strong>{sortedRegions[0].shortName}</strong> hat mit {sortedRegions[0][selectedMetric].toFixed(selectedMetric === 'students_percent' ? 2 : 0)}{ selectedMetric === 'students_percent' ? '%' : ''} die höchste Anzahl an <strong>{metricLabels[selectedMetric]}</strong>.
             </li>
             <li style={COMMON_STYLES.listItem}>
-              Bayern gesamt: {bavariaMetrics[selectedMetric].toLocaleString()} {metricLabels[selectedMetric]}
+              Bayern gesamt: {getMetricValue(selectedMetric).toLocaleString()} {metricLabels[selectedMetric]}
             </li>
           </ul>
         </div>
@@ -135,7 +156,7 @@ function BavariaViewComponent({
         {/* Selection Grid */}
         <div style={{ padding: '24px' }}>
           <div className="bydash-mfe__selection-grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: '12px' }}>
-            {/* Regional Metrics (sortable/comparable across regions) */}
+            {/* All Metrics (regional + KPI) */}
             {(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => (
               <button
                 key={key}
@@ -157,50 +178,15 @@ function BavariaViewComponent({
                   color: selectedMetric === key ? 'var(--bydash-primary)' : 'var(--bydash-text)',
                   transition: 'all 0.2s ease'
                 }}>
-                   {key === 'studentTeacherRatio' 
-                    ? bavariaMetrics[key].toFixed(2)
-                    : bavariaMetrics[key].toLocaleString()}
+                  {formatMetricValue(key, getMetricValue(key))}
                 </div>
               </button>
-            ))}
-
-            {/* KPIs (Bavaria-wide display only, not comparable by region) */}
-            {(Object.keys(kpiLabels) as KPIKey[]).map((key) => (
-              <div
-                key={key}
-                className={`bydash-mfe__level-select-btn`}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  opacity: 0.85,
-                }}
-              >
-                <div className="bydash-mfe__grid-icon-wrapper">
-                  {kpiIcons[key]}
-                </div>
-                <strong style={{ textAlign: 'center' }}>{kpiLabels[key]}</strong>
-                <span className="bydash-mfe__level-desc" style={{ textAlign: 'center' }}>{kpiDescriptions[key]}</span>
-                <div style={{ 
-                  marginTop: '8px', 
-                  padding: '8px 12px',
-                  background: 'rgba(0, 0, 0, 0.03)',
-                  borderRadius: '8px',
-                  fontSize: '0.975rem',
-                  fontWeight: '600',
-                  color: kpiColors[key],
-                  transition: 'all 0.2s ease'
-                }}>
-                  {bavariaMetrics[key].toFixed(2)}%
-                </div>
-              </div>
             ))}
           </div>
         </div>   
 
         {/* Graph/Map Section */}
-        <div style={{ padding: '24px', borderTop: '1px solid var(--bydash-border)' }}>
+        <div style={{ padding: '8px 12px', borderTop: '1px solid var(--bydash-border)' }}>
           <div
             style={{
               display: 'grid',
@@ -336,18 +322,18 @@ function BavariaViewComponent({
               )}
 
               {view === 'table' && (
-                <div style={{ padding: '1rem', overflowX: 'auto' }}>
+                <div style={{ padding: '0.25rem', overflowX: 'auto' }}>
                   <table style={{
                     width: '100%',
                     borderCollapse: 'collapse',
-                    fontSize: '14px',
+                    fontSize: '13px',
                   }}>
                     <thead>
                       <tr style={{ backgroundColor: '#f3f4f6', borderBottom: '2px solid #d1d5db' }}>
-                        <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#1f2937' }}>Regierungsbezirk</th>
+                        <th style={{ padding: '6px 8px', textAlign: 'left', fontWeight: '600', color: '#1f2937', whiteSpace: 'nowrap' }}>Regierungsbezirk</th>
                         {(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => (
-                          <th key={key} style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
-                            {metricLabels[key]}
+                          <th key={key} style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '600', color: '#1f2937', whiteSpace: 'nowrap' }}>
+                            {getTableHeaderLabel(key)}
                           </th>
                         ))}
                       </tr>
@@ -361,23 +347,21 @@ function BavariaViewComponent({
                             borderBottom: '1px solid #e5e7eb',
                           }}
                         >
-                          <td style={{ padding: '12px', fontWeight: '500', color: '#374151' }}>
+                          <td style={{ padding: '6px 8px', fontWeight: '500', color: '#374151', whiteSpace: 'nowrap' }}>
                             {region.shortName}
                           </td>
                           {(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => (
                             <td 
                               key={key} 
                               style={{ 
-                                padding: '12px', 
+                                padding: '6px 8px', 
                                 textAlign: 'right', 
                                 color: '#4b5563',
                                 fontVariantNumeric: 'tabular-nums',
+                                whiteSpace: 'nowrap'
                               }}
                             >
-                              {typeof region[key] === 'number' && region[key] % 1 !== 0
-                                ? region[key].toFixed(1)
-                                : region[key].toLocaleString()
-                              }
+                              {formatTableValue(key, region[key])}
                             </td>
                           ))}
                         </tr>

@@ -7,7 +7,7 @@ import { ViewSwitcher } from './controls/ViewSwitcher'
 import { RegionIcon } from './controls/RegionIcon'
 import { SchoolsIcon, PupilsIcon, ClassSizeIcon } from '../utils/icons'
 
-type MetricKey = 'schools' | 'students' | 'studentTeacherRatio' | 'avgClassSize'
+type MetricKey = 'schools' | 'students_percent' | 'studentTeacherRatio' | 'avgClassSize'
 
 type ViewType = 'table' | 'map'
 
@@ -25,21 +25,21 @@ function RegierungsViewComponent() {
 
   const metricLabels: Record<MetricKey, string> = {
     schools: 'Schulen',
-    students: 'Schüler und Schülerinnen',
+    students_percent: 'Schüler und Schülerinnen',
     studentTeacherRatio: 'SuS-Lehrer-Relation',
     avgClassSize: 'Klassengröße',
   }
 
   const metricDescriptions: Record<MetricKey, string> = {
     schools: 'Anzahl der Schulen',
-    students: 'Gesamtzahl der Schüler und Schülerinnen',
+    students_percent: 'Gesamtzahl der Schüler und Schülerinnen',
     studentTeacherRatio: 'Schüler-Lehrer-Verhältnis',
     avgClassSize: 'Durchschnittliche Klassengröße',
   }
 
   const metricIcons: Record<MetricKey, React.ReactNode> = {
     schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
-    students: <PupilsIcon className="bydash-mfe__grid-icon" />,
+    students_percent: <PupilsIcon className="bydash-mfe__grid-icon" />,
     studentTeacherRatio: <PupilsIcon className="bydash-mfe__grid-icon" />,
     avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
   }
@@ -233,7 +233,7 @@ function RegierungsViewComponent() {
                               {metricLabels['schools']}
                             </th>
                             <th style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
-                              {metricLabels['students']}
+                              {metricLabels['students_percent']}
                             </th>
                             <th style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
                               {metricLabels['studentTeacherRatio']}
@@ -290,7 +290,7 @@ function RegierungsViewComponent() {
                               {currentRegion.schools.toLocaleString()}
                             </td>
                             <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
-                              {currentRegion.students.toLocaleString()}
+                              {currentRegion.students_percent.toFixed(2)}%
                             </td>
                             <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
                               {currentRegion.studentTeacherRatio.toFixed(2)}

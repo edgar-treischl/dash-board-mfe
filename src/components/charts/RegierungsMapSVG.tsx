@@ -34,9 +34,11 @@ const regionIconMap: Record<string, string> = {
 
 type MetricKey =
   | "schools"
-  | "students"
+  | "students_percent"
   | "studentTeacherRatio"
-  | "avgClassSize";
+  | "avgClassSize"
+  | "malePercent"
+  | "migrantPercent";
 
 type RegierungsMapProps = {
   selectedMetric: MetricKey;
@@ -230,7 +232,7 @@ function RegierungsMapSVGComponent({
             fill="#1f2937"
             textAnchor="middle"
           >
-            {selectedMetric === 'students' ? 'Schüler und Schülerinnen' :
+            {selectedMetric === 'students_percent' ? 'Schüler und Schülerinnen' :
              selectedMetric === 'schools' ? 'Schulen' :
              selectedMetric === 'studentTeacherRatio' ? 'SuS-Lehrer-Relation' :
              'Klassengröße'}
@@ -297,13 +299,17 @@ function RegierungsMapSVGComponent({
             {hoveredRegion}
           </div>
           <div style={{ textAlign: "center", fontSize: "12px", opacity: 0.9 }}>
-            {selectedMetric === "students"
+            {selectedMetric === "students_percent"
               ? "Schüler und Schülerinnen"
               : selectedMetric === "schools"
                 ? "Schulen"
                 : selectedMetric === "studentTeacherRatio"
                   ? "SuS-Lehrer-Relation"
-                  : "Klassengröße"}
+                  : selectedMetric === "malePercent"
+                    ? "Anteil Jungen"
+                    : selectedMetric === "migrantPercent"
+                      ? "Anteil Migrationshintergrund"
+                      : "Klassengröße"}
           </div>
           <div style={{ textAlign: "center", fontWeight: "700" }}>
             {renderData.regionValues[hoveredRegion] == null

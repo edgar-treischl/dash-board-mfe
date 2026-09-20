@@ -12,9 +12,11 @@ interface RegionMetrics {
   shortName: string;
   name: string;
   schools: number;
-  students: number;
+  students_percent: number;
   avgClassSize: number;
   studentTeacherRatio: number;
+  malePercent: number;
+  migrantPercent: number;
 }
 
 interface SchoolOffice {
@@ -30,64 +32,78 @@ export const regionMetrics: RegionMetrics[] = [
     id: "oberbayern",
     shortName: "Oberbayern",
     name: "Regierung von Oberbayern",
-    schools: 1600,
-    students: 520000,
-    avgClassSize: 23.4,
-    studentTeacherRatio: 13.2
+    schools: 1446,
+    students_percent: 36.8903237923863,
+    avgClassSize: 22.18,
+    studentTeacherRatio: 13.23,
+    malePercent: 50.9571858223586,
+    migrantPercent: 16.6407653380688,
   },
   {
     id: "niederbayern",
     shortName: "Niederbayern",
     name: "Regierung von Niederbayern",
-    schools: 650,
-    students: 150000,
-    avgClassSize: 21.7,
-    studentTeacherRatio: 13.1
+    schools: 502,
+    students_percent: 9.30018918308955,
+    avgClassSize: 21.4,
+    studentTeacherRatio: 13.27,
+    malePercent: 50.8000749179567,
+    migrantPercent: 15.8646916556054,
   },
   {
     id: "oberpfalz",
     shortName: "Oberpfalz",
     name: "Regierung der Oberpfalz",
-    schools: 520,
-    students: 125000,
-    avgClassSize: 21.1,
-    studentTeacherRatio: 13.0
+    schools: 435,
+    students_percent: 8.01884863383757,
+    avgClassSize: 21.97,
+    studentTeacherRatio: 13.27,
+    malePercent: 50.6800022666742,
+    migrantPercent: 14.026935645341,
   },
   {
     id: "oberfranken",
     shortName: "Oberfranken",
     name: "Regierung von Oberfranken",
-    schools: 540,
-    students: 118000,
-    avgClassSize: 20.9,
-    studentTeacherRatio: 12.9
+    schools: 412,
+    students_percent: 7.56618757450315,
+    avgClassSize: 21.12,
+    studentTeacherRatio: 12.91,
+    malePercent: 50.5560282268155,
+    migrantPercent: 13.0914368650218,
   },
   {
     id: "mittelfranken",
     shortName: "Mittelfranken",
     name: "Regierung von Mittelfranken",
-    schools: 780,
-    students: 185000,
-    avgClassSize: 22.1,
-    studentTeacherRatio: 13.2
+    schools: 551,
+    students_percent: 13.7687876681102,
+    avgClassSize: 21.49,
+    studentTeacherRatio: 13.04,
+    malePercent: 51.2092626715437,
+    migrantPercent: 17.2806028437062,
   },
   {
     id: "unterfranken",
     shortName: "Unterfranken",
     name: "Regierung von Unterfranken",
-    schools: 570,
-    students: 130000,
-    avgClassSize: 21.3,
-    studentTeacherRatio: 13.1
+    schools: 500,
+    students_percent: 9.72422285737655,
+    avgClassSize: 20.79,
+    studentTeacherRatio: 12.80,
+    malePercent: 50.964953271028,
+    migrantPercent: 13.5404984423676,
   },
   {
     id: "schwaben",
     shortName: "Schwaben",
     name: "Regierung von Schwaben",
-    schools: 740,
-    students: 185000,
-    avgClassSize: 22.0,
-    studentTeacherRatio: 13.3
+    schools: 661,
+    students_percent: 14.7314402906967,
+    avgClassSize: 21.28,
+    studentTeacherRatio: 13.33,
+    malePercent: 50.8333504698842,
+    migrantPercent: 15.9688663143392,
   }
 ];
 

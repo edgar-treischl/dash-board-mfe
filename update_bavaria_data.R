@@ -1,12 +1,10 @@
 tibble::tribble(
-  ~students, ~avgClassSize, ~Student_Teacher_Ratio, ~schools,    ~male_percent, ~migrant_percent,
-    1320414,         21.64,        13.158086696562,     4507, 50.9072154642408, 15.7780817228536
+     ~regierungen, ~students_percent, ~avgClassSize, ~schools, ~Student_Teacher_Ratio,    ~male_percent, ~migrant_percent,
+     "Oberbayern",  36.8903237923863,         22.18,     1446,       13.2300776793959, 50.9571858223586, 16.6407653380688,
+   "Niederbayern",  9.30018918308955,          21.4,      502,       13.2729139645482, 50.8000749179567, 15.8646916556054,
+      "Oberpfalz",  8.01884863383757,         21.97,      435,       13.2650964670509, 50.6800022666742,  14.026935645341,
+    "Oberfranken",  7.56618757450315,         21.12,      412,       12.9142967942089, 50.5560282268155, 13.0914368650218,
+  "Mittelfranken",  13.7687876681102,         21.49,      551,       13.0429012124256, 51.2092626715437, 17.2806028437062,
+   "Unterfranken",  9.72422285737655,         20.79,      500,       12.8003190110657,  50.964953271028, 13.5404984423676,
+       "Schwaben",  14.7314402906967,         21.28,      661,       13.3303179824561, 50.8333504698842, 15.9688663143392
   )
-
-#Labels: 
-# students = 'Gesamtzahl der Schüler und Schülerinnen (SuS)'
-# avgClassSize = 'Durchschnittliche Klassengröße'
-# Student_Teacher_Ratio = 'SuS-Lehrer-Relation'
-# schools = 'Schulen'
-# male_percent = 'Anteil der männlichen SuS'
-# migrant_percent = 'Anteil der SuS mit Migrationshintergrund'
