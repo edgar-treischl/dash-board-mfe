@@ -207,6 +207,13 @@
   stroke-width: 1.5;
 }
 
+/* Metrics grid - responsive layout for region metrics display */
+.bydash-mfe__metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 16px !important;
+}
+
 .bydash-mfe__hero-text {
   display: flex;
   flex-direction: column;
@@ -1164,5 +1171,19 @@
 @media (max-width: 400px) {
   .bydash-mfe__selection-grid {
     grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Metrics grid responsive layout */
+@media (max-width: 900px) {
+  .bydash-mfe__metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .bydash-mfe__metrics-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
   }
 }

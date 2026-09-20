@@ -5,16 +5,16 @@ import { InterpretationBox } from './InterpretationBox'
 import { OfficesLeafletMap } from './charts/OfficesLeafletMap'
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { RegionIcon } from './controls/RegionIcon'
-import { SchoolsIcon, PupilsIcon, ClassSizeIcon } from '../utils/icons'
+import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, MaleIcon, GlobeIcon } from '../utils/icons'
 
-type MetricKey = 'schools' | 'students_percent' | 'studentTeacherRatio' | 'avgClassSize'
+type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' |  'studentTeacherRatio' | 'malePercent' | 'migrantPercent'
 
-type ViewType = 'table' | 'map'
+type ViewType = 'map' | 'table'
 
 function RegierungsViewComponent() {
   // Sort metrics alphabetically by name for consistent display
   const sortedMetrics = [...regionMetrics].sort((a, b) => a.shortName.localeCompare(b.shortName))
-  const [view, setView] = useState<ViewType>('table')
+  const [view, setView] = useState<ViewType>('map')
   const [selectedRegion, setSelectedRegion] = useState<string>(sortedMetrics[0].id)
 
   // Find the currently selected region object
@@ -24,24 +24,37 @@ function RegierungsViewComponent() {
   const currentOffices = schoolOffices.filter(o => o.regionId === selectedRegion)
 
   const metricLabels: Record<MetricKey, string> = {
-    schools: 'Schulen',
-    students_percent: 'Schüler und Schülerinnen',
-    studentTeacherRatio: 'SuS-Lehrer-Relation',
+    students_percent: 'Schülerschaft',
     avgClassSize: 'Klassengröße',
+    schools: 'Schulen',
+    studentTeacherRatio: 'Relation',
+    malePercent: 'Jungen',
+    migrantPercent: 'Migrationshintergrund',
   }
 
   const metricDescriptions: Record<MetricKey, string> = {
     schools: 'Anzahl der Schulen',
     students_percent: 'Gesamtzahl der Schüler und Schülerinnen',
-    studentTeacherRatio: 'Schüler-Lehrer-Verhältnis',
+    studentTeacherRatio: 'Schüler-Lehrer-Relation',
     avgClassSize: 'Durchschnittliche Klassengröße',
+    malePercent: 'Anteil der Jungen',
+    migrantPercent: 'Anteil der SuS mit Migrationshintergrund',
+  }
+
+  // Format metric value for display
+  const formatMetricValue = (key: MetricKey, value: number): string => {
+    if (key === 'studentTeacherRatio' || key === 'avgClassSize') return value.toFixed(2)
+    if (key === 'malePercent' || key === 'migrantPercent') return value.toFixed(2) + '%'
+    return value.toLocaleString()
   }
 
   const metricIcons: Record<MetricKey, React.ReactNode> = {
     schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
     students_percent: <PupilsIcon className="bydash-mfe__grid-icon" />,
-    studentTeacherRatio: <PupilsIcon className="bydash-mfe__grid-icon" />,
+    studentTeacherRatio: <StudentTeacherRelationIcon className="bydash-mfe__grid-icon" />,
     avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
+    malePercent: <MaleIcon className="bydash-mfe__grid-icon" />,
+    migrantPercent: <GlobeIcon className="bydash-mfe__grid-icon" />,
   }
 
   // Build interpretation tabs
@@ -137,7 +150,13 @@ function RegierungsViewComponent() {
             <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>Kennzahlen für den ausgewählten Regierungsbezirk</small>
           </div>
 
-          <div className="bydash-mfe__selection-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '24px' }}>
+          <div 
+            className="bydash-mfe__metrics-grid" 
+            style={{ 
+              gap: '16px', 
+              marginBottom: '24px' 
+            }}
+          >
             {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
               <div
                 key={key}
@@ -145,29 +164,30 @@ function RegierungsViewComponent() {
                   background: 'var(--bydash-bg)',
                   border: '1px solid var(--bydash-border)',
                   borderRadius: '12px',
-                  padding: '16px',
+                  padding: '20px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '12px'
+                  gap: '14px'
                 }}
               >
-                <div className="bydash-mfe__grid-icon-wrapper">
+                <div className="bydash-mfe__grid-icon-wrapper" style={{ width: '48px', height: '48px' }}>
                   {metricIcons[key]}
                 </div>
-                <strong style={{ fontSize: '0.875rem', textAlign: 'center' }}>{metricLabels[key]}</strong>
-                <span className="bydash-mfe__level-desc" style={{ fontSize: '0.75rem', opacity: 0.7 }}>{metricDescriptions[key]}</span>
+                <strong style={{ fontSize: '1.0rem', textAlign: 'center', lineHeight: '1.3' }}>{metricLabels[key]}</strong>
+                <span className="bydash-mfe__level-desc" style={{ fontSize: '0.9rem', opacity: 0.7, textAlign: 'center' }}>{metricDescriptions[key]}</span>
                 <div style={{ 
                   marginTop: '8px', 
-                  padding: '8px 12px',
+                  padding: '12px 16px',
                   background: 'rgba(37, 99, 235, 0.08)',
                   borderRadius: '8px',
-                  fontSize: '0.875rem',
+                  fontSize: '1.05rem',
                   fontWeight: '600',
                   color: 'var(--bydash-primary)',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  textAlign: 'center'
                 }}>
-                  {currentRegion[key].toLocaleString()}
+                  {formatMetricValue(key, currentRegion[key])}
                 </div>
               </div>
             ))}
@@ -200,8 +220,8 @@ function RegierungsViewComponent() {
                 {/* View selector using semantic nav element */}
                 <ViewSwitcher
                   options={[
-                    { key: 'table', label: 'Überblick' },
                     { key: 'map', label: 'Karte' },
+                    { key: 'table', label: 'Überblick' },
                   ]}
                   activeKey={view}
                   onSelect={(selectedView) => setView(selectedView as ViewType)}
