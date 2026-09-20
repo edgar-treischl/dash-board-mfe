@@ -4,7 +4,7 @@ import { COMMON_STYLES } from '../config/chartConfig'
 import { InterpretationBox } from './InterpretationBox'
 import { RegierungsbezirkeMapSVG as RegierungsbezirkeMap } from './charts/RegierungsMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
-import { SchoolsIcon, PupilsIcon, ClassSizeIcon } from '../utils/icons'
+import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, MaleIcon, GlobeIcon } from '../utils/icons'
 
 
 type RegionalMetricKey = 'students' | 'avgClassSize' | 'schools' | 'studentTeacherRatio'
@@ -28,27 +28,27 @@ function BavariaViewComponent({
   const onMetricChange = propOnMetricChange || setInternalMetric
 
   const metricLabels: Record<RegionalMetricKey, string> = {
-    students: 'Gesamtzahl der Schüler und Schülerinnen',
-    avgClassSize: 'Durchschnittliche Klassengröße',
+    students: 'Schülerschaft',
+    avgClassSize: 'Klassengrößen',
     schools: 'Schulen',
-    studentTeacherRatio: 'SuS-Lehrer-Relation',
+    studentTeacherRatio: 'Relation',
   }
 
   const kpiLabels: Record<KPIKey, string> = {
-    malePercent: 'Anteil der männlichen SuS',
-    migrantPercent: 'Anteil der SuS mit Migrationshintergrund',
+    malePercent: 'Jungen',
+    migrantPercent: 'Migrationshintergrund',
   }
 
   const metricDescriptions: Record<RegionalMetricKey, string> = {
-    schools: 'Anzahl der Schulen',
-    students: 'Gesamtzahl der Schüler und Schülerinnen',
-    avgClassSize: 'Durchschnittliche Klassengröße',
-    studentTeacherRatio: 'Schüler-Lehrer-Verhältnis',
+    schools: 'Anzahl der Schulen in Bayern:',
+    students: 'Gesamtzahl der Schüler und Schülerinnen (SuS) in Bayern:',
+    avgClassSize: 'Durchschnittliche Klassengröße in Bayern:',
+    studentTeacherRatio: 'Schüler-Lehrer-Relation in Bayern:',
   }
 
   const kpiDescriptions: Record<KPIKey, string> = {
-    malePercent: 'Anteil der männlichen Schüler und Schülerinnen',
-    migrantPercent: 'Anteil der Schüler und Schülerinnen mit Migrationshintergrund',
+    malePercent: 'Anteil der Jungen in Bayern:',
+    migrantPercent: 'Anteil der SuS mit Migrationshintergrund in Bayern:',
   }
 
   const metricColors: Record<RegionalMetricKey, string> = {
@@ -62,7 +62,7 @@ function BavariaViewComponent({
     schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
     students: <PupilsIcon className="bydash-mfe__grid-icon" />,
     avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
-    studentTeacherRatio: <PupilsIcon className="bydash-mfe__grid-icon" />,
+    studentTeacherRatio: <StudentTeacherRelationIcon className="bydash-mfe__grid-icon" />,
   }
 
   const kpiColors: Record<KPIKey, string> = {
@@ -71,8 +71,8 @@ function BavariaViewComponent({
   }
 
   const kpiIcons: Record<KPIKey, React.ReactNode> = {
-    malePercent: <PupilsIcon className="bydash-mfe__grid-icon" />,
-    migrantPercent: <PupilsIcon className="bydash-mfe__grid-icon" />,
+    malePercent: <MaleIcon className="bydash-mfe__grid-icon" />,
+    migrantPercent: <GlobeIcon className="bydash-mfe__grid-icon" />,
   }
 
   // Sort regions by selected metric value
@@ -157,7 +157,7 @@ function BavariaViewComponent({
                   color: selectedMetric === key ? 'var(--bydash-primary)' : 'var(--bydash-text)',
                   transition: 'all 0.2s ease'
                 }}>
-                  Bayern: {key === 'studentTeacherRatio' 
+                   {key === 'studentTeacherRatio' 
                     ? bavariaMetrics[key].toFixed(2)
                     : bavariaMetrics[key].toLocaleString()}
                 </div>
