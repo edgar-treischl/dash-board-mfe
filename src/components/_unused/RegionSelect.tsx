@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { regions } from '../../data/bavaria'
+import { regionMetrics } from '../../data/bavaria'
 import { RegionIcon } from './RegionIcon'
 import './RegionSelect.css'
 
@@ -27,7 +27,7 @@ function RegionSelectComponent({
   label = 'Wählen Sie eine Region:',
   disabled = false,
 }: RegionSelectProps) {
-  const currentRegion = regions.find(r => r.id === selectedRegionId) || regions[0]
+  const currentRegion = regionMetrics.find(r => r.id === selectedRegionId) || regionMetrics[0]
 
   return (
     <div className="bydash-mfe__region-control-wrapper">
@@ -46,7 +46,7 @@ function RegionSelectComponent({
             onChange={(e) => onRegionChange(e.target.value)}
             disabled={disabled}
           >
-            {regions.map((region) => (
+            {regionMetrics.map((region) => (
               <option key={region.id} value={region.id}>
                 {region.shortName}
               </option>

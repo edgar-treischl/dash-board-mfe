@@ -16,25 +16,20 @@ import mittelfrankenIcon from "../../assets/regions/mittelfranken.svg?url";
 import unterfrankeniIcon from "../../assets/regions/unterfranken.svg?url";
 import schwabenIcon from "../../assets/regions/schwaben.svg?url";
 
-const getRegionIconUrl = (iconPath: string): string => {
-  // Resolve asset URL relative to the module location for both standalone and federated contexts
-  return new URL(iconPath, import.meta.url).href;
-};
-
 const regionIconMap: Record<string, string> = {
-  "Oberbayern": getRegionIconUrl(oberbayernIcon),
-  "Niederbayern": getRegionIconUrl(niederbayernIcon),
-  "Oberpfalz": getRegionIconUrl(oberpfalzIcon),
-  "Oberfranken": getRegionIconUrl(oberfrankeniIcon),
-  "Mittelfranken": getRegionIconUrl(mittelfrankenIcon),
-  "Unterfranken": getRegionIconUrl(unterfrankeniIcon),
-  "Schwaben": getRegionIconUrl(schwabenIcon),
+  "Oberbayern": oberbayernIcon,
+  "Niederbayern": niederbayernIcon,
+  "Oberpfalz": oberpfalzIcon,
+  "Oberfranken": oberfrankeniIcon,
+  "Mittelfranken": mittelfrankenIcon,
+  "Unterfranken": unterfrankeniIcon,
+  "Schwaben": schwabenIcon,
 };
 
 type MetricKey =
   | "schools"
   | "students"
-  | "teachersFTE"
+  | "studentTeacherRatio"
   | "avgClassSize";
 
 type RegierungsMapProps = {
@@ -43,8 +38,7 @@ type RegierungsMapProps = {
     id: string;
     name: string;
     shortName: string;
-    metrics: Record<MetricKey, number>;
-  }>;
+  } & Record<MetricKey, number>>;
 };
 
 const SVG_WIDTH = 800;
@@ -82,7 +76,7 @@ function RegierungsMapSVGComponent({
 
       // Create region values mapping
       const regionValues: Record<string, number> = Object.fromEntries(
-        regions.map((r) => [r.shortName, r.metrics[selectedMetric]])
+        regions.map((r) => [r.shortName, r[selectedMetric]])
       );
 
       // Create color scale
@@ -232,7 +226,7 @@ function RegierungsMapSVGComponent({
           >
             {selectedMetric === 'students' ? 'Schüler und Schülerinnen' :
              selectedMetric === 'schools' ? 'Schulen' :
-             selectedMetric === 'teachersFTE' ? 'Lehrkräfte' :
+             selectedMetric === 'studentTeacherRatio' ? 'SuS-Lehrer-Relation' :
              'Klassengröße'}
           </text>
 
@@ -301,14 +295,16 @@ function RegierungsMapSVGComponent({
               ? "Schüler und Schülerinnen"
               : selectedMetric === "schools"
                 ? "Schulen"
-                : selectedMetric === "teachersFTE"
-                  ? "Lehrkräfte"
+                : selectedMetric === "studentTeacherRatio"
+                  ? "SuS-Lehrer-Relation"
                   : "Klassengröße"}
           </div>
           <div style={{ textAlign: "center", fontWeight: "700" }}>
             {renderData.regionValues[hoveredRegion] == null
               ? "Keine Daten"
-              : renderData.regionValues[hoveredRegion].toLocaleString("de-DE")}
+              : selectedMetric === "studentTeacherRatio"
+                ? renderData.regionValues[hoveredRegion].toFixed(2)
+                : renderData.regionValues[hoveredRegion].toLocaleString("de-DE")}
           </div>
         </div>
       )}

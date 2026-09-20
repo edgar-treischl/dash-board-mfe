@@ -1,82 +1,112 @@
 export const bavariaMetrics = {
-  schools: 6300,
-  students: 1600000,
-  teachersFTE: 140000,
-  avgClassSize: 22.8
+  schools: 4507,
+  students: 1320414,
+  avgClassSize: 21.64,
+  studentTeacherRatio: 13.16,
+  malePercent: 50.91,
+  migrantPercent: 15.78
 };
 
-export const regions = [
+interface RegionMetrics {
+  id: string;
+  shortName: string;
+  name: string;
+  schools: number;
+  students: number;
+  avgClassSize: number;
+  studentTeacherRatio: number;
+}
+
+interface SchoolOffice {
+  regionId: string;
+  name: string;
+  schools: number;
+  students: number;
+  studentTeacherRatio: number;
+}
+
+export const regionMetrics: RegionMetrics[] = [
   {
     id: "oberbayern",
     shortName: "Oberbayern",
     name: "Regierung von Oberbayern",
-    metrics: { schools: 1600, students: 520000, teachersFTE: 46000, avgClassSize: 23.4 },
-    schoolOffices: [
-      { name: "Staatliches Schulamt München-Stadt", schools: 310, students: 115000, teachersFTE: 8400 },
-      { name: "Staatliches Schulamt München-Land", schools: 150, students: 54000, teachersFTE: 3800 },
-      { name: "Staatliches Schulamt Rosenheim", schools: 110, students: 32000, teachersFTE: 2400 }
-    ]
+    schools: 1600,
+    students: 520000,
+    avgClassSize: 23.4,
+    studentTeacherRatio: 13.2
   },
   {
     id: "niederbayern",
     shortName: "Niederbayern",
     name: "Regierung von Niederbayern",
-    metrics: { schools: 650, students: 150000, teachersFTE: 12500, avgClassSize: 21.7 },
-    schoolOffices: [
-      { name: "Staatliches Schulamt Landshut", schools: 120, students: 28000, teachersFTE: 2300 },
-      { name: "Staatliches Schulamt Passau", schools: 105, students: 24500, teachersFTE: 2050 }
-    ]
+    schools: 650,
+    students: 150000,
+    avgClassSize: 21.7,
+    studentTeacherRatio: 13.1
   },
   {
     id: "oberpfalz",
     shortName: "Oberpfalz",
     name: "Regierung der Oberpfalz",
-    metrics: { schools: 520, students: 125000, teachersFTE: 10500, avgClassSize: 21.1 },
-    schoolOffices: [
-      { name: "Staatliches Schulamt Regensburg", schools: 115, students: 27000, teachersFTE: 2300 },
-      { name: "Staatliches Schulamt Amberg-Sulzbach", schools: 70, students: 14500, teachersFTE: 1200 }
-    ]
+    schools: 520,
+    students: 125000,
+    avgClassSize: 21.1,
+    studentTeacherRatio: 13.0
   },
   {
     id: "oberfranken",
     shortName: "Oberfranken",
     name: "Regierung von Oberfranken",
-    metrics: { schools: 540, students: 118000, teachersFTE: 10200, avgClassSize: 20.9 },
-    schoolOffices: [
-      { name: "Staatliches Schulamt Bamberg", schools: 85, students: 21000, teachersFTE: 1850 },
-      { name: "Staatliches Schulamt Hof", schools: 60, students: 14500, teachersFTE: 1250 }
-    ]
+    schools: 540,
+    students: 118000,
+    avgClassSize: 20.9,
+    studentTeacherRatio: 12.9
   },
   {
     id: "mittelfranken",
     shortName: "Mittelfranken",
     name: "Regierung von Mittelfranken",
-    metrics: { schools: 780, students: 185000, teachersFTE: 16000, avgClassSize: 22.1 },
-    schoolOffices: [
-      { name: "Staatliches Schulamt Nürnberg-Stadt", schools: 140, students: 42000, teachersFTE: 3400 },
-      { name: "Staatliches Schulamt Ansbach", schools: 95, students: 21500, teachersFTE: 1900 }
-    ]
+    schools: 780,
+    students: 185000,
+    avgClassSize: 22.1,
+    studentTeacherRatio: 13.2
   },
   {
     id: "unterfranken",
     shortName: "Unterfranken",
     name: "Regierung von Unterfranken",
-    metrics: { schools: 570, students: 130000, teachersFTE: 11100, avgClassSize: 21.3 },
-    schoolOffices: [
-      { name: "Staatliches Schulamt Würzburg", schools: 110, students: 27000, teachersFTE: 2300 },
-      { name: "Staatliches Schulamt Aschaffenburg", schools: 90, students: 22500, teachersFTE: 1950 }
-    ]
+    schools: 570,
+    students: 130000,
+    avgClassSize: 21.3,
+    studentTeacherRatio: 13.1
   },
   {
     id: "schwaben",
     shortName: "Schwaben",
     name: "Regierung von Schwaben",
-    metrics: { schools: 740, students: 185000, teachersFTE: 15800, avgClassSize: 22.0 },
-    schoolOffices: [
-      { name: "Staatliches Schulamt Augsburg-Stadt", schools: 130, students: 39000, teachersFTE: 3250 },
-      { name: "Staatliches Schulamt Kempten", schools: 80, students: 18000, teachersFTE: 1450 }
-    ]
+    schools: 740,
+    students: 185000,
+    avgClassSize: 22.0,
+    studentTeacherRatio: 13.3
   }
+];
+
+export const schoolOffices: SchoolOffice[] = [
+  { regionId: "oberbayern", name: "Staatliches Schulamt München-Stadt", schools: 310, students: 115000, studentTeacherRatio: 13.2 },
+  { regionId: "oberbayern", name: "Staatliches Schulamt München-Land", schools: 150, students: 54000, studentTeacherRatio: 13.1 },
+  { regionId: "oberbayern", name: "Staatliches Schulamt Rosenheim", schools: 110, students: 32000, studentTeacherRatio: 13.3 },
+  { regionId: "niederbayern", name: "Staatliches Schulamt Landshut", schools: 120, students: 28000, studentTeacherRatio: 13.0 },
+  { regionId: "niederbayern", name: "Staatliches Schulamt Passau", schools: 105, students: 24500, studentTeacherRatio: 13.2 },
+  { regionId: "oberpfalz", name: "Staatliches Schulamt Regensburg", schools: 115, students: 27000, studentTeacherRatio: 12.9 },
+  { regionId: "oberpfalz", name: "Staatliches Schulamt Amberg-Sulzbach", schools: 70, students: 14500, studentTeacherRatio: 13.0 },
+  { regionId: "oberfranken", name: "Staatliches Schulamt Bamberg", schools: 85, students: 21000, studentTeacherRatio: 12.9 },
+  { regionId: "oberfranken", name: "Staatliches Schulamt Hof", schools: 60, students: 14500, studentTeacherRatio: 13.1 },
+  { regionId: "mittelfranken", name: "Staatliches Schulamt Nürnberg-Stadt", schools: 140, students: 42000, studentTeacherRatio: 13.2 },
+  { regionId: "mittelfranken", name: "Staatliches Schulamt Ansbach", schools: 95, students: 21500, studentTeacherRatio: 13.0 },
+  { regionId: "unterfranken", name: "Staatliches Schulamt Würzburg", schools: 110, students: 27000, studentTeacherRatio: 13.1 },
+  { regionId: "unterfranken", name: "Staatliches Schulamt Aschaffenburg", schools: 90, students: 22500, studentTeacherRatio: 13.0 },
+  { regionId: "schwaben", name: "Staatliches Schulamt Augsburg-Stadt", schools: 130, students: 39000, studentTeacherRatio: 13.3 },
+  { regionId: "schwaben", name: "Staatliches Schulamt Kempten", schools: 80, students: 18000, studentTeacherRatio: 13.2 }
 ];
 
 

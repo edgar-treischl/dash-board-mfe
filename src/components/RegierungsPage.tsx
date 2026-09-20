@@ -1,43 +1,46 @@
 import { memo, useState } from 'react'
-import { bavariaMetrics, regions } from '../data/bavaria'
+import { bavariaMetrics, regionMetrics, schoolOffices } from '../data/bavaria'
 import { COMMON_STYLES } from '../config/chartConfig'
 import { InterpretationBox } from './InterpretationBox'
 import { OfficesLeafletMap } from './charts/OfficesLeafletMap'
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { RegionIcon } from './controls/RegionIcon'
-import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons'
+import { SchoolsIcon, PupilsIcon, ClassSizeIcon } from '../utils/icons'
 
-type MetricKey = 'schools' | 'students' | 'teachersFTE' | 'avgClassSize'
+type MetricKey = 'schools' | 'students' | 'studentTeacherRatio' | 'avgClassSize'
 
 type ViewType = 'table' | 'map'
 
 function RegierungsViewComponent() {
-  // Sort Regions alphabetically by name for consistent display
-  regions.sort((a, b) => a.shortName.localeCompare(b.shortName))
+  // Sort metrics alphabetically by name for consistent display
+  const sortedMetrics = [...regionMetrics].sort((a, b) => a.shortName.localeCompare(b.shortName))
   const [view, setView] = useState<ViewType>('table')
-  const [selectedRegion, setSelectedRegion] = useState<string>(regions[0].id)
+  const [selectedRegion, setSelectedRegion] = useState<string>(sortedMetrics[0].id)
 
   // Find the currently selected region object
-  const currentRegion = regions.find(r => r.id === selectedRegion) || regions[0]
+  const currentRegion = sortedMetrics.find(r => r.id === selectedRegion) || sortedMetrics[0]
+  
+  // Get school offices for the selected region
+  const currentOffices = schoolOffices.filter(o => o.regionId === selectedRegion)
 
   const metricLabels: Record<MetricKey, string> = {
     schools: 'Schulen',
     students: 'Schüler und Schülerinnen',
-    teachersFTE: 'Lehrkräfte',
+    studentTeacherRatio: 'SuS-Lehrer-Relation',
     avgClassSize: 'Klassengröße',
   }
 
   const metricDescriptions: Record<MetricKey, string> = {
     schools: 'Anzahl der Schulen',
     students: 'Gesamtzahl der Schüler und Schülerinnen',
-    teachersFTE: 'Lehrkräfte in Vollzeitäquivalenten',
+    studentTeacherRatio: 'Schüler-Lehrer-Verhältnis',
     avgClassSize: 'Durchschnittliche Klassengröße',
   }
 
   const metricIcons: Record<MetricKey, React.ReactNode> = {
     schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
     students: <PupilsIcon className="bydash-mfe__grid-icon" />,
-    teachersFTE: <TeachersIcon className="bydash-mfe__grid-icon" />,
+    studentTeacherRatio: <PupilsIcon className="bydash-mfe__grid-icon" />,
     avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
   }
 
@@ -102,7 +105,7 @@ function RegierungsViewComponent() {
               gap: '12px'
             }}
           >
-            {regions.map((region) => (
+            {sortedMetrics.map((region) => (
               <button
                 key={region.id}
                 className={`bydash-mfe__level-select-btn ${selectedRegion === region.id ? 'is-active' : ''}`}
@@ -164,7 +167,7 @@ function RegierungsViewComponent() {
                   color: 'var(--bydash-primary)',
                   transition: 'all 0.2s ease'
                 }}>
-                  {currentRegion.metrics[key].toLocaleString()}
+                  {currentRegion[key].toLocaleString()}
                 </div>
               </div>
             ))}
@@ -211,7 +214,8 @@ function RegierungsViewComponent() {
                   {view === 'map' && (
                     <OfficesLeafletMap
                       selectedRegionId={selectedRegion}
-                      regions={regions}
+                      regionMetrics={sortedMetrics}
+                      schoolOffices={schoolOffices}
                     />
                   )}
 
@@ -232,12 +236,12 @@ function RegierungsViewComponent() {
                               {metricLabels['students']}
                             </th>
                             <th style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
-                              {metricLabels['teachersFTE']}
+                              {metricLabels['studentTeacherRatio']}
                             </th>
                           </tr>
                         </thead>
                         <tbody>
-                          {currentRegion.schoolOffices.map((office, idx) => (
+                          {currentOffices.map((office, idx) => (
                             <tr 
                               key={idx} 
                               style={{ 
@@ -276,20 +280,20 @@ function RegierungsViewComponent() {
                                   fontVariantNumeric: 'tabular-nums',
                                 }}
                               >
-                                {office.teachersFTE.toLocaleString()}
+                                {office.studentTeacherRatio.toFixed(2)}
                               </td>
                             </tr>
                           ))}
                           <tr style={{ backgroundColor: '#f0f9ff', borderTop: '2px solid #d1d5db', fontWeight: '600' }}>
                             <td style={{ padding: '12px', color: '#1f2937' }}>{currentRegion.shortName} (Gesamt)</td>
                             <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
-                              {currentRegion.metrics.schools.toLocaleString()}
+                              {currentRegion.schools.toLocaleString()}
                             </td>
                             <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
-                              {currentRegion.metrics.students.toLocaleString()}
+                              {currentRegion.students.toLocaleString()}
                             </td>
                             <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
-                              {currentRegion.metrics.teachersFTE.toLocaleString()}
+                              {currentRegion.studentTeacherRatio.toFixed(2)}
                             </td>
                           </tr>
                         </tbody>

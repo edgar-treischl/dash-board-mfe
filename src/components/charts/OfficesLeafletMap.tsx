@@ -4,20 +4,24 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { officeCoords } from '../../data/bavaria'
 
+interface RegionMetric {
+  id: string
+  name: string
+  shortName: string
+}
+
+interface SchoolOffice {
+  regionId: string
+  name: string
+  schools: number
+  students: number
+  studentTeacherRatio: number
+}
+
 type OfficesLeafletMapProps = {
   selectedRegionId: string
-  regions: Array<{
-    id: string
-    name: string
-    shortName: string
-    metrics: Record<string, number>
-    schoolOffices: Array<{
-      name: string
-      schools: number
-      students: number
-      teachersFTE: number
-    }>
-  }>
+  regionMetrics: RegionMetric[]
+  schoolOffices: SchoolOffice[]
 }
 
 // Create custom icon for markers
@@ -49,9 +53,11 @@ const createMarkerIcon = (color: string) => {
 
 function OfficesLeafletMapComponent({
   selectedRegionId,
-  regions,
+  regionMetrics,
+  schoolOffices,
 }: OfficesLeafletMapProps) {
-  const selectedRegion = regions.find(r => r.id === selectedRegionId)
+  const selectedRegionMetrics = regionMetrics.find(r => r.id === selectedRegionId)
+  const selectedRegionOffices = schoolOffices.filter(o => o.regionId === selectedRegionId)
 
   // Define region colors
   const regionColors: Record<string, string> = {
@@ -66,10 +72,12 @@ function OfficesLeafletMapComponent({
 
   // Memoize map data calculations
   const mapData = useMemo(() => {
-    if (!selectedRegion) return { center: [48.5, 11.5] as [number, number], zoom: 8 }
+    if (!selectedRegionMetrics || selectedRegionOffices.length === 0) {
+      return { center: [48.5, 11.5] as [number, number], zoom: 8 }
+    }
 
     // Get center of the region based on average office coords
-    const regionOfficeCoords = selectedRegion.schoolOffices
+    const regionOfficeCoords = selectedRegionOffices
       .map(office => {
         const key = `${selectedRegionId}|${office.name}`
         return officeCoords[key as keyof typeof officeCoords]
@@ -103,9 +111,9 @@ function OfficesLeafletMapComponent({
       center: [centerLat, centerLon] as [number, number],
       zoom: calculateZoom(),
     }
-  }, [selectedRegionId, selectedRegion])
+  }, [selectedRegionId, selectedRegionMetrics, selectedRegionOffices])
 
-  if (!selectedRegion) {
+  if (!selectedRegionMetrics) {
     return <div style={{ padding: '1rem', color: '#6b7280' }}>Region nicht gefunden</div>
   }
 
@@ -125,7 +133,7 @@ function OfficesLeafletMapComponent({
         />
         
         {/* Office markers */}
-        {selectedRegion.schoolOffices.map((office, idx) => {
+        {selectedRegionOffices.map((office, idx) => {
           const key = `${selectedRegionId}|${office.name}`
           const coord = officeCoords[key as keyof typeof officeCoords]
 
@@ -166,10 +174,10 @@ function OfficesLeafletMapComponent({
                   </div>
                   <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #e5e7eb' }}>
                     <div style={{ fontSize: '11px', color: '#6b7280', textTransform: 'uppercase' }}>
-                      Lehrkräfte (VZÄ)
+                      SuS-Lehrer-Relation
                     </div>
                     <div style={{ fontWeight: '500', fontSize: '14px' }}>
-                      {office.teachersFTE.toLocaleString()}
+                      {office.studentTeacherRatio.toFixed(2)}
                     </div>
                   </div>
                 </div>

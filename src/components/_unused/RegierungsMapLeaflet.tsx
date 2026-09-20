@@ -21,8 +21,7 @@ type RegierungsMapProps = {
     id: string;
     name: string;
     shortName: string;
-    metrics: Record<MetricKey, number>;
-  }>;
+  } & Record<MetricKey, number>>;
 };
 
 function RegierungsbezirkeMapLeafletComponent({

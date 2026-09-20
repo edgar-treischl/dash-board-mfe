@@ -1,18 +1,18 @@
 import { memo, useState } from 'react'
-import { bavariaMetrics, regions } from '../data/bavaria'
+import { bavariaMetrics, regionMetrics } from '../data/bavaria'
 import { COMMON_STYLES } from '../config/chartConfig'
 import { InterpretationBox } from './InterpretationBox'
 import { RegierungsbezirkeMapSVG as RegierungsbezirkeMap } from './charts/RegierungsMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
-import { SchoolsIcon, PupilsIcon, TeachersIcon, ClassSizeIcon } from '../utils/icons'
+import { SchoolsIcon, PupilsIcon, ClassSizeIcon } from '../utils/icons'
 
 
-type MetricKey = 'students' | 'avgClassSize' | 'teachersFTE' | 'schools'
-
+type RegionalMetricKey = 'students' | 'avgClassSize' | 'schools' | 'studentTeacherRatio'
+type KPIKey = 'malePercent' | 'migrantPercent'
 
 type BavariaViewProps = {
-  selectedMetric?: MetricKey
-  onMetricChange?: (metric: MetricKey) => void
+  selectedMetric?: RegionalMetricKey
+  onMetricChange?: (metric: RegionalMetricKey) => void
 }
 
 type ViewType = 'map' | 'chart' | 'table'
@@ -21,43 +21,63 @@ function BavariaViewComponent({
   selectedMetric: propSelectedMetric,
   onMetricChange: propOnMetricChange,
 }: BavariaViewProps) {
-  const [internalMetric, setInternalMetric] = useState<MetricKey>('students')
+  const [internalMetric, setInternalMetric] = useState<RegionalMetricKey>('students')
   const [view, setView] = useState<ViewType>('map')
   
   const selectedMetric = propSelectedMetric || internalMetric
   const onMetricChange = propOnMetricChange || setInternalMetric
 
-  const metricLabels: Record<MetricKey, string> = {
-    students: 'Schüler und Schülerinnen',
-    avgClassSize: 'Klassengröße',
-    teachersFTE: 'Lehrkräfte',
+  const metricLabels: Record<RegionalMetricKey, string> = {
+    students: 'Gesamtzahl der Schüler und Schülerinnen',
+    avgClassSize: 'Durchschnittliche Klassengröße',
     schools: 'Schulen',
+    studentTeacherRatio: 'SuS-Lehrer-Relation',
   }
 
-  const metricDescriptions: Record<MetricKey, string> = {
+  const kpiLabels: Record<KPIKey, string> = {
+    malePercent: 'Anteil der männlichen SuS',
+    migrantPercent: 'Anteil der SuS mit Migrationshintergrund',
+  }
+
+  const metricDescriptions: Record<RegionalMetricKey, string> = {
     schools: 'Anzahl der Schulen',
     students: 'Gesamtzahl der Schüler und Schülerinnen',
-    teachersFTE: 'Lehrkräfte in Vollzeitäquivalenten',
     avgClassSize: 'Durchschnittliche Klassengröße',
+    studentTeacherRatio: 'Schüler-Lehrer-Verhältnis',
   }
 
-  const metricColors: Record<MetricKey, string> = {
+  const kpiDescriptions: Record<KPIKey, string> = {
+    malePercent: 'Anteil der männlichen Schüler und Schülerinnen',
+    migrantPercent: 'Anteil der Schüler und Schülerinnen mit Migrationshintergrund',
+  }
+
+  const metricColors: Record<RegionalMetricKey, string> = {
     schools: '#3b82f6',
     students: '#ef4444',
-    teachersFTE: '#10b981',
     avgClassSize: '#f59e0b',
+    studentTeacherRatio: '#10b981',
   }
 
-  const metricIcons: Record<MetricKey, React.ReactNode> = {
+  const metricIcons: Record<RegionalMetricKey, React.ReactNode> = {
     schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
     students: <PupilsIcon className="bydash-mfe__grid-icon" />,
-    teachersFTE: <TeachersIcon className="bydash-mfe__grid-icon" />,
     avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
+    studentTeacherRatio: <PupilsIcon className="bydash-mfe__grid-icon" />,
+  }
+
+  const kpiColors: Record<KPIKey, string> = {
+    malePercent: '#8b5cf6',
+    migrantPercent: '#06b6d4',
+  }
+
+  const kpiIcons: Record<KPIKey, React.ReactNode> = {
+    malePercent: <PupilsIcon className="bydash-mfe__grid-icon" />,
+    migrantPercent: <PupilsIcon className="bydash-mfe__grid-icon" />,
   }
 
   // Sort regions by selected metric value
-  const sortedRegions = [...regions].sort((a, b) => {
-    return b.metrics[selectedMetric] - a.metrics[selectedMetric]
+  const sortedRegions = [...regionMetrics].sort((a, b) => {
+    return b[selectedMetric] - a[selectedMetric]
   })
 
   // Build interpretation tabs
@@ -71,7 +91,7 @@ function BavariaViewComponent({
           </p>
           <ul className="bydash-mfe__story-text" style={COMMON_STYLES.bulletList}>
             <li style={COMMON_STYLES.listItem}>
-              <strong>{sortedRegions[0].shortName}</strong> hat mit {sortedRegions[0].metrics[selectedMetric].toLocaleString()} die höchste Anzahl an <strong>{metricLabels[selectedMetric]}</strong>.
+              <strong>{sortedRegions[0].shortName}</strong> hat mit {sortedRegions[0][selectedMetric].toLocaleString()} die höchste Anzahl an <strong>{metricLabels[selectedMetric]}</strong>.
             </li>
             <li style={COMMON_STYLES.listItem}>
               Bayern gesamt: {bavariaMetrics[selectedMetric].toLocaleString()} {metricLabels[selectedMetric]}
@@ -114,8 +134,9 @@ function BavariaViewComponent({
 
         {/* Selection Grid */}
         <div style={{ padding: '24px' }}>
-          <div className="bydash-mfe__selection-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
-            {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+          <div className="bydash-mfe__selection-grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: '12px' }}>
+            {/* Regional Metrics (sortable/comparable across regions) */}
+            {(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => (
               <button
                 key={key}
                 className={`bydash-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
@@ -136,9 +157,44 @@ function BavariaViewComponent({
                   color: selectedMetric === key ? 'var(--bydash-primary)' : 'var(--bydash-text)',
                   transition: 'all 0.2s ease'
                 }}>
-                  Bayern: {bavariaMetrics[key].toLocaleString()}
+                  Bayern: {key === 'studentTeacherRatio' 
+                    ? bavariaMetrics[key].toFixed(2)
+                    : bavariaMetrics[key].toLocaleString()}
                 </div>
               </button>
+            ))}
+
+            {/* KPIs (Bavaria-wide display only, not comparable by region) */}
+            {(Object.keys(kpiLabels) as KPIKey[]).map((key) => (
+              <div
+                key={key}
+                className={`bydash-mfe__level-select-btn`}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  opacity: 0.85,
+                }}
+              >
+                <div className="bydash-mfe__grid-icon-wrapper">
+                  {kpiIcons[key]}
+                </div>
+                <strong style={{ textAlign: 'center' }}>{kpiLabels[key]}</strong>
+                <span className="bydash-mfe__level-desc" style={{ textAlign: 'center' }}>{kpiDescriptions[key]}</span>
+                <div style={{ 
+                  marginTop: '8px', 
+                  padding: '8px 12px',
+                  background: 'rgba(0, 0, 0, 0.03)',
+                  borderRadius: '8px',
+                  fontSize: '0.975rem',
+                  fontWeight: '600',
+                  color: kpiColors[key],
+                  transition: 'all 0.2s ease'
+                }}>
+                  {bavariaMetrics[key].toFixed(2)}%
+                </div>
+              </div>
             ))}
           </div>
         </div>   
@@ -183,7 +239,7 @@ function BavariaViewComponent({
             <div className="bydash-mfe__chart-frame">
 
               {view === 'map' && (
-                <RegierungsbezirkeMap selectedMetric={selectedMetric} regions={regions} />
+                <RegierungsbezirkeMap selectedMetric={selectedMetric} regions={regionMetrics} />
               )}
               
               {view === 'chart' && (
@@ -191,7 +247,7 @@ function BavariaViewComponent({
                   
                   {/* Grid lines and scale labels */}
                   {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
-                    const maxValue = Math.max(...regions.map(r => r.metrics[selectedMetric]))
+                    const maxValue = Math.max(...regionMetrics.map(r => r[selectedMetric]))
                     const xPos = 200 + ratio * 600
                     const value = Math.round(maxValue * ratio)
                      
@@ -222,8 +278,8 @@ function BavariaViewComponent({
                   
                   {/* Bars and labels */}
                   {sortedRegions.map((region, idx) => {
-                    const maxValue = Math.max(...regions.map(r => r.metrics[selectedMetric]))
-                    const barWidth = (region.metrics[selectedMetric] / maxValue) * 600
+                    const maxValue = Math.max(...regionMetrics.map(r => r[selectedMetric]))
+                    const barWidth = (region[selectedMetric] / maxValue) * 600
                     const yPos = idx * 50 + 50
                      
                     return (
@@ -259,7 +315,7 @@ function BavariaViewComponent({
                           fontWeight="600"
                           dominantBaseline="middle"
                         >
-                          {region.metrics[selectedMetric].toLocaleString()}
+                          {region[selectedMetric].toLocaleString()}
                         </text>
                       </g>
                     )
@@ -289,7 +345,7 @@ function BavariaViewComponent({
                     <thead>
                       <tr style={{ backgroundColor: '#f3f4f6', borderBottom: '2px solid #d1d5db' }}>
                         <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#1f2937' }}>Regierungsbezirk</th>
-                        {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+                        {(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => (
                           <th key={key} style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
                             {metricLabels[key]}
                           </th>
@@ -297,7 +353,7 @@ function BavariaViewComponent({
                       </tr>
                     </thead>
                     <tbody>
-                      {regions.map((region, idx) => (
+                      {regionMetrics.map((region, idx) => (
                         <tr 
                           key={region.id} 
                           style={{ 
@@ -308,7 +364,7 @@ function BavariaViewComponent({
                           <td style={{ padding: '12px', fontWeight: '500', color: '#374151' }}>
                             {region.shortName}
                           </td>
-                          {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+                          {(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => (
                             <td 
                               key={key} 
                               style={{ 
@@ -318,9 +374,9 @@ function BavariaViewComponent({
                                 fontVariantNumeric: 'tabular-nums',
                               }}
                             >
-                              {typeof region.metrics[key] === 'number' && region.metrics[key] % 1 !== 0
-                                ? region.metrics[key].toFixed(1)
-                                : region.metrics[key].toLocaleString()
+                              {typeof region[key] === 'number' && region[key] % 1 !== 0
+                                ? region[key].toFixed(1)
+                                : region[key].toLocaleString()
                               }
                             </td>
                           ))}

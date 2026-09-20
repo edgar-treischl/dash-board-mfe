@@ -13,8 +13,7 @@ type RegierungsMapProps = {
     id: string
     name: string
     shortName: string
-    metrics: Record<MetricKey, number>
-  }>
+  } & Record<MetricKey, number>>
 }
 
 // Create a data URL from the raw TopoJSON string (works for both dev and production)
@@ -77,7 +76,7 @@ function RegierungsbezirkeMapComponent({ selectedMetric, regions }: RegierungsMa
   // TopoJSON uses simple names like "Oberbayern", our data has shortName that matches
   const regionDataMap: Record<string, number | null> = {};
   regions.forEach((region) => {
-    const value = region.metrics[selectedMetric];
+    const value = region[selectedMetric];
     // Handle missing data explicitly
     regionDataMap[region.shortName] = value !== null && value !== undefined ? value : null;
   });
