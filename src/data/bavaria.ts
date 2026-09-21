@@ -2,8 +2,8 @@ export const bavariaMetrics = {
   schools: 4507,
   students: 1320414,
   avgClassSize: 21.64,
+  teachersFTE: 100350,
   studentTeacherRatio: 13.16,
-  malePercent: 50.91,
   migrantPercent: 15.78
 };
 
@@ -14,8 +14,8 @@ interface RegionMetrics {
   schools: number;
   students_percent: number;
   avgClassSize: number;
+  teachersFTE: number;
   studentTeacherRatio: number;
-  malePercent: number;
   migrantPercent: number;
 }
 
@@ -35,8 +35,8 @@ export const regionMetrics: RegionMetrics[] = [
     schools: 1446,
     students_percent: 36.8903237923863,
     avgClassSize: 22.18,
+    teachersFTE: 36818,
     studentTeacherRatio: 13.23,
-    malePercent: 50.9571858223586,
     migrantPercent: 16.6407653380688,
   },
   {
@@ -46,8 +46,8 @@ export const regionMetrics: RegionMetrics[] = [
     schools: 502,
     students_percent: 9.30018918308955,
     avgClassSize: 21.4,
+    teachersFTE: 9252,
     studentTeacherRatio: 13.27,
-    malePercent: 50.8000749179567,
     migrantPercent: 15.8646916556054,
   },
   {
@@ -57,8 +57,8 @@ export const regionMetrics: RegionMetrics[] = [
     schools: 435,
     students_percent: 8.01884863383757,
     avgClassSize: 21.97,
+    teachersFTE: 7982,
     studentTeacherRatio: 13.27,
-    malePercent: 50.6800022666742,
     migrantPercent: 14.026935645341,
   },
   {
@@ -68,8 +68,8 @@ export const regionMetrics: RegionMetrics[] = [
     schools: 412,
     students_percent: 7.56618757450315,
     avgClassSize: 21.12,
+    teachersFTE: 7736,
     studentTeacherRatio: 12.91,
-    malePercent: 50.5560282268155,
     migrantPercent: 13.0914368650218,
   },
   {
@@ -79,8 +79,8 @@ export const regionMetrics: RegionMetrics[] = [
     schools: 551,
     students_percent: 13.7687876681102,
     avgClassSize: 21.49,
+    teachersFTE: 13939,
     studentTeacherRatio: 13.04,
-    malePercent: 51.2092626715437,
     migrantPercent: 17.2806028437062,
   },
   {
@@ -90,8 +90,8 @@ export const regionMetrics: RegionMetrics[] = [
     schools: 500,
     students_percent: 9.72422285737655,
     avgClassSize: 20.79,
+    teachersFTE: 10031,
     studentTeacherRatio: 12.80,
-    malePercent: 50.964953271028,
     migrantPercent: 13.5404984423676,
   },
   {
@@ -101,8 +101,8 @@ export const regionMetrics: RegionMetrics[] = [
     schools: 661,
     students_percent: 14.7314402906967,
     avgClassSize: 21.28,
+    teachersFTE: 14592,
     studentTeacherRatio: 13.33,
-    malePercent: 50.8333504698842,
     migrantPercent: 15.9688663143392,
   }
 ];

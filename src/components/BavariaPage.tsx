@@ -4,10 +4,10 @@ import { COMMON_STYLES } from '../config/chartConfig'
 import { InterpretationBox } from './InterpretationBox'
 import { RegierungsbezirkeMapSVG as RegierungsbezirkeMap } from './charts/RegierungsMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
-import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, MaleIcon, GlobeIcon } from '../utils/icons'
+import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
 
 
-type RegionalMetricKey = 'students_percent' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'malePercent' | 'migrantPercent'
+type RegionalMetricKey = 'students_percent' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
 type BavariaViewProps = {
   selectedMetric?: RegionalMetricKey
@@ -33,14 +33,14 @@ function BavariaViewComponent({
   const formatMetricValue = (key: RegionalMetricKey, value: number): string => {
     if (key === 'studentTeacherRatio') return value.toFixed(2)
     if (key === 'avgClassSize') return value.toFixed(2)
-    if (key === 'malePercent' || key === 'migrantPercent') return value.toFixed(2) + '%'
+    if (key === 'migrantPercent') return value.toFixed(2) + '%'
     return value.toLocaleString()
   }
 
   // Helper to get table header label with proper unit indication
   const getTableHeaderLabel = (key: RegionalMetricKey): string => {
     const baseLabel = metricLabels[key]
-    if (key === 'students_percent' || key === 'malePercent' || key === 'migrantPercent') {
+    if (key === 'students_percent' || key === 'migrantPercent') {
       return baseLabel + ' in %'
     }
     return baseLabel
@@ -48,7 +48,7 @@ function BavariaViewComponent({
 
   // Helper to format table cell value
   const formatTableValue = (key: RegionalMetricKey, value: number): string => {
-    if (key === 'students_percent' || key === 'malePercent' || key === 'migrantPercent') {
+    if (key === 'students_percent' || key === 'migrantPercent') {
       return value.toFixed(2)
     }
     if (key === 'avgClassSize' || key === 'studentTeacherRatio') {
@@ -62,20 +62,23 @@ function BavariaViewComponent({
 
   const metricLabels: Record<RegionalMetricKey, string> = {
     students_percent: 'Schülerschaft',
+    migrantPercent: 'Migrationshintergrund',
+    teachersFTE: 'Lehrkräfte',
+    studentTeacherRatio: 'Relation',
     avgClassSize: 'Klassengrößen',
     schools: 'Schulen',
-    studentTeacherRatio: 'Relation',
-    malePercent: 'Jungen',
-    migrantPercent: 'Migrationshintergrund',
+   
   }
 
   const metricDescriptions: Record<RegionalMetricKey, string> = {
-    schools: 'Anzahl der Schulen in Bayern:',
     students_percent: 'Anteil der Schüler und Schülerinnen (SuS) in Bayern:',
-    avgClassSize: 'Durchschnittliche Klassengröße in Bayern:',
-    studentTeacherRatio: 'Schüler-Lehrer-Relation in Bayern:',
-    malePercent: 'Anteil der Jungen in Bayern:',
     migrantPercent: 'Anteil der SuS mit Migrationshintergrund in Bayern:',
+    teachersFTE: 'Lehrkräfte (Vollzeitäquivalente) in Bayern:',
+    studentTeacherRatio: 'Schüler-Lehrer-Relation in Bayern:',
+    avgClassSize: 'Durchschnittliche Klassengröße in Bayern:',
+    schools: 'Anzahl der Schulen in Bayern:',
+
+    
   }
 
   const metricColors: Record<RegionalMetricKey, string> = {
@@ -83,7 +86,7 @@ function BavariaViewComponent({
     students_percent: '#ef4444',
     avgClassSize: '#f59e0b',
     studentTeacherRatio: '#10b981',
-    malePercent: '#8b5cf6',
+    teachersFTE: '#8b5cf6',
     migrantPercent: '#06b6d4',
   }
 
@@ -92,7 +95,7 @@ function BavariaViewComponent({
     students_percent: <PupilsIcon className="bydash-mfe__grid-icon" />,
     avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
     studentTeacherRatio: <StudentTeacherRelationIcon className="bydash-mfe__grid-icon" />,
-    malePercent: <MaleIcon className="bydash-mfe__grid-icon" />,
+    teachersFTE: <GlobeIcon className="bydash-mfe__grid-icon" />,
     migrantPercent: <GlobeIcon className="bydash-mfe__grid-icon" />,
   }
 

@@ -5,9 +5,9 @@ import { InterpretationBox } from './InterpretationBox'
 import { OfficesLeafletMap } from './charts/OfficesLeafletMap'
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { RegionIcon } from './controls/RegionIcon'
-import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, MaleIcon, GlobeIcon } from '../utils/icons'
+import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
 
-type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' |  'studentTeacherRatio' | 'malePercent' | 'migrantPercent'
+type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' |  'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
 type ViewType = 'map' | 'table'
 
@@ -25,26 +25,28 @@ function RegierungsViewComponent() {
 
   const metricLabels: Record<MetricKey, string> = {
     students_percent: 'Schülerschaft',
+    migrantPercent: 'Migrationshintergrund',
+    teachersFTE: 'Lehrkräfte',
+    studentTeacherRatio: 'Relation',
     avgClassSize: 'Klassengröße',
     schools: 'Schulen',
-    studentTeacherRatio: 'Relation',
-    malePercent: 'Jungen',
-    migrantPercent: 'Migrationshintergrund',
+    
+    
   }
 
   const metricDescriptions: Record<MetricKey, string> = {
-    schools: 'Anzahl der Schulen',
     students_percent: 'Gesamtzahl der SuS',
+    migrantPercent: 'Anteil der SuS mit Migrationshintergrund',
+    teachersFTE: 'Lehrkräfte (Vollzeitäquivalente)',
     studentTeacherRatio: 'Schüler-Lehrer-Relation',
     avgClassSize: 'Durchschnittliche Klassengröße',
-    malePercent: 'Anteil der Jungen',
-    migrantPercent: 'Anteil der SuS mit Migrationshintergrund',
+    schools: 'Anzahl der Schulen',
   }
 
   // Format metric value for display
   const formatMetricValue = (key: MetricKey, value: number): string => {
     if (key === 'studentTeacherRatio' || key === 'avgClassSize') return value.toFixed(2)
-    if (key === 'malePercent' || key === 'migrantPercent') return value.toFixed(2) + '%'
+    if (key === 'migrantPercent') return value.toFixed(2) + '%'
     return value.toLocaleString()
   }
 
@@ -53,7 +55,7 @@ function RegierungsViewComponent() {
     students_percent: <PupilsIcon className="bydash-mfe__grid-icon" />,
     studentTeacherRatio: <StudentTeacherRelationIcon className="bydash-mfe__grid-icon" />,
     avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
-    malePercent: <MaleIcon className="bydash-mfe__grid-icon" />,
+    teachersFTE: <GlobeIcon className="bydash-mfe__grid-icon" />,
     migrantPercent: <GlobeIcon className="bydash-mfe__grid-icon" />,
   }
 
