@@ -34,7 +34,7 @@ function RegierungsViewComponent() {
 
   const metricDescriptions: Record<MetricKey, string> = {
     schools: 'Anzahl der Schulen',
-    students_percent: 'Gesamtzahl der Schüler und Schülerinnen',
+    students_percent: 'Gesamtzahl der SuS',
     studentTeacherRatio: 'Schüler-Lehrer-Relation',
     avgClassSize: 'Durchschnittliche Klassengröße',
     malePercent: 'Anteil der Jungen',

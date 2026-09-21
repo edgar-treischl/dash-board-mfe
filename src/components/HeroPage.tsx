@@ -26,8 +26,8 @@ function HeroViewComponent() {
         <div className="bydash-mfe__hero-callout">
           <div className="bydash-mfe__callout-icon">⚠️</div>
           <div className="bydash-mfe__callout-content">
-            <strong>Keine echten Daten!</strong>
-            <p>Alle Daten dieser App sind fiktiv und dienen nur zu Demonstrationszwecken.</p>
+            <strong>Fiktive Daten!</strong>
+            <p>Diese App dient nur zu Demonstrationszwecken.</p>
           </div>
         </div>
 
