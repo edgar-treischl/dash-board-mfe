@@ -1,21 +1,24 @@
 library(sf)
-library(giscoR)
+#library(giscoR)
 library(dplyr)
 library(ggplot2)
 
 # NUTS-Regionen laden
-nuts <- gisco_get_nuts(year = "2021", resolution = "20")
+#nuts <- gisco_get_nuts(year = "2021", resolution = "20")
+
 
 # Regierungsbezirke Bayerns (NUTS2) > save in APP
-bayern_rb <- nuts %>%
-  filter(CNTR_CODE == "DE",
-         LEVL_CODE == 2,
-         grepl("^DE2", NUTS_ID))
+#bayern_rb <- nuts %>%
+  #filter(CNTR_CODE == "DE",
+   #      LEVL_CODE == 2,
+   #      grepl("^DE2", NUTS_ID))
 
-bayern_rb
+#bayern_rb
+bayern_rb <- sf::read_sf("R/bayern_rb.gpkg")
+#sf::write_sf(bayern_rb, "R/bayern_rb.gpkg")
+
 
 ## Beispiel-Daten für die Metrik
-
 daten <- data.frame(
   regierungsbezirk = c(
     "Oberbayern",

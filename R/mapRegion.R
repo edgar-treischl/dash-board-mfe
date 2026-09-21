@@ -1,3 +1,11 @@
+feature_grid_selected <- "Schw"
+low_colour <- "#F1F5F8"
+mid_colour <- "#8FB8CE"
+high_colour <- "#155A8A"
+text_colour <- "#172B3A"
+background_colour <- "white"
+
+
 source("R/mapRegionData.R")
 
 library(sf)
@@ -7,7 +15,6 @@ library(ggplot2)
 
 
 bavaria <- st_read("/Users/edgar/Development/apps/dash-board-mfe/src/data/bavaria-districts.json")
-
 
 geo <- bavaria %>%
   mutate(
@@ -24,20 +31,9 @@ map_data <- geo |>
     )
 
 
-low_colour <- "#F1F5F8"
-mid_colour <- "#8FB8CE"
-high_colour <- "#155A8A"
-text_colour <- "#172B3A"
-background_colour <- "white"
-
-
-feature_grid_selected <- "Schw"
-
 map_data <- map_data |> dplyr::filter(regierungen == feature_grid_selected)
 
-map_data
-
-# Depeding on which indicator: students, class size, etc.
+# Depeding on which indicator: students, class size, etc. change fill
 ploti <- ggplot2::ggplot() +
   ggplot2::geom_sf(
     data = map_data,
@@ -51,7 +47,7 @@ ploti <- ggplot2::ggplot() +
       mid_colour,
       high_colour
     ),
-    name = "Anzahl an ... Add Indicator",
+    name = "Migration (in %)",
     breaks = scales::pretty_breaks(n = 6),
     labels = scales::label_number(
       accuracy = 0.1,
@@ -129,3 +125,4 @@ ploti <- ggplot2::ggplot() +
 
 
 ploti
+
