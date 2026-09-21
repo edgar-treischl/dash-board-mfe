@@ -3,6 +3,7 @@ import { bavariaMetrics, regionMetrics, schoolOffices } from '../data/bavaria'
 import { COMMON_STYLES } from '../config/chartConfig'
 import { InterpretationBox } from './InterpretationBox'
 import { OfficesLeafletMap } from './charts/OfficesLeafletMap'
+import { RegionMapSVG } from './charts/RegionMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { RegionIcon } from './controls/RegionIcon'
 import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
@@ -10,12 +11,15 @@ import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, Glo
 type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' |  'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
 type ViewType = 'map' | 'table'
+type TabType = 'regierungsbezirke' | 'mittelfranken'
 
 function RegierungsViewComponent() {
   // Sort metrics alphabetically by name for consistent display
   const sortedMetrics = [...regionMetrics].sort((a, b) => a.shortName.localeCompare(b.shortName))
   const [view, setView] = useState<ViewType>('map')
+  const [activeTab, setActiveTab] = useState<TabType>('regierungsbezirke')
   const [selectedRegion, setSelectedRegion] = useState<string>(sortedMetrics[0].id)
+  const [selectedMetric, setSelectedMetric] = useState<MetricKey>('students_percent')
 
   // Find the currently selected region object
   const currentRegion = sortedMetrics.find(r => r.id === selectedRegion) || sortedMetrics[0]
@@ -101,14 +105,52 @@ function RegierungsViewComponent() {
         overflow: 'hidden'
       }}>
         
+        {/* Tab Navigation */}
+        <nav style={{
+          display: 'flex',
+          gap: '4px',
+          borderBottom: '2px solid var(--bydash-border)',
+          padding: '0 24px',
+        }}>
+          {[
+            { key: 'regierungsbezirke' as const, label: 'Regierungsbezirke' },
+            { key: 'mittelfranken' as const, label: 'Schulämter in Mittelfranken' },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              style={{
+                padding: '12px 20px',
+                background: 'transparent',
+                border: 'none',
+                borderBottom: activeTab === tab.key ? '3px solid var(--bydash-primary)' : '3px solid transparent',
+                cursor: 'pointer',
+                fontWeight: activeTab === tab.key ? '600' : '500',
+                fontSize: '0.95rem',
+                color: activeTab === tab.key ? 'var(--bydash-primary)' : 'var(--bydash-text)',
+                transition: 'all 0.2s ease',
+                marginBottom: '-2px',
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
         {/* Region Selection Header */}
         <div style={{
           padding: '24px 24px 20px 24px',
           borderBottom: '1px solid var(--bydash-border)',
           background: 'linear-gradient(to bottom, rgba(37, 99, 235, 0.02), transparent)'
         }}>
-          <h1 className="bydash-mfe__selection-title" style={{ marginBottom: '6px' }}>Regierungsbezirke</h1>
-          <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>Bitte wählen Sie einen Regierungsbezirk zur Analyse.</small>
+          <h1 className="bydash-mfe__selection-title" style={{ marginBottom: '6px' }}>
+            {activeTab === 'regierungsbezirke' ? 'Regierungsbezirke' : 'Schulämter in Mittelfranken'}
+          </h1>
+          <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>
+            {activeTab === 'regierungsbezirke' 
+              ? 'Bitte wählen Sie einen Regierungsbezirk zur Analyse.'
+              : 'Schulämter in der Region Mittelfranken'}
+          </small>
         </div>
 
         {/* Region Selection Grid */}
@@ -116,11 +158,16 @@ function RegierungsViewComponent() {
           <div 
             className="bydash-mfe__selection-grid"
             style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+              gridTemplateColumns: activeTab === 'mittelfranken' 
+                ? 'repeat(auto-fit, minmax(120px, 1fr))' 
+                : 'repeat(auto-fit, minmax(120px, 1fr))',
               gap: '12px'
             }}
           >
-            {sortedMetrics.map((region) => (
+            {(activeTab === 'mittelfranken' 
+              ? sortedMetrics.filter(r => r.id === 'mittelfranken')
+              : sortedMetrics
+            ).map((region) => (
               <button
                 key={region.id}
                 className={`bydash-mfe__level-select-btn ${selectedRegion === region.id ? 'is-active' : ''}`}
@@ -143,13 +190,13 @@ function RegierungsViewComponent() {
           </div>
         </div>
 
-        {/* Region-specific Metrics Section */}
+        {/* Indicators / Feature Grid Section */}
         <div style={{ padding: '24px', borderTop: '1px solid var(--bydash-border)' }}>
           <div style={{
             padding: '0 0 20px 0',
           }}>
-            <h2 className="bydash-mfe__selection-title" style={{ marginBottom: '6px' }}>{currentRegion.shortName} in Zahlen</h2>
-            <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>Kennzahlen für den ausgewählten Regierungsbezirk</small>
+            <h2 className="bydash-mfe__selection-title" style={{ marginBottom: '6px' }}>Indikatoren</h2>
+            <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>Wählen Sie einen Indikator zur Visualisierung</small>
           </div>
 
           <div 
@@ -160,17 +207,21 @@ function RegierungsViewComponent() {
             }}
           >
             {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
-              <div
+              <button
                 key={key}
+                onClick={() => setSelectedMetric(key)}
                 style={{
-                  background: 'var(--bydash-bg)',
-                  border: '1px solid var(--bydash-border)',
+                  background: selectedMetric === key ? 'rgba(37, 99, 235, 0.02)' : 'var(--bydash-bg)',
+                  border: selectedMetric === key ? '2px solid var(--bydash-primary)' : '1px solid var(--bydash-border)',
                   borderRadius: '12px',
                   padding: '20px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '14px'
+                  gap: '14px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: selectedMetric === key ? '0 0 0 2px rgba(37, 99, 235, 0.1)' : 'none',
                 }}
               >
                 <div className="bydash-mfe__grid-icon-wrapper" style={{ width: '48px', height: '48px' }}>
@@ -191,8 +242,51 @@ function RegierungsViewComponent() {
                 }}>
                   {formatMetricValue(key, currentRegion[key])}
                 </div>
-              </div>
+              </button>
             ))}
+          </div>
+
+          {/* Info text for selected metric */}
+        </div>
+
+        {/* Regional Distribution Map */}
+        <div style={{ padding: '24px', borderTop: '1px solid var(--bydash-border)' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '60% 40%',
+              gap: '20px',
+              alignItems: 'stretch',
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+              {/* Region Map Card */}
+              <div style={{
+                border: '1px solid var(--bydash-border)',
+                borderRadius: '12px',
+                background: 'var(--bydash-bg)',
+                overflow: 'hidden'
+              }}>
+                {/* Card Header */}
+                <div className="bydash-mfe__story-header">
+                  <h3 className="bydash-mfe__story-heading">Landkreise in {currentRegion.shortName} - {metricLabels[selectedMetric]}</h3>
+                </div>
+                <div className="bydash-mfe__card-heading"></div>
+
+                <div className="bydash-mfe__chart-frame">
+                  <RegionMapSVG
+                    selectedMetric={selectedMetric}
+                    selectedRegion={selectedRegion}
+                    regions={sortedMetrics}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Interpretation Container - Right column of grid */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <InterpretationBox tabs={interpretationTabs} defaultTab="befund" />
+            </div>
           </div>
         </div>
 

@@ -10,6 +10,17 @@ declare module 'd3-scale' {
   export function scaleSequential<Range = string>(
     interpolator?: (t: number) => Range
   ): ScaleSequential<number, Range>;
+
+  export interface ScaleLinear<Range = number> {
+    (x: number): Range;
+    domain(): number[];
+    domain(domain: number[]): this;
+    range(): Range[];
+    range(range: Range[]): this;
+    clamp(clamp: boolean): this;
+  }
+
+  export function scaleLinear<Range = number>(): ScaleLinear<Range>;
 }
 
 declare module 'd3-scale-chromatic' {
