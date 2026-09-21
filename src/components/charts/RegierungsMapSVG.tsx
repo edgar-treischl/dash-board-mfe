@@ -1,11 +1,16 @@
 import { memo, useMemo, useState } from "react";
-import { scaleSequential } from "d3-scale";
-import { interpolateViridis } from "d3-scale-chromatic";
+import { scaleLinear } from "d3-scale";
 import { feature } from "topojson-client";
 import { geoMercator, geoPath } from "d3-geo";
 import type { Topology, GeometryCollection } from "topojson-specification";
 import type { FeatureCollection } from "geojson";
 import bavariaTopoJSONRaw from "../../data/bavaria.topojson?raw";
+
+// Colour ramp mirrors R/mapRegion.R (low_colour, mid_colour, high_colour)
+const LOW_COLOUR = "#F1F5F8";
+const MID_COLOUR = "#8FB8CE";
+const HIGH_COLOUR = "#155A8A";
+const NO_DATA_COLOUR = "#D9DDE0";
 
 // Region icon imports
 import oberbayernIcon from "../../assets/regions/oberbayern.svg?url";
@@ -81,12 +86,16 @@ function RegierungsMapSVGComponent({
         regions.map((r) => [r.shortName, r[selectedMetric]])
       );
 
-      // Create color scale
+      // Create color scale using the same low/mid/high gradient as ggplot's scale_fill_gradientn
       const metricValues = Object.values(regionValues).filter((v) => v != null);
-      const colorScale = scaleSequential(interpolateViridis).domain([
-        Math.min(...metricValues),
-        Math.max(...metricValues),
-      ]);
+      const minValue = metricValues.length ? Math.min(...metricValues) : 0;
+      const maxValue = metricValues.length ? Math.max(...metricValues) : 1;
+      const midValue = (minValue + maxValue) / 2;
+
+      const colorScale = scaleLinear<string>()
+        .domain([minValue, midValue, maxValue])
+        .range([LOW_COLOUR, MID_COLOUR, HIGH_COLOUR])
+        .clamp(true);
 
       // Create projection with proper sizing
       const mapWidth = SVG_WIDTH - MARGIN.left - MARGIN.right;
@@ -122,7 +131,7 @@ function RegierungsMapSVGComponent({
       console.error("Error rendering map:", error);
       return {
         paths: [],
-        colorScale: scaleSequential(interpolateViridis),
+        colorScale: scaleLinear<string>().domain([0, 1]).range([LOW_COLOUR, HIGH_COLOUR]),
         regionValues: {},
       };
     }
@@ -170,18 +179,20 @@ function RegierungsMapSVGComponent({
         {/* Define gradient */}
         <defs>
           <linearGradient
-            id="viridis-gradient"
+            id="regierung-gradient"
             x1="0%"
             y1="0%"
             x2="100%"
             y2="0%"
           >
-            {[0, 0.25, 0.5, 0.75, 1].map((t) => (
-              <stop
-                key={t}
-                offset={`${t * 100}%`}
-                stopColor={interpolateViridis(t)}
-              />
+            {[0, 0.25, 0.5, 0.75, 1].map((t) => ({
+              t,
+              colour:
+                t <= 0.5
+                  ? scaleLinear<string>().domain([0, 0.5]).range([LOW_COLOUR, MID_COLOUR])(t)
+                  : scaleLinear<string>().domain([0.5, 1]).range([MID_COLOUR, HIGH_COLOUR])(t),
+            })).map(({ t, colour }) => (
+              <stop key={t} offset={`${t * 100}%`} stopColor={colour} />
             ))}
           </linearGradient>
         </defs>
@@ -198,10 +209,10 @@ function RegierungsMapSVGComponent({
                 d={pathData.path}
                 fill={
                   pathData.value == null
-                    ? "#e5e7eb"
+                    ? NO_DATA_COLOUR
                     : renderData.colorScale(pathData.value)
                 }
-                fillOpacity={isHovered ? 1 : 0.85}
+                fillOpacity={isHovered ? 1 : 0.9}
                 stroke="#ffffff"
                 strokeWidth={isHovered ? 2 : 1}
                 style={{
@@ -240,7 +251,7 @@ function RegierungsMapSVGComponent({
             y="18"
             width={LEGEND_WIDTH}
             height="25"
-            fill="url(#viridis-gradient)"
+            fill="url(#regierung-gradient)"
             stroke="#d1d5db"
             strokeWidth="1.5"
           />
