@@ -13,7 +13,14 @@ interface SearchEntry {
   description?: string;
   category: 'app' | 'feature' | 'report' | 'admin';
   keywords?: string[];
-  navigate: () => void;
+  /**
+   * Name of a shell-registered app (matches this app's `appRegistry` entry `name` field,
+   * i.e. 'DashBoardApp' — NOT the Module Federation remote key 'bydash') to open when this
+   * entry is selected. The shell owns navigation: it opens the app via its own router, so
+   * this works regardless of the shell's deployment base path and never triggers a full
+   * page reload.
+   */
+  appName?: string;
   icon?: string;
 }
 
@@ -41,9 +48,7 @@ export const searchProvider: SearchProvider = {
         description: 'Bayern State Control Dashboard - Main overview and KPIs',
         category: 'feature' as const,
         keywords: ['dashboard', 'bydash', 'Schülerschaft', 'Migrationshintergrund', 'Schüler-Lehrer-Relation'],
-        navigate: () => {
-          window.location.href = new URL('app/bydash', document.baseURI).href;
-        },
+        appName: 'DashBoardApp',
         icon: 'chart-line',
       },
       {
@@ -52,9 +57,7 @@ export const searchProvider: SearchProvider = {
         description: 'Detailed analytics and data insights for Bavaria state operations',
         category: 'feature' as const,
         keywords: ['analytics', 'data', 'insights', 'reports', 'bydash'],
-        navigate: () => {
-          window.location.href = new URL('app/bydash', document.baseURI).href;
-        },
+        appName: 'DashBoardApp',
         icon: 'bar-chart',
       },
       {
@@ -63,9 +66,7 @@ export const searchProvider: SearchProvider = {
         description: 'Configuration and preferences for ByDash dashboard: StMUK',
         category: 'feature' as const,
         keywords: ['settings', 'configuration', 'preferences', 'bydash'],
-        navigate: () => {
-          window.location.href = new URL('app/bydash', document.baseURI).href;
-        },
+        appName: 'DashBoardApp',
         icon: 'sliders',
       },
     ];
