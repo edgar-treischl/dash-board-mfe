@@ -13,6 +13,7 @@ export default defineConfig({
       filename: 'remoteEntry.js',
       exposes: {
         './DashBoardApp': './src/App.tsx',
+        './SearchProvider': './src/searchProvider.ts',
       },
 
       shared: ['react', 'react-dom'],
