@@ -42,7 +42,7 @@ export const searchProvider: SearchProvider = {
         category: 'feature' as const,
         keywords: ['dashboard', 'bydash', 'control', 'overview', 'kpi'],
         navigate: () => {
-          window.location.href = '/app/bydash';
+          window.location.href = new URL('app/bydash', document.baseURI).href;
         },
         icon: 'chart-line',
       },
@@ -53,7 +53,7 @@ export const searchProvider: SearchProvider = {
         category: 'feature' as const,
         keywords: ['analytics', 'data', 'insights', 'reports', 'bydash'],
         navigate: () => {
-          window.location.href = '/app/bydash';
+          window.location.href = new URL('app/bydash', document.baseURI).href;
         },
         icon: 'bar-chart',
       },
@@ -64,7 +64,7 @@ export const searchProvider: SearchProvider = {
         category: 'feature' as const,
         keywords: ['settings', 'configuration', 'preferences', 'bydash'],
         navigate: () => {
-          window.location.href = '/app/bydash';
+          window.location.href = new URL('app/bydash', document.baseURI).href;
         },
         icon: 'sliders',
       },
