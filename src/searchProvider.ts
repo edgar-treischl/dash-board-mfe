@@ -40,7 +40,7 @@ export const searchProvider: SearchProvider = {
         title: 'ByDash Dashboard',
         description: 'Bayern State Control Dashboard - Main overview and KPIs',
         category: 'feature' as const,
-        keywords: ['dashboard', 'bydash', 'control', 'overview', 'kpi'],
+        keywords: ['dashboard', 'bydash', 'Schülerschaft', 'Migrationshintergrund', 'Schüler-Lehrer-Relation'],
         navigate: () => {
           window.location.href = new URL('app/bydash', document.baseURI).href;
         },
