@@ -123,7 +123,7 @@ function BavariaViewComponent({
           background: 'linear-gradient(to bottom, rgba(37, 99, 235, 0.02), transparent)'
         }}>
           <h1 className="bydash-mfe__selection-title" style={{ marginBottom: '6px' }}>Bayern im Überblick</h1>
-          <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>Wählen Sie einen Indikator zur Analyse der bayerischen Regierungsbezirke.</small>
+          <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>Wählen Sie einen Indikator zur Analyse aus.</small>
         </div>
 
         {/* Selection Grid */}
@@ -137,7 +137,7 @@ function BavariaViewComponent({
             }))}
             selectedKey={selectedMetric}
             onSelect={onMetricChange}
-            formatValue={(val) => formatMetricValue(selectedMetric, val as number)}
+            formatValue={(val, key) => formatMetricValue(key as RegionalMetricKey, val as number)}
             gridColumns="repeat(6, 1fr)"
             containerPadding="0"
             containerMarginBottom="0"

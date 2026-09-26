@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { regionMetrics } from '../data/bavaria'
+import { BayernIcon } from './controls/BayernIcon'
 
 type RegionalMetricKey = 'students_percent' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
@@ -45,6 +46,19 @@ function BavariaInfoGridComponent({
       gap: '24px',
       height: 'fit-content',
     }}>
+      {/* Bayern Identification */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '28px', borderBottom: '1px solid var(--bydash-border)' }}>
+        <div style={{ width: '45px', height: '45px', flexShrink: 0 }}>
+          <BayernIcon width={45} height={45} />
+        </div>
+        <div>
+          <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>Bayern</div>
+          <div style={{ fontSize: '1.4rem', fontWeight: '700', margin: 0,  marginBottom: '4px' }}>
+            In Zahlen
+          </div>
+        </div>
+      </div>
+
       {/* Metric Definition Header */}
       <div style={{ textAlign: 'center', paddingBottom: '16px', borderBottom: '1px solid var(--bydash-border)' }}>
         <h3 style={{ fontSize: '1.3rem', fontWeight: '700', marginBottom: '8px', marginTop: 0, color: 'var(--bydash-primary)' }}>

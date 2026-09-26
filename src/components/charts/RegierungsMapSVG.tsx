@@ -49,7 +49,7 @@ type RegierungsMapProps = {
 };
 
 const SVG_WIDTH = 700;
-const SVG_HEIGHT = 900;
+const SVG_HEIGHT = 595;
 const MARGIN = { top: 20, right: 20, bottom: 120, left: 20 };
 const LEGEND_WIDTH = 280;
 

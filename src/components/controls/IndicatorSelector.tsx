@@ -12,7 +12,7 @@ export interface IndicatorSelectorProps<T extends string = string> {
   options: IndicatorOption<T>[]
   selectedKey: T
   onSelect: (key: T) => void
-  formatValue?: (value: number | string) => string
+  formatValue?: (value: number | string, key?: T) => string
   gridColumns?: string
   containerPadding?: string
   containerMarginBottom?: string
@@ -158,7 +158,7 @@ export function IndicatorSelector<T extends string = string>({
                     opacity: isActive ? 1 : 0.6,
                   }}
                 >
-                  {formatValue(option.value)}
+                  {formatValue(option.value, option.key)}
                 </div>
               </div>
             </button>

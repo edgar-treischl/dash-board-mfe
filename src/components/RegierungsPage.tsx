@@ -325,7 +325,7 @@ function RegierungsViewComponent() {
           }))}
           selectedKey={selectedMetric}
           onSelect={setSelectedMetric}
-          formatValue={(val) => formatMetricValue(selectedMetric, val as number)}
+          formatValue={(val, key) => formatMetricValue(key as MetricKey, val as number)}
         />
 
         {/* Regional Distribution Map and Info Grid */}
