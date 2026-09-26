@@ -35,15 +35,6 @@ function RegierungsViewComponent() {
     schools: 'Schulen',
   }
 
-  const metricDescriptions: Record<MetricKey, string> = {
-    students_percent: 'Gesamtzahl der SuS',
-    migrantPercent: 'Anteil der SuS mit Migrationshintergrund',
-    teachersFTE: 'Lehrkräfte (Vollzeitäquivalente)',
-    studentTeacherRatio: 'Schüler-Lehrer-Relation',
-    avgClassSize: 'Durchschnittliche Klassengröße',
-    schools: 'Anzahl der Schulen',
-  }
-
   const formatMetricValue = (key: MetricKey, value: number): string => {
     if (key === 'studentTeacherRatio' || key === 'avgClassSize') return value.toFixed(2)
     if (key === 'migrantPercent') return value.toFixed(2) + '%'
@@ -95,49 +86,75 @@ function RegierungsViewComponent() {
       {/* Main Card Container */}
       <div className={styles.card}>
         
-        {/* Region Selection Header */}
+        {/* Persistent Full-Width Region Breadcrumb Selector - Subtle Design */}
         <div style={{
-          padding: '16px 24px 12px 24px',
+          padding: '10px 24px',
           borderBottom: '1px solid var(--bydash-border)',
-          background: 'linear-gradient(to bottom, rgba(37, 99, 235, 0.01), transparent)'
+          background: 'transparent',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          gap: '8px',
+          width: '100%',
+          boxSizing: 'border-box',
         }}>
-          <h1 className="bydash-mfe__selection-title" style={{ marginBottom: '4px', fontSize: '2.5rem', fontWeight: '600' }}>
-            Regierungsbezirke
-          </h1>
-          <small style={{ color: 'var(--bydash-text)', fontSize: '0.8rem', opacity: 0.8 }}>
-            Wählen Sie einen Regierungsbezirk.
-          </small>
+          {sortedMetrics.map((region) => (
+            <button
+              key={region.id}
+              onClick={() => setSelectedRegion(region.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                padding: '8px 12px',
+                background: selectedRegion === region.id 
+                  ? 'rgba(37, 99, 235, 0.1)' 
+                  : 'transparent',
+                color: 'var(--bydash-text)',
+                border: selectedRegion === region.id 
+                  ? '1px solid var(--bydash-primary)' 
+                  : '1px solid var(--bydash-border)',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                fontSize: '0.9rem',
+                fontWeight: selectedRegion === region.id ? '600' : '500',
+                whiteSpace: 'nowrap',
+                width: '100%',
+                minHeight: '40px',
+                opacity: selectedRegion === region.id ? 1 : 0.7,
+              }}
+              onMouseEnter={(e) => {
+                if (selectedRegion !== region.id) {
+                  e.currentTarget.style.opacity = '0.9';
+                  e.currentTarget.style.background = 'rgba(37, 99, 235, 0.05)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedRegion !== region.id) {
+                  e.currentTarget.style.opacity = '0.7';
+                  e.currentTarget.style.background = 'transparent';
+                }
+              }}
+            >
+              <div style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <RegionIcon regionId={region.id} width={20} height={20} />
+              </div>
+              <span style={{ flex: 1, textAlign: 'center' }}>{region.shortName}</span>
+            </button>
+          ))}
         </div>
 
-        {/* Region Selection Grid */}
-        <div style={{ padding: '20px 24px 16px 24px' }}>
-          <div 
-            className="bydash-mfe__selection-grid"
-            style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
-              gap: '10px'
-            }}
-          >
-            {sortedMetrics.map((region) => (
-              <button
-                key={region.id}
-                className={`bydash-mfe__level-select-btn ${selectedRegion === region.id ? 'is-active' : ''}`}
-                onClick={() => setSelectedRegion(region.id)}
-                style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  alignItems: 'center', 
-                  gap: '4px',
-                  padding: '8px 6px',
-                  minHeight: 'auto'
-                }}
-              >
-                <RegionIcon regionId={region.id} width={32} height={32} />
-                <strong style={{ fontSize: '0.75rem', textAlign: 'center', lineHeight: '1.1' }}>
-                  {region.shortName}
-                </strong>
-              </button>
-            ))}
+        {/* Active Region Display - Integrated */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '24px' }}>
+          <div style={{ width: '40px', height: '40px', flexShrink: 0 }}>
+            <RegionIcon regionId={selectedRegion} width={40} height={40} />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>Aktiver Regierungsbezirk</div>
+            <h1 className="bydash-mfe__selection-title" style={{ fontSize: '1.5rem', fontWeight: '700', margin: 0 }}>
+              {currentRegion.shortName}
+            </h1>
           </div>
         </div>
 
@@ -151,66 +168,70 @@ function RegierungsViewComponent() {
               alignItems: 'start',
             }}
           >
-            {/* Indicators Grid - Left column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Indicators Selection - Left column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {/* Indicators Panel */}
               <div style={{
                 border: '1px solid var(--bydash-border)',
                 borderRadius: '12px',
                 background: 'var(--bydash-bg)',
                 overflow: 'hidden',
-                padding: '20px'
+                padding: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%'
               }}>
-                <div style={{ marginBottom: '20px' }}>
-                  <h3 className="bydash-mfe__story-heading" style={{ marginBottom: '6px' }}>
-                    Indikatoren
-                  </h3>
-                  <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>
-                    Klicken Sie auf einen Indikator zur Visualisierung
-                  </small>
-                </div>
-                
-                <div 
-                  style={{ 
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    gap: '10px',
-                  }}
-                >
+                <h2 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '4px', marginTop: 0 }}>
+                  Indikatoren
+                </h2>
+                <p style={{ fontSize: '0.85rem', opacity: 0.6, marginBottom: '16px', marginTop: 0 }}>
+                  Wählen Sie einen Indikator
+                </p>
+
+                {/* Indicators Grid - Single Column */}
+                <div className="bydash-mfe__selection-grid" style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
                   {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
                     <button
                       key={key}
+                      className={`bydash-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
                       onClick={() => setSelectedMetric(key)}
                       style={{
-                        background: selectedMetric === key ? 'rgba(37, 99, 235, 0.08)' : 'var(--bydash-bg)',
-                        border: selectedMetric === key ? '2px solid var(--bydash-primary)' : '1px solid var(--bydash-border)',
-                        borderRadius: '8px',
-                        padding: '12px 14px',
-                        display: 'grid',
-                        gridTemplateColumns: '40px 1fr auto',
+                        display: 'flex',
                         alignItems: 'center',
                         gap: '12px',
+                        padding: '10px 12px',
+                        background: selectedMetric === key ? 'var(--bydash-surface)' : 'transparent',
+                        border: '1px solid var(--bydash-border)',
+                        borderRadius: '8px',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
                         textAlign: 'left',
-                        width: '100%',
-                        boxSizing: 'border-box',
+                        color: 'var(--bydash-text)',
+                        fontSize: '0.9rem',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = selectedMetric === key ? 'var(--bydash-surface)' : 'rgba(37, 99, 235, 0.03)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = selectedMetric === key ? 'var(--bydash-surface)' : 'transparent';
                       }}
                     >
-                      <div className="bydash-mfe__grid-icon-wrapper" style={{ width: '40px', height: '40px' }}>
+                      <div className="bydash-mfe__grid-icon-wrapper" style={{ flexShrink: 0, width: '20px', height: '20px' }}>
                         {metricIcons[key]}
                       </div>
-                      <div style={{ minWidth: 0 }}>
-                        <div style={{ fontWeight: '600', fontSize: '0.9rem', lineHeight: '1.3' }}>{metricLabels[key]}</div>
-                        <div style={{ fontSize: '0.75rem', opacity: 0.65, lineHeight: '1.2', marginTop: '2px' }}>{metricDescriptions[key]}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <strong style={{ display: 'block', fontSize: '0.9rem' }}>{metricLabels[key]}</strong>
                       </div>
                       <div style={{ 
-                        padding: '6px 12px',
-                        background: 'rgba(37, 99, 235, 0.08)',
-                        borderRadius: '6px',
-                        fontSize: '0.85rem',
+                        padding: '4px 8px',
+                        background: 'transparent',
+                        borderRadius: '4px',
+                        fontSize: '0.8rem',
                         fontWeight: '600',
-                        color: 'var(--bydash-primary)',
-                        whiteSpace: 'nowrap'
+                        color: selectedMetric === key ? 'var(--bydash-primary)' : 'var(--bydash-text)',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
+                        opacity: selectedMetric === key ? 1 : 0.8
                       }}>
                         {formatMetricValue(key, currentRegion[key])}
                       </div>

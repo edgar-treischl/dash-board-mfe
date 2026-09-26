@@ -48,10 +48,10 @@ type RegierungsMapProps = {
   } & Record<MetricKey, number>>;
 };
 
-const SVG_WIDTH = 800;
-const SVG_HEIGHT = 700;
-const MARGIN = { top: 20, right: 20, bottom: 160, left: 20 };
-const LEGEND_WIDTH = 200;
+const SVG_WIDTH = 700;
+const SVG_HEIGHT = 900;
+const MARGIN = { top: 20, right: 20, bottom: 120, left: 20 };
+const LEGEND_WIDTH = 280;
 
 interface PathRenderData {
   name: string;
@@ -227,12 +227,12 @@ function RegierungsMapSVGComponent({
         </g>
 
         {/* Legend */}
-        <g transform={`translate(${(SVG_WIDTH - LEGEND_WIDTH) / 2}, ${SVG_HEIGHT - 140})`}>
+        <g transform={`translate(${(SVG_WIDTH - LEGEND_WIDTH) / 2}, ${SVG_HEIGHT - 85})`}>
           {/* Selected metric indicator - centered, bold, black */}
           <text
             x={LEGEND_WIDTH / 2}
             y="0"
-            fontSize="13"
+            fontSize="16"
             fontWeight="700"
             fill="#1f2937"
             textAnchor="middle"
@@ -248,19 +248,19 @@ function RegierungsMapSVGComponent({
           {/* Gradient bar - larger */}
           <rect
             x="0"
-            y="18"
+            y="22"
             width={LEGEND_WIDTH}
-            height="25"
+            height="35"
             fill="url(#regierung-gradient)"
             stroke="#d1d5db"
             strokeWidth="1.5"
           />
 
           {/* Min/Max labels - larger */}
-          <text x="0" y="53" fontSize="12" fontWeight="500" fill="#4b5563">
+          <text x="0" y="68" fontSize="14" fontWeight="600" fill="#4b5563">
             Niedrig
           </text>
-          <text x={LEGEND_WIDTH} y="53" fontSize="12" fontWeight="500" fill="#4b5563" textAnchor="end">
+          <text x={LEGEND_WIDTH} y="68" fontSize="14" fontWeight="600" fill="#4b5563" textAnchor="end">
             Hoch
           </text>
         </g>
