@@ -25,8 +25,8 @@ type RegionMapProps = {
   } & Record<MetricKey, number>>;
 };
 
-const SVG_WIDTH = 800;
-const SVG_HEIGHT = 700;
+const SVG_WIDTH = 680;
+const SVG_HEIGHT = 595;
 const MARGIN = { top: 20, right: 20, bottom: 160, left: 20 };
 const LEGEND_WIDTH = 200;
 

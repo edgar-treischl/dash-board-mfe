@@ -1,7 +1,5 @@
 import { memo, useState } from 'react'
-import { bavariaMetrics, regionMetrics, schoolOffices } from '../data/bavaria'
-import { COMMON_STYLES } from '../config/chartConfig'
-import { InterpretationBox } from './InterpretationBox'
+import { regionMetrics, schoolOffices } from '../data/bavaria'
 import { OfficesLeafletMap } from './charts/OfficesLeafletMap'
 import { RegionMapSVG } from './charts/RegionMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
@@ -10,11 +8,9 @@ import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, Glo
 import styles from './RegierungsPage.module.css'
 import { districtData } from '../data/districtData'
 
-type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' |  'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
+type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
-type ViewType = 'map' | 'table'
-
-interface RegierungsRegionInfoPanelProps {
+type RegierungsRegionInfoPanelProps = {
   selectedRegion: string
   selectedMetric: MetricKey
   metricLabels: Record<MetricKey, string>
@@ -31,7 +27,7 @@ function RegierungsRegionInfoPanel({
 }: RegierungsRegionInfoPanelProps) {
   // Calculate min, max, average from district data for the selected region
   const regionDistricts = districtData.filter((d) => d.regionId === selectedRegion)
-  
+
   const metricFieldMap: Record<MetricKey, keyof typeof districtData[number]> = {
     students_percent: 'studentsPercent',
     avgClassSize: 'avgClassSize',
@@ -192,21 +188,6 @@ function RegierungsRegionInfoPanel({
           </div>
         </div>
       </div>
-
-      {/* Info text with better visual hierarchy */}
-      <div style={{
-        padding: '12px 16px',
-        border: '1px solid var(--bydash-border)',
-        borderRadius: '6px',
-        fontSize: '0.9rem',
-        color: 'var(--bydash-text)',
-        lineHeight: '1.5',
-        fontWeight: '500',
-        opacity: 0.75,
-        textAlign: 'center',
-      }}>
-        Statistik basierend auf {dataWithMetrics.length} {dataWithMetrics.length === 1 ? 'Landkreis/kreisfreie Stadt' : 'Landkreisen/kreisfreien Städten'}
-      </div>
     </div>
   )
 }
@@ -214,7 +195,7 @@ function RegierungsRegionInfoPanel({
 function RegierungsViewComponent() {
   // Sort metrics alphabetically by name for consistent display
   const sortedMetrics = [...regionMetrics].sort((a, b) => a.shortName.localeCompare(b.shortName))
-  const [view, setView] = useState<ViewType>('map')
+  const [mapTab, setMapTab] = useState<'map' | 'schulaemter' | 'overview'>('map')
   const [selectedRegion, setSelectedRegion] = useState<string>(sortedMetrics[0].id)
   const [selectedMetric, setSelectedMetric] = useState<MetricKey>('students_percent')
 
@@ -247,42 +228,10 @@ function RegierungsViewComponent() {
     migrantPercent: <GlobeIcon className="bydash-mfe__grid-icon" />,
   }
 
-  // Build interpretation tabs
-  const interpretationTabs = {
-    befund: {
-      label: 'Befund',
-      content: (
-        <div>
-          <p className="bydash-mfe__story-text">
-            Die Verteilung der Bildungsressourcen in Bayern nach Regierungsbezirken zeigt deutliche regionale Unterschiede. Die dargestellten Daten umfassen Schulen, Schülerinnen und Schüler sowie Lehrkräfte (Vollzeitäquivalente).
-          </p>
-          <ul className="bydash-mfe__story-text" style={COMMON_STYLES.bulletList}>
-            <li style={COMMON_STYLES.listItem}>
-              Vergleichen Sie die Staatlichen Schulämter der einzelnen Regionen in der Tabelle.
-            </li>
-            <li style={COMMON_STYLES.listItem}>
-              Bayern gesamt: {bavariaMetrics.students.toLocaleString()} Schüler und Schülerinnen, {bavariaMetrics.schools.toLocaleString()} Schulen
-            </li>
-          </ul>
-        </div>
-      ),
-    },
-    hinweis: {
-      label: 'Hinweis',
-      content: (
-        <p className="bydash-mfe__story-text bydash-mfe__story-text--italic">
-          Die Daten basieren auf den sieben Regierungsbezirken Bayerns: Oberbayern, Niederbayern, Oberpfalz, Oberfranken, Mittelfranken, Unterfranken und Schwaben. Die Unterschiede spiegeln sowohl die Bevölkerungsdichte als auch die Bildungsinfrastruktur wider.
-        </p>
-      ),
-    },
-  }
-
   return (
     <div className={styles.container}>
-      
       {/* Main Card Container */}
       <div className={styles.card}>
-        
         {/* Persistent Full-Width Region Breadcrumb Selector - Clean Underline Style */}
         <div style={{
           padding: '0 24px',
@@ -305,12 +254,12 @@ function RegierungsViewComponent() {
                 gap: '8px',
                 padding: '12px 16px',
                 background: 'transparent',
-                color: selectedRegion === region.id 
-                  ? 'var(--bydash-accent)' 
+                color: selectedRegion === region.id
+                  ? 'var(--bydash-accent)'
                   : 'var(--bydash-text)',
                 border: 'none',
-                borderBottom: selectedRegion === region.id 
-                  ? '2px solid var(--bydash-accent)' 
+                borderBottom: selectedRegion === region.id
+                  ? '2px solid var(--bydash-accent)'
                   : '2px solid transparent',
                 borderRadius: '0',
                 cursor: 'pointer',
@@ -390,12 +339,12 @@ function RegierungsViewComponent() {
                 gap: '8px',
                 padding: '12px 16px',
                 background: 'transparent',
-                color: selectedMetric === key 
-                  ? 'var(--bydash-accent)' 
+                color: selectedMetric === key
+                  ? 'var(--bydash-accent)'
                   : 'var(--bydash-text)',
                 border: 'none',
-                borderBottom: selectedMetric === key 
-                  ? '2px solid var(--bydash-accent)' 
+                borderBottom: selectedMetric === key
+                  ? '2px solid var(--bydash-accent)'
                   : '2px solid transparent',
                 borderRadius: '0',
                 cursor: 'pointer',
@@ -426,7 +375,7 @@ function RegierungsViewComponent() {
                 <strong style={{ display: 'block', fontSize: '0.85rem', fontWeight: selectedMetric === key ? '600' : '500' }}>
                   {metricLabels[key]}
                 </strong>
-                <div style={{ 
+                <div style={{
                   fontSize: '0.7rem',
                   fontWeight: '600',
                   color: selectedMetric === key ? 'var(--bydash-accent)' : 'var(--bydash-text)',
@@ -450,7 +399,7 @@ function RegierungsViewComponent() {
               alignItems: 'start',
             }}
           >
-            {/* Region Map Card - Left column */}
+            {/* Region Map Card with tabs */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
               <div style={{
                 border: '1px solid var(--bydash-border)',
@@ -462,67 +411,31 @@ function RegierungsViewComponent() {
                 <div className="bydash-mfe__story-header">
                   <h3 className="bydash-mfe__story-heading">Landkreise in {currentRegion.shortName}</h3>
                 </div>
-                <div className="bydash-mfe__card-heading"></div>
 
-                <div className="bydash-mfe__chart-frame">
-                  <RegionMapSVG
-                    selectedMetric={selectedMetric}
-                    selectedRegion={selectedRegion}
-                    regions={sortedMetrics}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Info Panel - Right column */}
-            <RegierungsRegionInfoPanel 
-              selectedRegion={selectedRegion}
-              selectedMetric={selectedMetric}
-              metricLabels={metricLabels}
-              formatMetricValue={formatMetricValue}
-              currentRegion={currentRegion}
-            />
-          </div>
-        </div>
-
-        {/* Chart/Table and Interpretation Section */}
-        <div style={{ padding: '24px', borderTop: '1px solid var(--bydash-border)' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '60% 40%',
-              gap: '20px',
-              alignItems: 'stretch',
-            }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
-              {/* Chart Card */}
-              <div style={{
-                border: '1px solid var(--bydash-border)',
-                borderRadius: '12px',
-                background: 'var(--bydash-bg)',
-                overflow: 'hidden'
-              }}>
-                {/* Card Header */}
-                <div className="bydash-mfe__story-header">
-                  <h3 className="bydash-mfe__story-heading">Schulämter in {currentRegion.shortName}</h3>
-                </div>
-
-                {/* View selector using semantic nav element */}
+                {/* Tab selector */}
                 <ViewSwitcher
                   options={[
                     { key: 'map', label: 'Karte' },
-                    { key: 'table', label: 'Überblick' },
+                    { key: 'schulaemter', label: 'Schulämter' },
+                    { key: 'overview', label: 'Überblick' },
                   ]}
-                  activeKey={view}
-                  onSelect={(selectedView) => setView(selectedView as ViewType)}
-                  ariaLabel="Ansichtsauswahl für Regierungsbezirke"
+                  activeKey={mapTab}
+                  onSelect={(selectedTab) => setMapTab(selectedTab as 'map' | 'schulaemter' | 'overview')}
+                  ariaLabel="Ansichtsauswahl für Landkreise"
                   variant="underline"
                 />
                 <div className="bydash-mfe__card-heading"></div>
 
                 <div className="bydash-mfe__chart-frame">
-                  {view === 'map' && (
+                  {mapTab === 'map' && (
+                    <RegionMapSVG
+                      selectedMetric={selectedMetric}
+                      selectedRegion={selectedRegion}
+                      regions={sortedMetrics}
+                    />
+                  )}
+
+                  {mapTab === 'schulaemter' && (
                     <OfficesLeafletMap
                       selectedRegionId={selectedRegion}
                       regionMetrics={sortedMetrics}
@@ -530,7 +443,7 @@ function RegierungsViewComponent() {
                     />
                   )}
 
-                  {view === 'table' && (
+                  {mapTab === 'overview' && (
                     <div style={{ padding: '1rem', overflowX: 'auto' }}>
                       <table style={{
                         width: '100%',
@@ -553,9 +466,9 @@ function RegierungsViewComponent() {
                         </thead>
                         <tbody>
                           {currentOffices.map((office, idx) => (
-                            <tr 
-                              key={idx} 
-                              style={{ 
+                            <tr
+                              key={idx}
+                              style={{
                                 backgroundColor: idx % 2 === 0 ? '#ffffff' : '#f9fafb',
                                 borderBottom: '1px solid #e5e7eb',
                               }}
@@ -563,30 +476,30 @@ function RegierungsViewComponent() {
                               <td style={{ padding: '12px', fontWeight: '500', color: '#374151' }}>
                                 {office.name}
                               </td>
-                              <td 
-                                style={{ 
-                                  padding: '12px', 
-                                  textAlign: 'right', 
+                              <td
+                                style={{
+                                  padding: '12px',
+                                  textAlign: 'right',
                                   color: '#4b5563',
                                   fontVariantNumeric: 'tabular-nums',
                                 }}
                               >
                                 {office.schools.toLocaleString()}
                               </td>
-                              <td 
-                                style={{ 
-                                  padding: '12px', 
-                                  textAlign: 'right', 
+                              <td
+                                style={{
+                                  padding: '12px',
+                                  textAlign: 'right',
                                   color: '#4b5563',
                                   fontVariantNumeric: 'tabular-nums',
                                 }}
                               >
                                 {office.students.toLocaleString()}
                               </td>
-                              <td 
-                                style={{ 
-                                  padding: '12px', 
-                                  textAlign: 'right', 
+                              <td
+                                style={{
+                                  padding: '12px',
+                                  textAlign: 'right',
                                   color: '#4b5563',
                                   fontVariantNumeric: 'tabular-nums',
                                 }}
@@ -615,12 +528,17 @@ function RegierungsViewComponent() {
               </div>
             </div>
 
-            {/* Interpretation Container - Right column of grid */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <InterpretationBox tabs={interpretationTabs} defaultTab="befund" />
-            </div>
+            {/* Info Panel - Right column */}
+            <RegierungsRegionInfoPanel
+              selectedRegion={selectedRegion}
+              selectedMetric={selectedMetric}
+              metricLabels={metricLabels}
+              formatMetricValue={formatMetricValue}
+              currentRegion={currentRegion}
+            />
           </div>
         </div>
+
       </div>
     </div>
   )

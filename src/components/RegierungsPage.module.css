@@ -25,7 +25,6 @@
 }
 
 .headerTitle {
-  margin-bottom: 6px;
   margin: 0 0 6px 0;
 }
 
@@ -166,22 +165,6 @@
   flex-direction: column;
   gap: 16px;
   min-width: 0;
-}
-
-.storyHeader {
-  /* Used by existing component */
-}
-
-.storyHeading {
-  /* Used by existing component */
-}
-
-.cardHeading {
-  /* Empty divider */
-}
-
-.chartFrame {
-  /* Standard chart frame */
 }
 
 /* Chart/Table and Interpretation Section */
