@@ -4,6 +4,7 @@ import { OfficesLeafletMap } from './charts/OfficesLeafletMap'
 import { RegionMapSVG } from './charts/RegionMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { RegionIcon } from './controls/RegionIcon'
+import { IndicatorSelector } from './controls/IndicatorSelector'
 import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
 import styles from './RegierungsPage.module.css'
 import { districtData } from '../data/districtData'
@@ -315,79 +316,17 @@ function RegierungsViewComponent() {
         </div>
 
         {/* Indicators Selection - Clean Underline Style */}
-        <div style={{
-          padding: '0 24px',
-          marginBottom: '24px',
-        }}>
-          <div style={{
-            borderBottom: '1px solid var(--bydash-border)',
-            paddingBottom: '12px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-            gap: '0',
-          }}>
-          {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
-            <button
-              key={key}
-              className={`bydash-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
-              onClick={() => setSelectedMetric(key)}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '12px 16px',
-                background: 'transparent',
-                color: selectedMetric === key
-                  ? 'var(--bydash-accent)'
-                  : 'var(--bydash-text)',
-                border: 'none',
-                borderBottom: selectedMetric === key
-                  ? '2px solid var(--bydash-accent)'
-                  : '2px solid transparent',
-                borderRadius: '0',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                fontSize: '0.85rem',
-                fontWeight: selectedMetric === key ? '600' : '500',
-                textAlign: 'center',
-                width: '100%',
-                minHeight: '60px',
-              }}
-              onMouseEnter={(e) => {
-                if (selectedMetric !== key) {
-                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-heading)';
-                  (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'rgba(0, 141, 201, 0.3)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedMetric !== key) {
-                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-text)';
-                  (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'transparent';
-                }
-              }}
-            >
-              <div style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                {metricIcons[key]}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', minWidth: 0 }}>
-                <strong style={{ display: 'block', fontSize: '0.85rem', fontWeight: selectedMetric === key ? '600' : '500' }}>
-                  {metricLabels[key]}
-                </strong>
-                <div style={{
-                  fontSize: '0.7rem',
-                  fontWeight: '600',
-                  color: selectedMetric === key ? 'var(--bydash-accent)' : 'var(--bydash-text)',
-                  opacity: selectedMetric === key ? 1 : 0.6
-                }}>
-                  {formatMetricValue(key, currentRegion[key])}
-                </div>
-              </div>
-            </button>
-          ))}
-          </div>
-        </div>
+        <IndicatorSelector<MetricKey>
+          options={(Object.keys(metricLabels) as MetricKey[]).map((key) => ({
+            key,
+            label: metricLabels[key],
+            icon: metricIcons[key],
+            value: currentRegion[key],
+          }))}
+          selectedKey={selectedMetric}
+          onSelect={setSelectedMetric}
+          formatValue={(val) => formatMetricValue(selectedMetric, val as number)}
+        />
 
         {/* Regional Distribution Map and Info Grid */}
         <div style={{ padding: '24px' }}>

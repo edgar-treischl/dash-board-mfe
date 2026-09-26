@@ -1,9 +1,9 @@
 import { memo, useState } from 'react'
 import { bavariaMetrics, regionMetrics } from '../data/bavaria'
-import { COMMON_STYLES } from '../config/chartConfig'
-import { InterpretationBox } from './InterpretationBox'
+import { BavariaInfoGrid } from './BavariaInfoGrid'
 import { RegierungsbezirkeMapSVG as RegierungsbezirkeMap } from './charts/RegierungsMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
+import { IndicatorSelector } from './controls/IndicatorSelector'
 import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
 
 
@@ -104,36 +104,6 @@ function BavariaViewComponent({
     return b[selectedMetric] - a[selectedMetric]
   })
 
-  // Build interpretation tabs
-  const interpretationTabs = {
-    befund: {
-      label: 'Befund',
-      content: (
-        <div>
-          <p className="bydash-mfe__story-text">
-            Die Verteilung der Bildungsressourcen in Bayern nach Regierungsbezirken zeigt deutliche regionale Unterschiede. Die Metriken umfassen Schulen, Schülerinnen und Schüler, Lehrkräfte (Vollzeitäquivalente) und durchschnittliche Klassengröße.
-          </p>
-          <ul className="bydash-mfe__story-text" style={COMMON_STYLES.bulletList}>
-            <li style={COMMON_STYLES.listItem}>
-              <strong>{sortedRegions[0].shortName}</strong> hat mit {sortedRegions[0][selectedMetric].toFixed(selectedMetric === 'students_percent' ? 2 : 0)}{ selectedMetric === 'students_percent' ? '%' : ''} die höchste Anzahl an <strong>{metricLabels[selectedMetric]}</strong>.
-            </li>
-            <li style={COMMON_STYLES.listItem}>
-              Bayern gesamt: {getMetricValue(selectedMetric).toLocaleString()} {metricLabels[selectedMetric]}
-            </li>
-          </ul>
-        </div>
-      ),
-    },
-    hinweis: {
-      label: 'Hinweis',
-      content: (
-        <p className="bydash-mfe__story-text bydash-mfe__story-text--italic">
-          Die Daten basieren auf den sieben Regierungsbezirken Bayerns: Oberbayern, Niederbayern, Oberpfalz, Oberfranken, Mittelfranken, Unterfranken und Schwaben. Die Unterschiede spiegeln sowohl die Bevölkerungsdichte als auch die Bildungsinfrastruktur wider.
-        </p>
-      ),
-    },
-  }
-
   return (
     <div className="bydash-mfe__bavaria-container" style={{ width: '100%', margin: '0', padding: '24px', boxSizing: 'border-box' }}>
       
@@ -158,34 +128,20 @@ function BavariaViewComponent({
 
         {/* Selection Grid */}
         <div style={{ padding: '24px' }}>
-          <div className="bydash-mfe__selection-grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: '12px' }}>
-            {/* All Metrics (regional + KPI) */}
-            {(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => (
-              <button
-                key={key}
-                className={`bydash-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
-                onClick={() => onMetricChange(key)}
-              >
-                <div className="bydash-mfe__grid-icon-wrapper">
-                  {metricIcons[key]}
-                </div>
-                <strong>{metricLabels[key]}</strong>
-                <span className="bydash-mfe__level-desc">{metricDescriptions[key]}</span>
-                <div style={{ 
-                  marginTop: '8px', 
-                  padding: '8px 12px',
-                  background: selectedMetric === key ? 'rgba(37, 99, 235, 0.08)' : 'rgba(0, 0, 0, 0.03)',
-                  borderRadius: '8px',
-                  fontSize: '0.975rem',
-                  fontWeight: '600',
-                  color: selectedMetric === key ? 'var(--bydash-primary)' : 'var(--bydash-text)',
-                  transition: 'all 0.2s ease'
-                }}>
-                  {formatMetricValue(key, getMetricValue(key))}
-                </div>
-              </button>
-            ))}
-          </div>
+          <IndicatorSelector<RegionalMetricKey>
+            options={(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => ({
+              key,
+              label: metricLabels[key],
+              icon: metricIcons[key],
+              value: getMetricValue(key),
+            }))}
+            selectedKey={selectedMetric}
+            onSelect={onMetricChange}
+            formatValue={(val) => formatMetricValue(selectedMetric, val as number)}
+            gridColumns="repeat(6, 1fr)"
+            containerPadding="0"
+            containerMarginBottom="0"
+          />
         </div>   
 
         {/* Graph/Map Section */}
@@ -193,9 +149,9 @@ function BavariaViewComponent({
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '60% 40%',
+              gridTemplateColumns: '2fr 1fr',
               gap: '20px',
-              alignItems: 'stretch',
+              alignItems: 'start',
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
@@ -377,9 +333,15 @@ function BavariaViewComponent({
           </div>
         </div>
 
-          {/* Interpretation Container - Right column of grid */}
+          {/* Info Grid Container - Right column of grid */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <InterpretationBox tabs={interpretationTabs} defaultTab="befund" />
+            <BavariaInfoGrid
+              selectedMetric={selectedMetric}
+              metricLabels={metricLabels}
+              metricDescriptions={metricDescriptions}
+              formatMetricValue={formatMetricValue}
+              bavariaValue={getMetricValue(selectedMetric)}
+            />
           </div>
         </div>
       </div>
