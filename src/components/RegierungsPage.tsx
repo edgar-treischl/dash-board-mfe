@@ -8,10 +8,195 @@ import { ViewSwitcher } from './controls/ViewSwitcher'
 import { RegionIcon } from './controls/RegionIcon'
 import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
 import styles from './RegierungsPage.module.css'
+import { districtData } from '../data/districtData'
 
 type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' |  'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
 type ViewType = 'map' | 'table'
+
+interface RegierungsRegionInfoPanelProps {
+  selectedRegion: string
+  selectedMetric: MetricKey
+  metricLabels: Record<MetricKey, string>
+  formatMetricValue: (key: MetricKey, value: number) => string
+  currentRegion: Record<MetricKey, number> & { id: string; name: string; shortName: string }
+}
+
+function RegierungsRegionInfoPanel({
+  selectedRegion,
+  selectedMetric,
+  metricLabels,
+  formatMetricValue,
+  currentRegion,
+}: RegierungsRegionInfoPanelProps) {
+  // Calculate min, max, average from district data for the selected region
+  const regionDistricts = districtData.filter((d) => d.regionId === selectedRegion)
+  
+  const metricFieldMap: Record<MetricKey, keyof typeof districtData[number]> = {
+    students_percent: 'studentsPercent',
+    avgClassSize: 'avgClassSize',
+    schools: 'schools',
+    studentTeacherRatio: 'studentTeacherRatio',
+    teachersFTE: 'teachersFTE',
+    migrantPercent: 'migrantPercent',
+  }
+
+  const fieldKey = metricFieldMap[selectedMetric]
+  const dataWithMetrics = regionDistricts
+    .map((d) => ({
+      ...d,
+      value: d[fieldKey] as number,
+    }))
+    .filter((d) => d.value != null && !isNaN(d.value))
+
+  // Find min/max with district names
+  const minData = dataWithMetrics.length ? dataWithMetrics.reduce((prev, curr) => (curr.value < prev.value ? curr : prev)) : null
+  const maxData = dataWithMetrics.length ? dataWithMetrics.reduce((prev, curr) => (curr.value > prev.value ? curr : prev)) : null
+  const avgValue = dataWithMetrics.length ? dataWithMetrics.reduce((a, b) => a + b.value, 0) / dataWithMetrics.length : null
+
+  const minValue = minData?.value ?? null
+  const maxValue = maxData?.value ?? null
+
+  const formatValue = (value: number | null): string => {
+    if (value === null) return '—'
+    return formatMetricValue(selectedMetric, value)
+  }
+
+  // Storytelling labels and descriptions based on metric
+  const metricStories: Record<MetricKey, { context: string; avgExplanation: string }> = {
+    students_percent: {
+      context: 'Schüleranteil in der Region',
+      avgExplanation: 'durchschnittlicher Anteil pro Landkreis/kreisfreie Stadt',
+    },
+    migrantPercent: {
+      context: 'Schüler mit Migrationshintergrund',
+      avgExplanation: 'durchschnittlicher Anteil pro Landkreis/kreisfreie Stadt',
+    },
+    teachersFTE: {
+      context: 'Lehrkräfte (Vollzeitäquivalente)',
+      avgExplanation: 'durchschnittliche Anzahl pro Landkreis/kreisfreie Stadt',
+    },
+    studentTeacherRatio: {
+      context: 'Schüler pro Lehrkraft',
+      avgExplanation: 'durchschnittliche Relation pro Landkreis/kreisfreie Stadt',
+    },
+    avgClassSize: {
+      context: 'Durchschnittliche Klassengröße',
+      avgExplanation: 'durchschnittliche Größe pro Landkreis/kreisfreie Stadt',
+    },
+    schools: {
+      context: 'Anzahl der Schulen',
+      avgExplanation: 'durchschnittliche Anzahl pro Landkreis/kreisfreie Stadt',
+    },
+  }
+
+  const story = metricStories[selectedMetric]
+
+  return (
+    <div style={{
+      border: '1px solid var(--bydash-border)',
+      borderRadius: '12px',
+      background: 'var(--bydash-bg)',
+      overflow: 'hidden',
+      padding: '24px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '24px',
+      height: 'fit-content',
+    }}>
+      {/* Header with larger fonts */}
+      <div style={{ textAlign: 'center' }}>
+        <h3 style={{ fontSize: '1.3rem', fontWeight: '700', marginBottom: '8px', marginTop: 0, color: 'var(--bydash-primary)' }}>
+          {metricLabels[selectedMetric]}
+        </h3>
+        <p style={{ fontSize: '0.95rem', opacity: 0.7, marginBottom: 0, marginTop: 0, fontWeight: '500' }}>
+          {story.context} in {currentRegion.shortName}
+        </p>
+      </div>
+
+      {/* Statistics Grid with better spacing and storytelling */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
+        {/* Average */}
+        <div style={{
+          padding: '16px',
+          border: '1px solid var(--bydash-border)',
+          borderRadius: '10px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '0.95rem', color: 'var(--bydash-text)', fontWeight: '600' }}>
+            Durchschnitt
+          </div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--bydash-text)', opacity: 0.7 }}>
+            {story.avgExplanation}
+          </div>
+          <div style={{ fontSize: '1.6rem', fontWeight: '700', color: 'var(--bydash-primary)', marginTop: '4px' }}>
+            {formatValue(avgValue)}
+          </div>
+        </div>
+
+        {/* Minimum */}
+        <div style={{
+          padding: '16px',
+          border: '1px solid var(--bydash-border)',
+          borderRadius: '10px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '0.95rem', color: 'var(--bydash-text)', fontWeight: '600' }}>
+            Niedrigster Wert
+          </div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--bydash-text)', opacity: 0.65, fontWeight: '600' }}>
+            {minData ? minData.key : 'Keine Daten verfügbar'}
+          </div>
+          <div style={{ fontSize: '1.6rem', fontWeight: '700', color: 'var(--bydash-primary)', marginTop: '4px' }}>
+            {formatValue(minValue)}
+          </div>
+        </div>
+
+        {/* Maximum */}
+        <div style={{
+          padding: '16px',
+          border: '1px solid var(--bydash-border)',
+          borderRadius: '10px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '0.95rem', color: 'var(--bydash-text)', fontWeight: '600' }}>
+            Höchster Wert
+          </div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--bydash-text)', opacity: 0.65, fontWeight: '600' }}>
+            {maxData ? maxData.key : 'Keine Daten verfügbar'}
+          </div>
+          <div style={{ fontSize: '1.6rem', fontWeight: '700', color: 'var(--bydash-primary)', marginTop: '4px' }}>
+            {formatValue(maxValue)}
+          </div>
+        </div>
+      </div>
+
+      {/* Info text with better visual hierarchy */}
+      <div style={{
+        padding: '12px 16px',
+        border: '1px solid var(--bydash-border)',
+        borderRadius: '6px',
+        fontSize: '0.9rem',
+        color: 'var(--bydash-text)',
+        lineHeight: '1.5',
+        fontWeight: '500',
+        opacity: 0.75,
+        textAlign: 'center',
+      }}>
+        Statistik basierend auf {dataWithMetrics.length} {dataWithMetrics.length === 1 ? 'Landkreis/kreisfreie Stadt' : 'Landkreisen/kreisfreien Städten'}
+      </div>
+    </div>
+  )
+}
 
 function RegierungsViewComponent() {
   // Sort metrics alphabetically by name for consistent display
@@ -22,7 +207,6 @@ function RegierungsViewComponent() {
 
   // Find the currently selected region object
   const currentRegion = sortedMetrics.find(r => r.id === selectedRegion) || sortedMetrics[0]
-  
   // Get school offices for the selected region
   const currentOffices = schoolOffices.filter(o => o.regionId === selectedRegion)
 
@@ -86,14 +270,14 @@ function RegierungsViewComponent() {
       {/* Main Card Container */}
       <div className={styles.card}>
         
-        {/* Persistent Full-Width Region Breadcrumb Selector - Subtle Design */}
+        {/* Persistent Full-Width Region Breadcrumb Selector - Clean Underline Style */}
         <div style={{
-          padding: '10px 24px',
-          borderBottom: '1px solid var(--bydash-border)',
+          padding: '0 24px',
+          borderBottom: '2px solid var(--bydash-border)',
           background: 'transparent',
           display: 'grid',
           gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: '8px',
+          gap: '0',
           width: '100%',
           boxSizing: 'border-box',
         }}>
@@ -105,16 +289,17 @@ function RegierungsViewComponent() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '6px',
-                padding: '8px 12px',
-                background: selectedRegion === region.id 
-                  ? 'rgba(37, 99, 235, 0.1)' 
-                  : 'transparent',
-                color: 'var(--bydash-text)',
-                border: selectedRegion === region.id 
-                  ? '1px solid var(--bydash-primary)' 
-                  : '1px solid var(--bydash-border)',
-                borderRadius: '6px',
+                gap: '8px',
+                padding: '12px 16px',
+                background: 'transparent',
+                color: selectedRegion === region.id 
+                  ? 'var(--bydash-accent)' 
+                  : 'var(--bydash-text)',
+                border: 'none',
+                borderBottom: selectedRegion === region.id 
+                  ? '2px solid var(--bydash-accent)' 
+                  : '2px solid transparent',
+                borderRadius: '0',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
                 fontSize: '0.9rem',
@@ -122,25 +307,24 @@ function RegierungsViewComponent() {
                 whiteSpace: 'nowrap',
                 width: '100%',
                 minHeight: '40px',
-                opacity: selectedRegion === region.id ? 1 : 0.7,
               }}
               onMouseEnter={(e) => {
                 if (selectedRegion !== region.id) {
-                  e.currentTarget.style.opacity = '0.9';
-                  e.currentTarget.style.background = 'rgba(37, 99, 235, 0.05)';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-heading)';
+                  (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'rgba(0, 141, 201, 0.3)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (selectedRegion !== region.id) {
-                  e.currentTarget.style.opacity = '0.7';
-                  e.currentTarget.style.background = 'transparent';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-text)';
+                  (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'transparent';
                 }
               }}
             >
               <div style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <RegionIcon regionId={region.id} width={20} height={20} />
               </div>
-              <span style={{ flex: 1, textAlign: 'center' }}>{region.shortName}</span>
+              <span>{region.shortName}</span>
             </button>
           ))}
         </div>
@@ -158,90 +342,90 @@ function RegierungsViewComponent() {
           </div>
         </div>
 
-        {/* Regional Distribution Map and Indicators Grid */}
+        {/* Indicators Selection - Full Width Above Map - Clean Underline Style */}
+        <div style={{
+          padding: '0 24px',
+          borderBottom: '2px solid var(--bydash-border)',
+          background: 'transparent',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+          gap: '0',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}>
+          {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
+            <button
+              key={key}
+              className={`bydash-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
+              onClick={() => setSelectedMetric(key)}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '12px 16px',
+                background: 'transparent',
+                color: selectedMetric === key 
+                  ? 'var(--bydash-accent)' 
+                  : 'var(--bydash-text)',
+                border: 'none',
+                borderBottom: selectedMetric === key 
+                  ? '2px solid var(--bydash-accent)' 
+                  : '2px solid transparent',
+                borderRadius: '0',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                fontSize: '0.85rem',
+                fontWeight: selectedMetric === key ? '600' : '500',
+                textAlign: 'center',
+                width: '100%',
+                minHeight: '60px',
+              }}
+              onMouseEnter={(e) => {
+                if (selectedMetric !== key) {
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-heading)';
+                  (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'rgba(0, 141, 201, 0.3)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedMetric !== key) {
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-text)';
+                  (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'transparent';
+                }
+              }}
+            >
+              <div style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                {metricIcons[key]}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', minWidth: 0 }}>
+                <strong style={{ display: 'block', fontSize: '0.85rem', fontWeight: selectedMetric === key ? '600' : '500' }}>
+                  {metricLabels[key]}
+                </strong>
+                <div style={{ 
+                  fontSize: '0.7rem',
+                  fontWeight: '600',
+                  color: selectedMetric === key ? 'var(--bydash-accent)' : 'var(--bydash-text)',
+                  opacity: selectedMetric === key ? 1 : 0.6
+                }}>
+                  {formatMetricValue(key, currentRegion[key])}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Regional Distribution Map and Info Grid */}
         <div style={{ padding: '24px' }}>
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 2fr',
+              gridTemplateColumns: '2fr 1fr',
               gap: '20px',
               alignItems: 'start',
             }}
           >
-            {/* Indicators Selection - Left column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {/* Indicators Panel */}
-              <div style={{
-                border: '1px solid var(--bydash-border)',
-                borderRadius: '12px',
-                background: 'var(--bydash-bg)',
-                overflow: 'hidden',
-                padding: '20px',
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%'
-              }}>
-                <h2 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '4px', marginTop: 0 }}>
-                  Indikatoren
-                </h2>
-                <p style={{ fontSize: '0.85rem', opacity: 0.6, marginBottom: '16px', marginTop: 0 }}>
-                  Wählen Sie einen Indikator
-                </p>
-
-                {/* Indicators Grid - Single Column */}
-                <div className="bydash-mfe__selection-grid" style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-                  {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
-                    <button
-                      key={key}
-                      className={`bydash-mfe__level-select-btn ${selectedMetric === key ? 'is-active' : ''}`}
-                      onClick={() => setSelectedMetric(key)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        padding: '10px 12px',
-                        background: selectedMetric === key ? 'var(--bydash-surface)' : 'transparent',
-                        border: '1px solid var(--bydash-border)',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                        textAlign: 'left',
-                        color: 'var(--bydash-text)',
-                        fontSize: '0.9rem',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = selectedMetric === key ? 'var(--bydash-surface)' : 'rgba(37, 99, 235, 0.03)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = selectedMetric === key ? 'var(--bydash-surface)' : 'transparent';
-                      }}
-                    >
-                      <div className="bydash-mfe__grid-icon-wrapper" style={{ flexShrink: 0, width: '20px', height: '20px' }}>
-                        {metricIcons[key]}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <strong style={{ display: 'block', fontSize: '0.9rem' }}>{metricLabels[key]}</strong>
-                      </div>
-                      <div style={{ 
-                        padding: '4px 8px',
-                        background: 'transparent',
-                        borderRadius: '4px',
-                        fontSize: '0.8rem',
-                        fontWeight: '600',
-                        color: selectedMetric === key ? 'var(--bydash-primary)' : 'var(--bydash-text)',
-                        whiteSpace: 'nowrap',
-                        flexShrink: 0,
-                        opacity: selectedMetric === key ? 1 : 0.8
-                      }}>
-                        {formatMetricValue(key, currentRegion[key])}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Region Map Card - Right column */}
+            {/* Region Map Card - Left column */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
               <div style={{
                 border: '1px solid var(--bydash-border)',
@@ -251,7 +435,7 @@ function RegierungsViewComponent() {
               }}>
                 {/* Card Header */}
                 <div className="bydash-mfe__story-header">
-                  <h3 className="bydash-mfe__story-heading">Landkreise in {currentRegion.shortName} - {metricLabels[selectedMetric]}</h3>
+                  <h3 className="bydash-mfe__story-heading">Landkreise in {currentRegion.shortName}</h3>
                 </div>
                 <div className="bydash-mfe__card-heading"></div>
 
@@ -264,6 +448,15 @@ function RegierungsViewComponent() {
                 </div>
               </div>
             </div>
+
+            {/* Info Panel - Right column */}
+            <RegierungsRegionInfoPanel 
+              selectedRegion={selectedRegion}
+              selectedMetric={selectedMetric}
+              metricLabels={metricLabels}
+              formatMetricValue={formatMetricValue}
+              currentRegion={currentRegion}
+            />
           </div>
         </div>
 
