@@ -107,7 +107,7 @@ function RegierungsRegionInfoPanel({
           <RegionIcon regionId={selectedRegion} width={40} height={40} />
         </div>
         <div>
-          <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>Aktiver Regierungsbezirk</div>
+          <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>Regierungsbezirk</div>
           <div style={{ fontSize: '1.2rem', fontWeight: '700', margin: 0 }}>
             {currentRegion.shortName}
           </div>
@@ -348,7 +348,7 @@ function RegierungsViewComponent() {
               }}>
                 {/* Card Header */}
                 <div className="bydash-mfe__story-header">
-                  <h3 className="bydash-mfe__story-heading">Landkreise in {currentRegion.shortName}</h3>
+                  <h3 className="bydash-mfe__story-heading">{metricLabels[selectedMetric]} in {currentRegion.shortName}</h3>
                 </div>
 
                 {/* Tab selector */}
