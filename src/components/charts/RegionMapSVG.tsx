@@ -6,6 +6,7 @@ import type { Topology, GeometryCollection } from "topojson-specification";
 import type { FeatureCollection } from "geojson";
 import bavariaDistrictsTopoJSONRaw from "../../data/bavaria-districts.json?raw";
 import { districtData } from "../../data/districtData";
+import { getRegierungssitzForRegion } from "../../data/regierungssitz";
 
 // Colour ramp mirrors R/mapRegion.R (low_colour, mid_colour, high_colour)
 const LOW_COLOUR = "#F1F5F8";
@@ -147,12 +148,25 @@ function RegionMapSVGComponent({
         paths.map((p) => [p.key, p.value])
       );
 
+      // Get Regierungssitz and project its coordinates
+      const regierungssitz = getRegierungssitzForRegion(selectedRegion);
+      let regierungssitzProjected: { x: number; y: number } | null = null;
+
+      if (regierungssitz && proj) {
+        const projected = proj([regierungssitz.lng, regierungssitz.lat]);
+        if (projected) {
+          regierungssitzProjected = { x: projected[0], y: projected[1] };
+        }
+      }
+
       return {
         paths,
         colorScale,
         districtValuesByKey,
         minValue,
         maxValue,
+        regierungssitz,
+        regierungssitzProjected,
       };
     } catch (error) {
       console.error("Error rendering region map:", error);
@@ -162,6 +176,8 @@ function RegionMapSVGComponent({
         districtValuesByKey: {},
         minValue: 0,
         maxValue: 1,
+        regierungssitz: undefined,
+        regierungssitzProjected: null,
       };
     }
   }, [selectedMetric, selectedRegion]);
@@ -267,6 +283,56 @@ function RegionMapSVGComponent({
               />
             );
           })}
+
+          {/* Regierungssitz marker and label */}
+          {renderData.regierungssitzProjected && renderData.regierungssitz && (
+            <>
+              {/* Red point for Regierungssitz */}
+              <circle
+                cx={renderData.regierungssitzProjected.x}
+                cy={renderData.regierungssitzProjected.y}
+                r="5"
+                fill="#ef4444"
+                stroke="#ffffff"
+                strokeWidth="2"
+                style={{
+                  pointerEvents: "none",
+                  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))",
+                }}
+              />
+
+              {/* White background for label */}
+              <rect
+                x={renderData.regierungssitzProjected.x - 70}
+                y={renderData.regierungssitzProjected.y - 26}
+                width="140"
+                height="20"
+                fill="#ffffff"
+                stroke="#d1d5db"
+                strokeWidth="1"
+                rx="3"
+                style={{
+                  pointerEvents: "none",
+                }}
+              />
+
+              {/* Label text - black, white background */}
+              <text
+                x={renderData.regierungssitzProjected.x}
+                y={renderData.regierungssitzProjected.y - 12}
+                fontSize="16"
+                fontWeight="600"
+                fill="#000000"
+                textAnchor="middle"
+                style={{
+                  pointerEvents: "none",
+                  filter: "drop-shadow(0 1px 3px rgba(255, 255, 255, 0.8))",
+                }}
+              >
+                {renderData.regierungssitz.label}
+              </text>
+            </>
+          )}
         </g>
 
         {/* Legend */}
