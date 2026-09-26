@@ -13,7 +13,7 @@ const MID_COLOUR = "#8FB8CE";
 const HIGH_COLOUR = "#155A8A";
 const NO_DATA_COLOUR = "#D9DDE0";
 
-type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
+type MetricKey = 'students' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
 type RegionMapProps = {
   selectedMetric: MetricKey;
@@ -49,7 +49,7 @@ const districtValueForMetric = (
 ): number | null => {
   if (!district) return null;
   switch (metric) {
-    case "students_percent":
+    case "students":
       return district.studentsPercent;
     case "avgClassSize":
       return district.avgClassSize;
@@ -188,7 +188,7 @@ function RegionMapSVGComponent({
 
   const getMetricLabel = (metric: MetricKey): string => {
     const labels: Record<MetricKey, string> = {
-      students_percent: "Schüler und Schülerinnen",
+      students: "Schüler und Schülerinnen",
       schools: "Schulen",
       studentTeacherRatio: "SuS-Lehrer-Relation",
       avgClassSize: "Klassengröße",

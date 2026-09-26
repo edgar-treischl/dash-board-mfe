@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { regionMetrics } from '../data/bavaria'
 import { BayernIcon } from './controls/BayernIcon'
 
-type RegionalMetricKey = 'students_percent' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
+type RegionalMetricKey = 'students' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
 type BavariaInfoGridProps = {
   selectedMetric: RegionalMetricKey

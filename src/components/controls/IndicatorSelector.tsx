@@ -6,6 +6,8 @@ export interface IndicatorOption<T extends string = string> {
   icon: React.ReactNode
   value: number | string
   description?: string
+  trend?: number
+  trendUnit?: '%' | 'count' | 'decimal' // Unit for trend display
 }
 
 export interface IndicatorSelectorProps<T extends string = string> {
@@ -100,7 +102,8 @@ export function IndicatorSelector<T extends string = string>({
                 fontWeight: isActive ? '600' : '500',
                 textAlign: 'center',
                 width: '100%',
-                minHeight: '60px',
+                minHeight: '80px',
+                position: 'relative',
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
@@ -117,11 +120,47 @@ export function IndicatorSelector<T extends string = string>({
                 }
               }}
             >
+              {/* Trend Badge - Top Right */}
+              {option.trend !== undefined && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '3px',
+                    paddingLeft: '6px',
+                    paddingRight: '6px',
+                    paddingTop: '2px',
+                    paddingBottom: '2px',
+                    borderRadius: '12px',
+                    fontSize: '0.7rem',
+                    fontWeight: '700',
+                    backgroundColor: option.trend > 0 ? '#d1fae5' : option.trend < 0 ? '#fee2e2' : '#f3f4f6',
+                    color: option.trend > 0 ? '#065f46' : option.trend < 0 ? '#7f1d1d' : '#374151',
+                  }}
+                  title={option.trend > 0 ? 'Positive trend' : option.trend < 0 ? 'Negative trend' : 'No change'}
+                >
+                  <span style={{ fontSize: '0.8rem' }}>
+                    {option.trend > 0 ? '↑' : option.trend < 0 ? '↓' : '→'}
+                  </span>
+                  <span>
+                    {option.trendUnit === '%'
+                      ? Math.abs(option.trend).toFixed(1) + '%'
+                      : option.trendUnit === 'count'
+                      ? Math.round(Math.abs(option.trend))
+                      : Math.abs(option.trend).toFixed(2)}
+                  </span>
+                </span>
+              )}
+
               {/* Icon */}
               <div
                 style={{
-                  width: '24px',
-                  height: '24px',
+                  width: '32px',
+                  height: '32px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -137,14 +176,14 @@ export function IndicatorSelector<T extends string = string>({
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '2px',
+                  gap: '4px',
                   minWidth: 0,
                 }}
               >
                 <strong
                   style={{
                     display: 'block',
-                    fontSize: '0.85rem',
+                    fontSize: '0.8rem',
                     fontWeight: isActive ? '600' : '500',
                   }}
                 >
@@ -152,10 +191,11 @@ export function IndicatorSelector<T extends string = string>({
                 </strong>
                 <div
                   style={{
-                    fontSize: '0.7rem',
-                    fontWeight: '600',
+                    fontSize: '1.15rem',
+                    fontWeight: '700',
                     color: isActive ? 'var(--bydash-accent)' : 'var(--bydash-text)',
-                    opacity: isActive ? 1 : 0.6,
+                    opacity: isActive ? 1 : 0.8,
+                    lineHeight: '1.2',
                   }}
                 >
                   {formatValue(option.value, option.key)}

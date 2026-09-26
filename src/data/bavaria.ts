@@ -7,12 +7,21 @@ export const bavariaMetrics = {
   migrantPercent: 15.78
 };
 
+export const bavariaTrend = {
+  schools_change: -2,
+  students_change: 16773,
+  avgClassSize_change: 0.14,
+  teachersFTE_change: 982,
+  studentTeacherRatio_change: 0.0388,
+  migrantPercent_change: 0.5724
+};
+
 interface RegionMetrics {
   id: string;
   shortName: string;
   name: string;
   schools: number;
-  students_percent: number;
+  students: number;
   avgClassSize: number;
   teachersFTE: number;
   studentTeacherRatio: number;
@@ -33,7 +42,7 @@ export const regionMetrics: RegionMetrics[] = [
     shortName: "Oberbayern",
     name: "Regierung von Oberbayern",
     schools: 1446,
-    students_percent: 36.8903237923863,
+    students: 36.8903237923863,
     avgClassSize: 22.18,
     teachersFTE: 36818,
     studentTeacherRatio: 13.23,
@@ -44,7 +53,7 @@ export const regionMetrics: RegionMetrics[] = [
     shortName: "Niederbayern",
     name: "Regierung von Niederbayern",
     schools: 502,
-    students_percent: 9.30018918308955,
+    students: 9.30018918308955,
     avgClassSize: 21.4,
     teachersFTE: 9252,
     studentTeacherRatio: 13.27,
@@ -55,7 +64,7 @@ export const regionMetrics: RegionMetrics[] = [
     shortName: "Oberpfalz",
     name: "Regierung der Oberpfalz",
     schools: 435,
-    students_percent: 8.01884863383757,
+    students: 8.01884863383757,
     avgClassSize: 21.97,
     teachersFTE: 7982,
     studentTeacherRatio: 13.27,
@@ -66,7 +75,7 @@ export const regionMetrics: RegionMetrics[] = [
     shortName: "Oberfranken",
     name: "Regierung von Oberfranken",
     schools: 412,
-    students_percent: 7.56618757450315,
+    students: 7.56618757450315,
     avgClassSize: 21.12,
     teachersFTE: 7736,
     studentTeacherRatio: 12.91,
@@ -77,7 +86,7 @@ export const regionMetrics: RegionMetrics[] = [
     shortName: "Mittelfranken",
     name: "Regierung von Mittelfranken",
     schools: 551,
-    students_percent: 13.7687876681102,
+    students: 13.7687876681102,
     avgClassSize: 21.49,
     teachersFTE: 13939,
     studentTeacherRatio: 13.04,
@@ -88,7 +97,7 @@ export const regionMetrics: RegionMetrics[] = [
     shortName: "Unterfranken",
     name: "Regierung von Unterfranken",
     schools: 500,
-    students_percent: 9.72422285737655,
+    students: 9.72422285737655,
     avgClassSize: 20.79,
     teachersFTE: 10031,
     studentTeacherRatio: 12.80,
@@ -99,7 +108,7 @@ export const regionMetrics: RegionMetrics[] = [
     shortName: "Schwaben",
     name: "Regierung von Schwaben",
     schools: 661,
-    students_percent: 14.7314402906967,
+    students: 14.7314402906967,
     avgClassSize: 21.28,
     teachersFTE: 14592,
     studentTeacherRatio: 13.33,

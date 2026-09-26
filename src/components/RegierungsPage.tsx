@@ -5,11 +5,11 @@ import { RegionMapSVG } from './charts/RegionMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { RegionIcon } from './controls/RegionIcon'
 import { IndicatorSelector } from './controls/IndicatorSelector'
-import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
+import { SchoolsIcon, TeachersIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
 import styles from './RegierungsPage.module.css'
 import { districtData } from '../data/districtData'
 
-type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
+type MetricKey = 'students' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
 type RegierungsRegionInfoPanelProps = {
   selectedRegion: string
@@ -30,7 +30,7 @@ function RegierungsRegionInfoPanel({
   const regionDistricts = districtData.filter((d) => d.regionId === selectedRegion)
 
   const metricFieldMap: Record<MetricKey, keyof typeof districtData[number]> = {
-    students_percent: 'studentsPercent',
+    students: 'studentsPercent',
     avgClassSize: 'avgClassSize',
     schools: 'schools',
     studentTeacherRatio: 'studentTeacherRatio',
@@ -61,7 +61,7 @@ function RegierungsRegionInfoPanel({
 
   // Storytelling labels and descriptions based on metric
   const metricStories: Record<MetricKey, { context: string; avgExplanation: string }> = {
-    students_percent: {
+    students: {
       context: 'Schüleranteil in der Region',
       avgExplanation: 'durchschnittlicher Anteil pro Landkreis/kreisfreie Stadt',
     },
@@ -198,7 +198,7 @@ function RegierungsViewComponent() {
   const sortedMetrics = [...regionMetrics].sort((a, b) => a.shortName.localeCompare(b.shortName))
   const [mapTab, setMapTab] = useState<'map' | 'schulaemter' | 'overview'>('map')
   const [selectedRegion, setSelectedRegion] = useState<string>(sortedMetrics[0].id)
-  const [selectedMetric, setSelectedMetric] = useState<MetricKey>('students_percent')
+  const [selectedMetric, setSelectedMetric] = useState<MetricKey>('students')
 
   // Find the currently selected region object
   const currentRegion = sortedMetrics.find(r => r.id === selectedRegion) || sortedMetrics[0]
@@ -206,7 +206,7 @@ function RegierungsViewComponent() {
   const currentOffices = schoolOffices.filter(o => o.regionId === selectedRegion)
 
   const metricLabels: Record<MetricKey, string> = {
-    students_percent: 'Schülerschaft',
+    students: 'Schülerschaft',
     migrantPercent: 'Migrationshintergrund',
     teachersFTE: 'Lehrkräfte',
     studentTeacherRatio: 'Relation',
@@ -222,10 +222,10 @@ function RegierungsViewComponent() {
 
   const metricIcons: Record<MetricKey, React.ReactNode> = {
     schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
-    students_percent: <PupilsIcon className="bydash-mfe__grid-icon" />,
+    students: <PupilsIcon className="bydash-mfe__grid-icon" />,
     studentTeacherRatio: <StudentTeacherRelationIcon className="bydash-mfe__grid-icon" />,
     avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
-    teachersFTE: <GlobeIcon className="bydash-mfe__grid-icon" />,
+    teachersFTE: <TeachersIcon className="bydash-mfe__grid-icon" />,
     migrantPercent: <GlobeIcon className="bydash-mfe__grid-icon" />,
   }
 
@@ -396,7 +396,7 @@ function RegierungsViewComponent() {
                               {metricLabels['schools']}
                             </th>
                             <th style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
-                              {metricLabels['students_percent']}
+                              {metricLabels['students']}
                             </th>
                             <th style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: '#1f2937' }}>
                               {metricLabels['studentTeacherRatio']}
@@ -453,7 +453,7 @@ function RegierungsViewComponent() {
                               {currentRegion.schools.toLocaleString()}
                             </td>
                             <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
-                              {currentRegion.students_percent.toFixed(2)}%
+                              {currentRegion.students.toFixed(2)}%
                             </td>
                             <td style={{ padding: '12px', textAlign: 'right', color: '#1f2937', fontVariantNumeric: 'tabular-nums' }}>
                               {currentRegion.studentTeacherRatio.toFixed(2)}

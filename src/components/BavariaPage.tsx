@@ -1,13 +1,14 @@
 import { memo, useState } from 'react'
-import { bavariaMetrics, regionMetrics } from '../data/bavaria'
+import { bavariaMetrics, bavariaTrend, regionMetrics } from '../data/bavaria'
 import { BavariaInfoGrid } from './BavariaInfoGrid'
+import { type TrendMetricKey } from './TrendIndicator'
 import { RegierungsbezirkeMapSVG as RegierungsbezirkeMap } from './charts/RegierungsMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { IndicatorSelector } from './controls/IndicatorSelector'
-import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
+import { SchoolsIcon, TeachersIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
 
 
-type RegionalMetricKey = 'students_percent' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
+type RegionalMetricKey = 'students' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
 type BavariaViewProps = {
   selectedMetric?: RegionalMetricKey
@@ -20,12 +21,11 @@ function BavariaViewComponent({
   selectedMetric: propSelectedMetric,
   onMetricChange: propOnMetricChange,
 }: BavariaViewProps) {
-  const [internalMetric, setInternalMetric] = useState<RegionalMetricKey>('students_percent')
+  const [internalMetric, setInternalMetric] = useState<RegionalMetricKey>('students')
   const [view, setView] = useState<ViewType>('map')
 
   // Helper function to safely get metric from bavariaMetrics
   const getMetricValue = (key: RegionalMetricKey): number => {
-    if (key === 'students_percent') return bavariaMetrics.students
     return (bavariaMetrics as Record<string, number>)[key] || 0
   }
 
@@ -40,7 +40,7 @@ function BavariaViewComponent({
   // Helper to get table header label with proper unit indication
   const getTableHeaderLabel = (key: RegionalMetricKey): string => {
     const baseLabel = metricLabels[key]
-    if (key === 'students_percent' || key === 'migrantPercent') {
+    if (key === 'students' || key === 'migrantPercent') {
       return baseLabel + ' in %'
     }
     return baseLabel
@@ -48,7 +48,7 @@ function BavariaViewComponent({
 
   // Helper to format table cell value
   const formatTableValue = (key: RegionalMetricKey, value: number): string => {
-    if (key === 'students_percent' || key === 'migrantPercent') {
+    if (key === 'students' || key === 'migrantPercent') {
       return value.toFixed(2)
     }
     if (key === 'avgClassSize' || key === 'studentTeacherRatio') {
@@ -61,7 +61,7 @@ function BavariaViewComponent({
   const onMetricChange = propOnMetricChange || setInternalMetric
 
   const metricLabels: Record<RegionalMetricKey, string> = {
-    students_percent: 'Schülerschaft',
+    students: 'Schülerschaft',
     migrantPercent: 'Migrationshintergrund',
     teachersFTE: 'Lehrkräfte',
     studentTeacherRatio: 'Relation',
@@ -71,7 +71,7 @@ function BavariaViewComponent({
   }
 
   const metricDescriptions: Record<RegionalMetricKey, string> = {
-    students_percent: 'Anteil der Schüler und Schülerinnen (SuS) in Bayern:',
+    students: 'Anteil der Schüler und Schülerinnen (SuS) in Bayern:',
     migrantPercent: 'Anteil der SuS mit Migrationshintergrund in Bayern:',
     teachersFTE: 'Lehrkräfte (Vollzeitäquivalente) in Bayern:',
     studentTeacherRatio: 'Schüler-Lehrer-Relation in Bayern:',
@@ -83,7 +83,7 @@ function BavariaViewComponent({
 
   const metricColors: Record<RegionalMetricKey, string> = {
     schools: '#3b82f6',
-    students_percent: '#ef4444',
+    students: '#ef4444',
     avgClassSize: '#f59e0b',
     studentTeacherRatio: '#10b981',
     teachersFTE: '#8b5cf6',
@@ -92,10 +92,10 @@ function BavariaViewComponent({
 
   const metricIcons: Record<RegionalMetricKey, React.ReactNode> = {
     schools: <SchoolsIcon className="bydash-mfe__grid-icon" />,
-    students_percent: <PupilsIcon className="bydash-mfe__grid-icon" />,
+    students: <PupilsIcon className="bydash-mfe__grid-icon" />,
     avgClassSize: <ClassSizeIcon className="bydash-mfe__grid-icon" />,
     studentTeacherRatio: <StudentTeacherRelationIcon className="bydash-mfe__grid-icon" />,
-    teachersFTE: <GlobeIcon className="bydash-mfe__grid-icon" />,
+    teachersFTE: <TeachersIcon className="bydash-mfe__grid-icon" />,
     migrantPercent: <GlobeIcon className="bydash-mfe__grid-icon" />,
   }
 
@@ -129,12 +129,29 @@ function BavariaViewComponent({
         {/* Selection Grid */}
         <div style={{ padding: '24px' }}>
           <IndicatorSelector<RegionalMetricKey>
-            options={(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => ({
-              key,
-              label: metricLabels[key],
-              icon: metricIcons[key],
-              value: getMetricValue(key),
-            }))}
+            options={(Object.keys(metricLabels) as RegionalMetricKey[]).map((key) => {
+              // Determine trend unit based on metric type
+              let trendUnit: 'count' | '%' | 'decimal' = 'decimal'
+              
+              // Only migrantPercent is actually a percentage (0-100)
+              if (key === 'migrantPercent') {
+                trendUnit = '%'
+              }
+              // Count metrics: schools, students, teachersFTE
+              else if (key === 'schools' || key === 'students' || key === 'teachersFTE') {
+                trendUnit = 'count'
+              }
+              // Decimals: avgClassSize, studentTeacherRatio
+              
+              return {
+                key,
+                label: metricLabels[key],
+                icon: metricIcons[key],
+                value: getMetricValue(key),
+                trend: bavariaTrend[`${key}_change` as TrendMetricKey],
+                trendUnit,
+              }
+            })}
             selectedKey={selectedMetric}
             onSelect={onMetricChange}
             formatValue={(val, key) => formatMetricValue(key as RegionalMetricKey, val as number)}
@@ -142,7 +159,7 @@ function BavariaViewComponent({
             containerPadding="0"
             containerMarginBottom="0"
           />
-        </div>   
+        </div>
 
         {/* Graph/Map Section */}
         <div style={{ padding: '8px 12px', borderTop: '1px solid var(--bydash-border)' }}>
