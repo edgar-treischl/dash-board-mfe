@@ -3,10 +3,10 @@
  * Each view represents a different data visualization or info page
  */
 export const VIEW_OPTIONS = [
-  { key: 'home' as const, label: 'Startseite' },
+  { key: 'home' as const, label: 'Start' },
   { key: 'bavaria' as const, label: 'Bayern' },
   { key: 'regierung' as const, label: 'Regierungsbezirke' },
-  { key: 'samt' as const, label: 'Dashboard Schulamt' },
+  { key: 'samt' as const, label: 'Schulamt' },
   { key: 'info' as const, label: 'Info' },
 ] as const
 

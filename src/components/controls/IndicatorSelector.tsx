@@ -20,6 +20,8 @@ export interface IndicatorSelectorProps<T extends string = string> {
   containerMarginBottom?: string
   className?: string
   testId?: string
+  /** When false, disables the hover styling (e.g. for purely informational/KPI displays). Defaults to true. */
+  interactive?: boolean
 }
 
 /**
@@ -55,6 +57,7 @@ export function IndicatorSelector<T extends string = string>({
   containerMarginBottom = '24px',
   className,
   testId,
+  interactive = true,
 }: IndicatorSelectorProps<T>) {
   return (
     <div
@@ -106,14 +109,14 @@ export function IndicatorSelector<T extends string = string>({
                 position: 'relative',
               }}
               onMouseEnter={(e) => {
-                if (!isActive) {
+                if (interactive && !isActive) {
                   const btn = e.currentTarget as HTMLButtonElement
                   btn.style.color = 'var(--bydash-heading)'
                   btn.style.borderBottomColor = 'rgba(0, 141, 201, 0.3)'
                 }
               }}
               onMouseLeave={(e) => {
-                if (!isActive) {
+                if (interactive && !isActive) {
                   const btn = e.currentTarget as HTMLButtonElement
                   btn.style.color = 'var(--bydash-text)'
                   btn.style.borderBottomColor = 'transparent'

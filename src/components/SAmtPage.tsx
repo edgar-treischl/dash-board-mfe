@@ -1,16 +1,17 @@
 import { memo, useState } from 'react'
 import { SCHULEN, DISTRICT_METADATA, AMPEL_COLORS, SUPPLY_CATEGORIES, LONG_TERM_DATA } from '../data/SAmt'
-import { COMMON_STYLES } from '../config/chartConfig'
 import { SchoolsLeafletMap } from './charts/SchoolsLeafletMap'
 import { ViewSwitcher } from './controls/ViewSwitcher'
-import { InterpretationBox } from './InterpretationBox'
+import { IndicatorSelector } from './controls/IndicatorSelector'
+import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon } from '../utils/icons'
 
 type SchoolTypeFilter = 'Alle' | 'Grundschule' | 'Mittelschule'
 type StartchancenFilter = 'Alle' | 'Startchancen-Schule'
 type SubjectType = 'mat' | 'deu'
 type AmpelMode = 'vera' | 'supply' | 'satisfaction'
 type NavSection = 'lernstand' | 'belastung' | 'ressourcen'
-type AnalysisViewType = 'chart' | 'map'
+type AnalysisViewType = 'map' | 'chart'  
+type KPIKey = 'schools' | 'students' | 'sozialindex' | 'vera' | 'teacherRatio'
 
 function SAmtPageComponent() {
   const [schoolTypeFilter, setSchoolTypeFilter] = useState<SchoolTypeFilter>('Alle')
@@ -19,7 +20,8 @@ function SAmtPageComponent() {
   const [ampelMode, setAmpelMode] = useState<AmpelMode>('vera')
   const [navSection, setNavSection] = useState<NavSection>('lernstand')
   const [selectedSchoolId, setSelectedSchoolId] = useState<number | null>(null)
-  const [analysisView, setAnalysisView] = useState<AnalysisViewType>('chart')
+  const [analysisView, setAnalysisView] = useState<AnalysisViewType>('map')
+  const [selectedKPI, setSelectedKPI] = useState<KPIKey>('schools')
 
   // Filter schools based on current filters
   const filteredSchools = SCHULEN.filter(school => {
@@ -67,108 +69,143 @@ function SAmtPageComponent() {
           background: 'linear-gradient(to bottom, rgba(37, 99, 235, 0.02), transparent)'
         }}>
           <h1 className="bydash-mfe__selection-title" style={{ marginBottom: '6px' }}>
-            Schulamts-Dashboard – {DISTRICT_METADATA.name}
+            {DISTRICT_METADATA.name}
           </h1>
           <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>
             Treffen Sie eine Auswahl: Alle Daten sind fiktiv, orientieren sich aber an typischen Größenordnungen.
           </small>
         </div>
 
-        {/* Filter and Overview Section */}
-        <div style={{ padding: '24px' }}>
-          {/* School Type Filter */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--bydash-text)' }}>Schulart:</span>
-            {(['Alle', 'Grundschule', 'Mittelschule'] as SchoolTypeFilter[]).map(type => (
-              <button
-                key={type}
-                onClick={() => setSchoolTypeFilter(type)}
-                className={`bydash-mfe__filter-pill ${schoolTypeFilter === type ? 'is-active' : ''}`}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-
-          {/* Startchancen Filter */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--bydash-text)' }}>Startchancen:</span>
-            {(['Alle', 'Startchancen-Schule'] as StartchancenFilter[]).map(filter => (
-              <button
-                key={filter}
-                className={`bydash-mfe__filter-pill ${startFilter === filter ? 'is-active' : ''}`}
-                onClick={() => setStartFilter(filter)}
-              >
-                {filter === 'Alle' ? 'Alle' : 'Nur Startchancen-Schulen'}
-              </button>
-            ))}
-          </div>
-
-          {/* Subject Filter */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--bydash-text)' }}>Fach (Lernstand):</span>
-            {(['mat', 'deu'] as SubjectType[]).map(subj => (
-              <button
-                key={subj}
-                className={`bydash-mfe__filter-pill ${subject === subj ? 'is-active' : ''}`}
-                onClick={() => setSubject(subj)}
-              >
-                {subj === 'mat' ? 'Mathematik' : 'Deutsch'}
-              </button>
-            ))}
-          </div>
-
-          {/* Summary Grid */}
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
-            gap: '12px', 
-            marginTop: '20px' 
-          }}>
-            <div style={{ background: 'var(--bydash-bg)', border: '1px solid var(--bydash-border)', borderRadius: '12px', padding: '12px' }}>
-              <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Schulen</strong>
-              <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--bydash-primary)' }}>
-                {summaryMetrics.totalSchools}
-              </div>
-            </div>
-            <div style={{ background: 'var(--bydash-bg)', border: '1px solid var(--bydash-border)', borderRadius: '12px', padding: '12px' }}>
-              <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Schüler:innen</strong>
-              <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--bydash-primary)' }}>
-                {summaryMetrics.totalStudents.toLocaleString()}
-              </div>
-            </div>
-            <div style={{ background: 'var(--bydash-bg)', border: '1px solid var(--bydash-border)', borderRadius: '12px', padding: '12px' }}>
-              <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Ø Sozialindex</strong>
-              <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--bydash-primary)' }}>
-                {summaryMetrics.avgSozialindex.toFixed(2)}
-              </div>
-            </div>
-            <div style={{ background: 'var(--bydash-bg)', border: '1px solid var(--bydash-border)', borderRadius: '12px', padding: '12px' }}>
-              <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Ø VERA {subject === 'mat' ? 'Mathe' : 'Deutsch'}</strong>
-              <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--bydash-primary)' }}>
-                {(subject === 'mat' ? summaryMetrics.avgVeraMat : summaryMetrics.avgVeraDeu).toFixed(1)}
-              </div>
-            </div>
-            <div style={{ background: 'var(--bydash-bg)', border: '1px solid var(--bydash-border)', borderRadius: '12px', padding: '12px' }}>
-              <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '4px' }}>Ø Schüler/Lehrer</strong>
-              <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--bydash-primary)' }}>
-                {summaryMetrics.avgTeacherRatio.toFixed(1)}
-              </div>
-            </div>
-          </div>
+        {/* KPI Indicators at top */}
+        <div style={{ padding: '24px', borderBottom: '1px solid var(--bydash-border)' }}>
+          <IndicatorSelector<KPIKey>
+            options={[
+              {
+                key: 'schools',
+                label: 'Schulen',
+                icon: <SchoolsIcon />,
+                value: summaryMetrics.totalSchools,
+              },
+              {
+                key: 'students',
+                label: 'Schüler:innen',
+                icon: <PupilsIcon />,
+                value: summaryMetrics.totalStudents,
+              },
+              {
+                key: 'sozialindex',
+                label: 'Ø Sozialindex',
+                icon: <ClassSizeIcon />,
+                value: summaryMetrics.avgSozialindex,
+              },
+              {
+                key: 'vera',
+                label: `Ø VERA ${subject === 'mat' ? 'Mathe' : 'Deutsch'}`,
+                icon: <PupilsIcon />,
+                value: subject === 'mat' ? summaryMetrics.avgVeraMat : summaryMetrics.avgVeraDeu,
+              },
+              {
+                key: 'teacherRatio',
+                label: 'Ø Schüler/Lehrer',
+                icon: <StudentTeacherRelationIcon />,
+                value: summaryMetrics.avgTeacherRatio,
+              },
+            ]}
+            selectedKey={selectedKPI}
+            onSelect={setSelectedKPI}
+            formatValue={(val, key) => {
+              if (typeof val !== 'number') return String(val)
+              if (key === 'schools' || key === 'students') {
+                return val.toLocaleString()
+              }
+              return val.toFixed(key === 'vera' ? 1 : 2)
+            }}
+            gridColumns="repeat(5, 1fr)"
+            containerPadding="0"
+            containerMarginBottom="0"
+            interactive={false}
+          />
         </div>
 
-        {/* Graph/Map Section */}
+        {/* Filters and Map/Chart Section */}
         <div style={{ padding: '24px', borderTop: '1px solid var(--bydash-border)' }}>
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '60% 40%',
+              gridTemplateColumns: '40% 60%',
               gap: '20px',
-              alignItems: 'stretch',
+              alignItems: 'start',
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+            {/* Left: Filters */}
+            <div style={{
+              border: '1px solid var(--bydash-border)',
+              borderRadius: '12px',
+              background: 'var(--bydash-bg)',
+              overflow: 'hidden',
+              height: '100%',
+            }}>
+              {/* Card Header */}
+              <div className="bydash-mfe__story-header">
+                <h3 className="bydash-mfe__story-heading">Filter</h3>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {/* School Type Filter */}
+                <div style={{ padding: '16px 24px' }}>
+                  <label style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--bydash-text)', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Schulart</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {(['Alle', 'Grundschule', 'Mittelschule'] as SchoolTypeFilter[]).map(type => (
+                      <button
+                        key={type}
+                        onClick={() => setSchoolTypeFilter(type)}
+                        className={`bydash-mfe__filter-pill ${schoolTypeFilter === type ? 'is-active' : ''}`}
+                        style={{ fontSize: '0.85rem', padding: '8px 12px' }}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Startchancen Filter */}
+                <div style={{ padding: '16px 24px', borderTop: '1px solid var(--bydash-border)' }}>
+                  <label style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--bydash-text)', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Startchancen</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {(['Alle', 'Startchancen-Schule'] as StartchancenFilter[]).map(filter => (
+                      <button
+                        key={filter}
+                        className={`bydash-mfe__filter-pill ${startFilter === filter ? 'is-active' : ''}`}
+                        onClick={() => setStartFilter(filter)}
+                        style={{ fontSize: '0.85rem', padding: '8px 12px' }}
+                      >
+                        {filter === 'Alle' ? 'Alle' : 'Nur Startchancen-Schulen'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Ampel Mode Filter */}
+                <div style={{ padding: '16px 24px', borderTop: '1px solid var(--bydash-border)' }}>
+                  <label style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--bydash-text)', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Ampel-Fokus</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {(['vera', 'supply', 'satisfaction'] as AmpelMode[]).map(mode => (
+                      <button
+                        key={mode}
+                        className={`bydash-mfe__filter-pill ${ampelMode === mode ? 'is-active' : ''}`}
+                        onClick={() => setAmpelMode(mode)}
+                        style={{ fontSize: '0.85rem', padding: '8px 12px' }}
+                      >
+                        {mode === 'vera' ? 'Leistungen (VERA)' : mode === 'supply' ? 'Lehrerversorgung' : 'Lehrerzufriedenheit'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Map/Chart */}
+            <div>
               {/* Analysis Card */}
               <div style={{
                 border: '1px solid var(--bydash-border)',
@@ -184,8 +221,8 @@ function SAmtPageComponent() {
                 {/* View selector */}
                 <ViewSwitcher
                   options={[
-                    { key: 'chart', label: 'Auswertung' },
-                     { key: 'map', label: 'Karte' },
+                    { key: 'map', label: 'Karte' },
+                     { key: 'chart', label: 'Auswertung Schulen' },
                   ]}
                   activeKey={analysisView}
                   onSelect={(selectedView) => setAnalysisView(selectedView as AnalysisViewType)}
@@ -198,9 +235,26 @@ function SAmtPageComponent() {
 
                   {analysisView === 'chart' && (
                     <div style={{ padding: '16px' }}>
+                      {/* Subject Filter */}
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                         <div>
+                          <div style={{ padding: '16px 24px', borderTop: '1px solid var(--bydash-border)' }}>
+                  <label style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--bydash-text)', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Fach (Lernstand)</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {(['mat', 'deu'] as SubjectType[]).map(subj => (
+                      <button
+                        key={subj}
+                        className={`bydash-mfe__filter-pill ${subject === subj ? 'is-active' : ''}`}
+                        onClick={() => setSubject(subj)}
+                        style={{ fontSize: '0.85rem', padding: '8px 12px' }}
+                      >
+                        {subj === 'mat' ? 'Mathematik' : 'Deutsch'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                           <h3 style={{ margin: '0 0 12px', fontSize: '1rem' }}>Schulen – VERA {subject === 'mat' ? 'Mathematik' : 'Deutsch'}</h3>
+                          
                           <div style={{ fontSize: '0.8rem' }}>
                             {filteredSchools.sort((a, b) => (subject === 'mat' ? b.veraMat - a.veraMat : b.veraDeu - a.veraDeu)).slice(0, 10).map(school => {
                               const value = subject === 'mat' ? school.veraMat : school.veraDeu
@@ -235,70 +289,16 @@ function SAmtPageComponent() {
                   )}
 
                   {analysisView === 'map' && (
-                    
-                    <div style={{ borderRadius: '0 0 12px 12px', overflow: 'hidden', border: 'none' }}>
-                    {/* Ampel Mode Filter */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px' }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--bydash-text)' }}>Ampel-Fokus:</span>
-                      {(['vera', 'supply', 'satisfaction'] as AmpelMode[]).map(mode => (
-                        <button
-                        key={mode}
-                        className={`bydash-mfe__filter-pill ${ampelMode === mode ? 'is-active' : ''}`}
-                        onClick={() => setAmpelMode(mode)}
-                        >
-                          {mode === 'vera' ? 'Leistungen (VERA)' : mode === 'supply' ? 'Lehrerversorgung' : 'Lehrerzufriedenheit'}
-                        </button>
-                      ))}
-          </div>
-                      <SchoolsLeafletMap
-                        schools={filteredSchools}
-                        selectedSchoolId={selectedSchoolId}
-                        ampelMode={ampelMode}
-                        onSchoolSelect={setSelectedSchoolId}
-                      />
-                    </div>
+                    <SchoolsLeafletMap
+                      schools={filteredSchools}
+                      selectedSchoolId={selectedSchoolId}
+                      ampelMode={ampelMode}
+                      onSchoolSelect={setSelectedSchoolId}
+                    />
                   )}
 
                 </div>
               </div>
-            </div>
-
-            {/* Interpretation Container - Right column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <InterpretationBox 
-                tabs={{
-                  befund: {
-                    label: 'Befund',
-                    content: (
-                      <div>
-                        <p className="bydash-mfe__story-text">
-                          Das Schulamts-Dashboard des {DISTRICT_METADATA.name} zeigt die Verteilung der Schulen, Schüler:innen und Ressourcen im Bezirk. Die Ampel-Kodierung visualisiert den Status nach dem gewählten Fokus.
-                        </p>
-                        <ul className="bydash-mfe__story-text" style={COMMON_STYLES.bulletList}>
-                          <li style={COMMON_STYLES.listItem}>
-                            <strong>Insgesamt {filteredSchools.length} Schulen</strong> mit {summaryMetrics.totalStudents.toLocaleString()} Schüler:innen
-                          </li>
-                          <li style={COMMON_STYLES.listItem}>
-                            <strong>Durchschnittlicher Sozialindex:</strong> {summaryMetrics.avgSozialindex.toFixed(2)}
-                          </li>
-                          <li style={COMMON_STYLES.listItem}>
-                            <strong>Lehrerversorgung (Ø Schüler/Lehrer):</strong> {summaryMetrics.avgTeacherRatio.toFixed(1)}
-                          </li>
-                        </ul>
-                      </div>
-                    ),
-                  },
-                  hinweis: {
-                    label: 'Hinweis',
-                    content: (
-                      <p className="bydash-mfe__story-text bydash-mfe__story-text--italic">
-                        Die Daten sind fiktiv, orientieren sich aber an typischen Größenordnungen. Die Ampel-Kodierung berücksichtigt sowohl Leistungsindikatoren (VERA) als auch Ressourcen (Lehrerversorgung) und Zufriedenheit. Nutzen Sie die Filter zum Erkunden verschiedener Schularten und Startchancen-Schulen.
-                      </p>
-                    ),
-                  },
-                }}
-                defaultTab="befund"
-              />
             </div>
           </div>
         </div>
