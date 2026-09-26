@@ -7,6 +7,7 @@ import { RegionMapSVG } from './charts/RegionMapSVG'
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { RegionIcon } from './controls/RegionIcon'
 import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
+import styles from './RegierungsPage.module.css'
 
 type MetricKey = 'students_percent' | 'avgClassSize' | 'schools' |  'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
@@ -89,38 +90,32 @@ function RegierungsViewComponent() {
   }
 
   return (
-    <div className="bydash-mfe__bavaria-container" style={{ width: '100%', margin: '0', padding: '24px', boxSizing: 'border-box' }}>
+    <div className={styles.container}>
       
       {/* Main Card Container */}
-      <div style={{
-        background: 'var(--bydash-surface)',
-        border: '1px solid var(--bydash-border)',
-        borderRadius: '18px',
-        boxShadow: 'var(--bydash-shadow)',
-        overflow: 'hidden'
-      }}>
+      <div className={styles.card}>
         
         {/* Region Selection Header */}
         <div style={{
-          padding: '24px 24px 20px 24px',
+          padding: '16px 24px 12px 24px',
           borderBottom: '1px solid var(--bydash-border)',
-          background: 'linear-gradient(to bottom, rgba(37, 99, 235, 0.02), transparent)'
+          background: 'linear-gradient(to bottom, rgba(37, 99, 235, 0.01), transparent)'
         }}>
-          <h1 className="bydash-mfe__selection-title" style={{ marginBottom: '6px' }}>
+          <h1 className="bydash-mfe__selection-title" style={{ marginBottom: '4px', fontSize: '2.5rem', fontWeight: '600' }}>
             Regierungsbezirke
           </h1>
-          <small style={{ color: 'var(--bydash-text)', fontSize: '0.875rem' }}>
-            Bitte wählen Sie einen Regierungsbezirk zur Analyse.
+          <small style={{ color: 'var(--bydash-text)', fontSize: '0.8rem', opacity: 0.8 }}>
+            Wählen Sie einen Regierungsbezirk.
           </small>
         </div>
 
         {/* Region Selection Grid */}
-        <div style={{ padding: '24px 24px 0 24px' }}>
+        <div style={{ padding: '20px 24px 16px 24px' }}>
           <div 
             className="bydash-mfe__selection-grid"
             style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-              gap: '12px'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
+              gap: '10px'
             }}
           >
             {sortedMetrics.map((region) => (
@@ -132,13 +127,13 @@ function RegierungsViewComponent() {
                   display: 'flex', 
                   flexDirection: 'column', 
                   alignItems: 'center', 
-                  gap: '8px',
-                  padding: '12px 8px',
+                  gap: '4px',
+                  padding: '8px 6px',
                   minHeight: 'auto'
                 }}
               >
-                <RegionIcon regionId={region.id} width={48} height={48} />
-                <strong style={{ fontSize: '0.85rem', textAlign: 'center', lineHeight: '1.2' }}>
+                <RegionIcon regionId={region.id} width={32} height={32} />
+                <strong style={{ fontSize: '0.75rem', textAlign: 'center', lineHeight: '1.1' }}>
                   {region.shortName}
                 </strong>
               </button>
@@ -151,7 +146,7 @@ function RegierungsViewComponent() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '45% 55%',
+              gridTemplateColumns: '1fr 2fr',
               gap: '20px',
               alignItems: 'start',
             }}
