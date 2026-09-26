@@ -104,6 +104,19 @@ function RegierungsRegionInfoPanel({
       gap: '24px',
       height: 'fit-content',
     }}>
+      {/* Active Region Display - In Info Panel */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '16px', borderBottom: '1px solid var(--bydash-border)' }}>
+        <div style={{ width: '40px', height: '40px', flexShrink: 0 }}>
+          <RegionIcon regionId={selectedRegion} width={40} height={40} />
+        </div>
+        <div>
+          <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>Aktiver Regierungsbezirk</div>
+          <div style={{ fontSize: '1.2rem', fontWeight: '700', margin: 0 }}>
+            {currentRegion.shortName}
+          </div>
+        </div>
+      </div>
+
       {/* Header with larger fonts */}
       <div style={{ textAlign: 'center' }}>
         <h3 style={{ fontSize: '1.3rem', fontWeight: '700', marginBottom: '8px', marginTop: 0, color: 'var(--bydash-primary)' }}>
@@ -329,30 +342,41 @@ function RegierungsViewComponent() {
           ))}
         </div>
 
-        {/* Active Region Display - Integrated */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '24px' }}>
-          <div style={{ width: '40px', height: '40px', flexShrink: 0 }}>
-            <RegionIcon regionId={selectedRegion} width={40} height={40} />
-          </div>
+        {/* Title and Subtitle Section */}
+        <div style={{ padding: '0 24px', paddingTop: '24px', marginBottom: '24px' }}>
           <div>
-            <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>Aktiver Regierungsbezirk</div>
-            <h1 className="bydash-mfe__selection-title" style={{ fontSize: '1.5rem', fontWeight: '700', margin: 0 }}>
-              {currentRegion.shortName}
-            </h1>
+            <h2 style={{
+              fontSize: '2.25rem',
+              fontWeight: '600',
+              margin: '0 0 8px 0',
+              color: 'var(--bydash-heading)',
+            }}>
+              Regierungsbezirke und Schulämter
+            </h2>
+            <p style={{
+              fontSize: '1rem',
+              margin: '0',
+              color: 'var(--bydash-text)',
+              opacity: 0.8,
+              lineHeight: '1.5',
+            }}>
+              Wählen Sie einen Regierungsbezirk und Indikator aus, um detaillierte Informationen zu den Schulen zu erhalten.
+            </p>
           </div>
         </div>
 
-        {/* Indicators Selection - Full Width Above Map - Clean Underline Style */}
+        {/* Indicators Selection - Clean Underline Style */}
         <div style={{
           padding: '0 24px',
-          borderBottom: '2px solid var(--bydash-border)',
-          background: 'transparent',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-          gap: '0',
-          width: '100%',
-          boxSizing: 'border-box',
+          marginBottom: '24px',
         }}>
+          <div style={{
+            borderBottom: '1px solid var(--bydash-border)',
+            paddingBottom: '12px',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+            gap: '0',
+          }}>
           {(Object.keys(metricLabels) as MetricKey[]).map((key) => (
             <button
               key={key}
@@ -413,6 +437,7 @@ function RegierungsViewComponent() {
               </div>
             </button>
           ))}
+          </div>
         </div>
 
         {/* Regional Distribution Map and Info Grid */}
