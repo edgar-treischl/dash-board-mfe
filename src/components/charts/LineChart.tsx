@@ -33,12 +33,6 @@ function LineChartComponent({
 }: LineChartProps) {
   const [hoveredPoint, setHoveredPoint] = useState<HoveredPoint>(null)
 
-  const chartInnerWidth =
-    CHART_WIDTH - CHART_PADDING.left - CHART_PADDING.right
-
-  const chartInnerHeight =
-    CHART_HEIGHT - CHART_PADDING.top - CHART_PADDING.bottom
-
   /*
    * Collect and sort all years appearing in the data.
    */
