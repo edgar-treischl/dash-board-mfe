@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@edgar-treischl/dash-ui": "github:edgar-treischl/dash-ui",
     "@originjs/vite-plugin-federation": "^1.4.1",
     "d3-geo": "^3.1.1",
     "d3-scale": "^4.0.2",

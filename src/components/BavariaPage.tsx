@@ -9,8 +9,10 @@ import {getTimeSeriesData } from '../retention.ts'
 
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { IndicatorSelector } from './controls/IndicatorSelector'
-import { SchoolsIcon, TeachersIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
+import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
 
+
+import { TeachersIcon } from "@edgar-treischl/dash-ui";
 
 type RegionalMetricKey = 'students' | 'avgClassSize' | 'schools' | 'studentTeacherRatio' | 'teachersFTE' | 'migrantPercent'
 
