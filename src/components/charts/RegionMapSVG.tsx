@@ -284,7 +284,7 @@ function RegionMapSVGComponent({
             );
           })}
 
-          {/* Regierungssitz marker and label */}
+          {/* Regierungssitz: point and label */}
           {renderData.regierungssitzProjected && renderData.regierungssitz && (
             <>
               {/* Red point for Regierungssitz */}

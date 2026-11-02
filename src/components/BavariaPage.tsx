@@ -3,6 +3,10 @@ import { bavariaMetrics, bavariaTrend, regionMetrics } from '../data/bavaria'
 import { BavariaInfoGrid } from './BavariaInfoGrid'
 import { type TrendMetricKey } from './TrendIndicator'
 import { RegierungsbezirkeMapSVG as RegierungsbezirkeMap } from './charts/RegierungsMapSVG'
+import { LineChart, LineChartLegend } from './charts/LineChart'
+import {getTimeSeriesData } from '../retention.ts'
+
+
 import { ViewSwitcher } from './controls/ViewSwitcher'
 import { IndicatorSelector } from './controls/IndicatorSelector'
 import { SchoolsIcon, TeachersIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
@@ -15,7 +19,7 @@ type BavariaViewProps = {
   onMetricChange?: (metric: RegionalMetricKey) => void
 }
 
-type ViewType = 'map' | 'chart' | 'table'
+type ViewType = 'map' | 'chart' | 'chart2' | 'table'
 
 function BavariaViewComponent({
   selectedMetric: propSelectedMetric,
@@ -23,6 +27,8 @@ function BavariaViewComponent({
 }: BavariaViewProps) {
   const [internalMetric, setInternalMetric] = useState<RegionalMetricKey>('students')
   const [view, setView] = useState<ViewType>('map')
+
+  const timeSeriesData = getTimeSeriesData()
 
   // Helper function to safely get metric from bavariaMetrics
   const getMetricValue = (key: RegionalMetricKey): number => {
@@ -189,6 +195,7 @@ function BavariaViewComponent({
               options={[
                 { key: 'map', label: 'Karte' },
                 { key: 'chart', label: 'Diagramm' },
+                { key: 'chart2', label: 'Trend' },
                 { key: 'table', label: 'Daten' },
               ]}
               activeKey={view}
@@ -203,7 +210,17 @@ function BavariaViewComponent({
               {view === 'map' && (
                 <RegierungsbezirkeMap selectedMetric={selectedMetric} regions={regionMetrics} />
               )}
-              
+
+              {view === 'chart2' && (
+                <>
+                <LineChart
+                data={timeSeriesData}
+                minYear={2018}
+                maxYear={2024}
+                />
+                <LineChartLegend />
+                </>
+              )}           
               {view === 'chart' && (
                 <svg width="100%" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet" style={{ overflow: 'visible' }}>
                   

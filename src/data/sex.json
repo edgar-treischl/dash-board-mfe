@@ -1,0 +1,632 @@
+[
+  {
+    "syear": "2024/25",
+    "stype": "Grundschulen",
+    "group": "Männlich",
+    "number": 67,
+    "year": "2024",
+    "total": 124,
+    "percentage": 54.0322580645161
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Grundschulen",
+    "group": "Weiblich",
+    "number": 57,
+    "year": "2024",
+    "total": 124,
+    "percentage": 45.9677419354839
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Männlich",
+    "number": 1652,
+    "year": "2024",
+    "total": 2654,
+    "percentage": 62.2456669178598
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Weiblich",
+    "number": 1002,
+    "year": "2024",
+    "total": 2654,
+    "percentage": 37.7543330821402
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Realschulen",
+    "group": "Männlich",
+    "number": 4642,
+    "year": "2024",
+    "total": 7874,
+    "percentage": 58.9535179070358
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Realschulen",
+    "group": "Weiblich",
+    "number": 3232,
+    "year": "2024",
+    "total": 7874,
+    "percentage": 41.0464820929642
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Gymnasien",
+    "group": "Männlich",
+    "number": 2995,
+    "year": "2024",
+    "total": 5005,
+    "percentage": 59.8401598401598
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Gymnasien",
+    "group": "Weiblich",
+    "number": 2010,
+    "year": "2024",
+    "total": 5005,
+    "percentage": 40.1598401598402
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Int. Gesamtschulen",
+    "group": "Männlich",
+    "number": 11,
+    "year": "2024",
+    "total": 16,
+    "percentage": 68.75
+  },
+  {
+    "syear": "2024/25",
+    "stype": "Int. Gesamtschulen",
+    "group": "Weiblich",
+    "number": 5,
+    "year": "2024",
+    "total": 16,
+    "percentage": 31.25
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Grundschulen",
+    "group": "Männlich",
+    "number": 67,
+    "year": "2023",
+    "total": 118,
+    "percentage": 56.7796610169492
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Grundschulen",
+    "group": "Weiblich",
+    "number": 51,
+    "year": "2023",
+    "total": 118,
+    "percentage": 43.2203389830509
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Männlich",
+    "number": 1372,
+    "year": "2023",
+    "total": 2183,
+    "percentage": 62.849289967934
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Weiblich",
+    "number": 811,
+    "year": "2023",
+    "total": 2183,
+    "percentage": 37.150710032066
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Realschulen",
+    "group": "Männlich",
+    "number": 4301,
+    "year": "2023",
+    "total": 7360,
+    "percentage": 58.4375
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Realschulen",
+    "group": "Weiblich",
+    "number": 3059,
+    "year": "2023",
+    "total": 7360,
+    "percentage": 41.5625
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Gymnasien",
+    "group": "Männlich",
+    "number": 2910,
+    "year": "2023",
+    "total": 5012,
+    "percentage": 58.0606544293695
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Gymnasien",
+    "group": "Weiblich",
+    "number": 2102,
+    "year": "2023",
+    "total": 5012,
+    "percentage": 41.9393455706305
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Int. Gesamtschulen",
+    "group": "Männlich",
+    "number": 21,
+    "year": "2023",
+    "total": 32,
+    "percentage": 65.625
+  },
+  {
+    "syear": "2023/24",
+    "stype": "Int. Gesamtschulen",
+    "group": "Weiblich",
+    "number": 11,
+    "year": "2023",
+    "total": 32,
+    "percentage": 34.375
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Grundschulen",
+    "group": "Männlich",
+    "number": 80,
+    "year": "2022",
+    "total": 147,
+    "percentage": 54.421768707483
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Grundschulen",
+    "group": "Weiblich",
+    "number": 67,
+    "year": "2022",
+    "total": 147,
+    "percentage": 45.578231292517
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Männlich",
+    "number": 1433,
+    "year": "2022",
+    "total": 2256,
+    "percentage": 63.5195035460993
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Weiblich",
+    "number": 823,
+    "year": "2022",
+    "total": 2256,
+    "percentage": 36.4804964539007
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Realschulen",
+    "group": "Männlich",
+    "number": 4785,
+    "year": "2022",
+    "total": 7995,
+    "percentage": 59.8499061913696
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Realschulen",
+    "group": "Weiblich",
+    "number": 3210,
+    "year": "2022",
+    "total": 7995,
+    "percentage": 40.1500938086304
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Gymnasien",
+    "group": "Männlich",
+    "number": 2933,
+    "year": "2022",
+    "total": 5109,
+    "percentage": 57.408494813075
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Gymnasien",
+    "group": "Weiblich",
+    "number": 2176,
+    "year": "2022",
+    "total": 5109,
+    "percentage": 42.591505186925
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Int. Gesamtschulen",
+    "group": "Männlich",
+    "number": 2,
+    "year": "2022",
+    "total": 5,
+    "percentage": 40
+  },
+  {
+    "syear": "2022/23",
+    "stype": "Int. Gesamtschulen",
+    "group": "Weiblich",
+    "number": 3,
+    "year": "2022",
+    "total": 5,
+    "percentage": 60
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Grundschulen",
+    "group": "Männlich",
+    "number": 77,
+    "year": "2021",
+    "total": 129,
+    "percentage": 59.6899224806201
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Grundschulen",
+    "group": "Weiblich",
+    "number": 52,
+    "year": "2021",
+    "total": 129,
+    "percentage": 40.3100775193798
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Männlich",
+    "number": 962,
+    "year": "2021",
+    "total": 1472,
+    "percentage": 65.3532608695652
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Weiblich",
+    "number": 510,
+    "year": "2021",
+    "total": 1472,
+    "percentage": 34.6467391304348
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Realschulen",
+    "group": "Männlich",
+    "number": 1360,
+    "year": "2021",
+    "total": 2151,
+    "percentage": 63.2264063226406
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Realschulen",
+    "group": "Weiblich",
+    "number": 791,
+    "year": "2021",
+    "total": 2151,
+    "percentage": 36.7735936773594
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Gymnasien",
+    "group": "Männlich",
+    "number": 935,
+    "year": "2021",
+    "total": 1458,
+    "percentage": 64.1289437585734
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Gymnasien",
+    "group": "Weiblich",
+    "number": 523,
+    "year": "2021",
+    "total": 1458,
+    "percentage": 35.8710562414266
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Int. Gesamtschulen",
+    "group": "Männlich",
+    "number": 1,
+    "year": "2021",
+    "total": null,
+    "percentage": null
+  },
+  {
+    "syear": "2021/22",
+    "stype": "Int. Gesamtschulen",
+    "group": "Weiblich",
+    "number": null,
+    "year": "2021",
+    "total": null,
+    "percentage": null
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Grundschulen",
+    "group": "Männlich",
+    "number": 46,
+    "year": "2020",
+    "total": 81,
+    "percentage": 56.7901234567901
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Grundschulen",
+    "group": "Weiblich",
+    "number": 35,
+    "year": "2020",
+    "total": 81,
+    "percentage": 43.2098765432099
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Männlich",
+    "number": 572,
+    "year": "2020",
+    "total": 873,
+    "percentage": 65.5211912943872
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Weiblich",
+    "number": 301,
+    "year": "2020",
+    "total": 873,
+    "percentage": 34.4788087056128
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Realschulen",
+    "group": "Männlich",
+    "number": 439,
+    "year": "2020",
+    "total": 695,
+    "percentage": 63.1654676258993
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Realschulen",
+    "group": "Weiblich",
+    "number": 256,
+    "year": "2020",
+    "total": 695,
+    "percentage": 36.8345323741007
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Gymnasien",
+    "group": "Männlich",
+    "number": 390,
+    "year": "2020",
+    "total": 613,
+    "percentage": 63.6215334420881
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Gymnasien",
+    "group": "Weiblich",
+    "number": 223,
+    "year": "2020",
+    "total": 613,
+    "percentage": 36.3784665579119
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Int. Gesamtschulen",
+    "group": "Männlich",
+    "number": 2,
+    "year": "2020",
+    "total": 3,
+    "percentage": 66.6666666666667
+  },
+  {
+    "syear": "2020/21",
+    "stype": "Int. Gesamtschulen",
+    "group": "Weiblich",
+    "number": 1,
+    "year": "2020",
+    "total": 3,
+    "percentage": 33.3333333333333
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Grundschulen",
+    "group": "Männlich",
+    "number": 93,
+    "year": "2019",
+    "total": 151,
+    "percentage": 61.5894039735099
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Grundschulen",
+    "group": "Weiblich",
+    "number": 58,
+    "year": "2019",
+    "total": 151,
+    "percentage": 38.4105960264901
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Männlich",
+    "number": 1865,
+    "year": "2019",
+    "total": 2700,
+    "percentage": 69.0740740740741
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Weiblich",
+    "number": 835,
+    "year": "2019",
+    "total": 2700,
+    "percentage": 30.9259259259259
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Realschulen",
+    "group": "Männlich",
+    "number": 4788,
+    "year": "2019",
+    "total": 7393,
+    "percentage": 64.7639659137022
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Realschulen",
+    "group": "Weiblich",
+    "number": 2605,
+    "year": "2019",
+    "total": 7393,
+    "percentage": 35.2360340862978
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Gymnasien",
+    "group": "Männlich",
+    "number": 2874,
+    "year": "2019",
+    "total": 4577,
+    "percentage": 62.7922219794625
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Gymnasien",
+    "group": "Weiblich",
+    "number": 1703,
+    "year": "2019",
+    "total": 4577,
+    "percentage": 37.2077780205375
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Int. Gesamtschulen",
+    "group": "Männlich",
+    "number": 16,
+    "year": "2019",
+    "total": 31,
+    "percentage": 51.6129032258064
+  },
+  {
+    "syear": "2019/20",
+    "stype": "Int. Gesamtschulen",
+    "group": "Weiblich",
+    "number": 15,
+    "year": "2019",
+    "total": 31,
+    "percentage": 48.3870967741936
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Grundschulen",
+    "group": "Männlich",
+    "number": 131,
+    "year": "2018",
+    "total": 258,
+    "percentage": 50.7751937984496
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Grundschulen",
+    "group": "Weiblich",
+    "number": 127,
+    "year": "2018",
+    "total": 258,
+    "percentage": 49.2248062015504
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Männlich",
+    "number": 1882,
+    "year": "2018",
+    "total": 2703,
+    "percentage": 69.6263411024787
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Mittel-/Hauptschulen",
+    "group": "Weiblich",
+    "number": 821,
+    "year": "2018",
+    "total": 2703,
+    "percentage": 30.3736588975213
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Realschulen",
+    "group": "Männlich",
+    "number": 4961,
+    "year": "2018",
+    "total": 7716,
+    "percentage": 64.2949714878175
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Realschulen",
+    "group": "Weiblich",
+    "number": 2755,
+    "year": "2018",
+    "total": 7716,
+    "percentage": 35.7050285121825
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Gymnasien",
+    "group": "Männlich",
+    "number": 3078,
+    "year": "2018",
+    "total": 4863,
+    "percentage": 63.2942628007403
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Gymnasien",
+    "group": "Weiblich",
+    "number": 1785,
+    "year": "2018",
+    "total": 4863,
+    "percentage": 36.7057371992597
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Int. Gesamtschulen",
+    "group": "Männlich",
+    "number": 16,
+    "year": "2018",
+    "total": 27,
+    "percentage": 59.2592592592593
+  },
+  {
+    "syear": "2018/19",
+    "stype": "Int. Gesamtschulen",
+    "group": "Weiblich",
+    "number": 11,
+    "year": "2018",
+    "total": 27,
+    "percentage": 40.7407407407407
+  }
+]
