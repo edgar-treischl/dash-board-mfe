@@ -1,15 +1,15 @@
 import { memo, useState } from 'react'
-import { bavariaMetrics, bavariaTrend, regionMetrics } from '../data/bavaria'
-import { BavariaInfoGrid } from './BavariaInfoGrid'
-import { type TrendMetricKey } from './TrendIndicator'
-import { RegierungsbezirkeMapSVG as RegierungsbezirkeMap } from './charts/RegierungsMapSVG'
-import { LineChart, LineChartLegend } from './charts/LineChart'
+import { bavariaMetrics, bavariaTrend, regionMetrics } from '../data/bavaria.ts'
+import { BavariaInfoGrid } from '../components/BavariaInfoGrid.tsx'
+import { type TrendMetricKey } from '../components/TrendIndicator.tsx'
+import { RegierungsbezirkeMapSVG as RegierungsbezirkeMap } from '../components/charts/RegierungsMapSVG.tsx'
+import { LineChart, LineChartLegend } from '../components/charts/LineChart.tsx'
 import {getTimeSeriesData } from '../retention.ts'
 
 
-import { ViewSwitcher } from './controls/ViewSwitcher'
-import { IndicatorSelector } from './controls/IndicatorSelector'
-import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons'
+import { ViewSwitcher } from '../components/controls/ViewSwitcher.tsx'
+import { IndicatorSelector } from '../components/controls/IndicatorSelector.tsx'
+import { SchoolsIcon, PupilsIcon, ClassSizeIcon, StudentTeacherRelationIcon, GlobeIcon } from '../utils/icons.tsx'
 
 
 import { TeachersIcon } from "@edgar-treischl/dash-ui";

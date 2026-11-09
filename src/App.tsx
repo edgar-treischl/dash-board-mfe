@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { BavariaView } from './components/BavariaPage'
+import { BavariaView } from './pages/BavariaPage'
 import { RegierungsView } from './components/RegierungsPage'
 import { HeroView } from './components/HeroPage'
-import { InfoView } from './components/InfoPage'
+import { InfoView } from './pages/InfoPage'
 import { SAmtPage } from './components/SAmtPage'
-import { DeutschView } from './components/DeutschPage'
+import { DeutschView } from './pages/DeutschPage'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import {
   VIEW_OPTIONS,

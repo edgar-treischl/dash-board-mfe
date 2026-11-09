@@ -1,9 +1,9 @@
 import { memo, useMemo, useState } from 'react'
-import { BEREICHE, groupDataForChart, filterData, type Bereich } from './iqb.ts'
-import { StackedBarChart } from './charts/StackedBarChart.tsx'
+import { BEREICHE, groupDataForChart, filterData, type Bereich } from '../components/iqb.ts'
+import { StackedBarChart } from '../components/charts/StackedBarChart.tsx'
 import { ReadingIcon, SpellingIcon, ListeningIcon } from '../utils/icons'
 import './DeutschPage.css'
-import styles from './RegierungsPage.module.css'
+import styles from '../components/RegierungsPage.module.css'
 
 type LanguageCode = 'de'
 
