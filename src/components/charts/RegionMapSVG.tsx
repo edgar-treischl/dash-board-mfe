@@ -301,14 +301,14 @@ function RegionMapSVGComponent({
                 }}
               />
 
-              {/* White background for label */}
+              {/* Glassmorphic background for label */}
               <rect
                 x={renderData.regierungssitzProjected.x - 70}
                 y={renderData.regierungssitzProjected.y - 26}
                 width="140"
                 height="20"
-                fill="#ffffff"
-                stroke="#d1d5db"
+                fill="rgba(255, 255, 255, 0.4)"
+                stroke="rgba(255, 255, 255, 0.6)"
                 strokeWidth="1"
                 rx="3"
                 style={{
@@ -316,17 +316,17 @@ function RegionMapSVGComponent({
                 }}
               />
 
-              {/* Label text - black, white background */}
+              {/* Label text - dark for contrast */}
               <text
                 x={renderData.regierungssitzProjected.x}
                 y={renderData.regierungssitzProjected.y - 12}
                 fontSize="16"
                 fontWeight="600"
-                fill="#000000"
+                fill="#1f2937"
                 textAnchor="middle"
                 style={{
                   pointerEvents: "none",
-                  filter: "drop-shadow(0 1px 3px rgba(255, 255, 255, 0.8))",
+                  filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))",
                 }}
               >
                 {renderData.regierungssitz.label}
@@ -371,7 +371,7 @@ function RegionMapSVGComponent({
         </g>
       </svg>
 
-      {/* Tooltip */}
+      {/* Tooltip with glassmorphic effect */}
       {tooltipPos && hoveredDistrict && (
         <div
           style={{
@@ -379,8 +379,10 @@ function RegionMapSVGComponent({
             left: tooltipPos.x,
             top: tooltipPos.y,
             transform: "translate(-50%, -100%)",
-            background: "rgba(0, 0, 0, 0.9)",
-            color: "#fff",
+            background: "rgba(255, 255, 255, 0.85)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255, 255, 255, 0.6)",
+            color: "#1f2937",
             padding: "12px",
             borderRadius: "8px",
             fontSize: "13px",
@@ -388,7 +390,7 @@ function RegionMapSVGComponent({
             pointerEvents: "none",
             zIndex: 10,
             marginTop: "-8px",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -399,7 +401,7 @@ function RegionMapSVGComponent({
           <div style={{ textAlign: "center", fontWeight: "600" }}>
             {hoveredDistrict}
           </div>
-          <div style={{ textAlign: "center", fontSize: "12px", opacity: 0.9 }}>
+          <div style={{ textAlign: "center", fontSize: "12px", opacity: 0.8 }}>
             {getMetricLabel(selectedMetric)}
           </div>
           <div style={{ textAlign: "center", fontWeight: "700" }}>

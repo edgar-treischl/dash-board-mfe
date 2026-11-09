@@ -266,7 +266,7 @@ function RegierungsMapSVGComponent({
         </g>
       </svg>
 
-      {/* Tooltip */}
+      {/* Tooltip with glassmorphic effect */}
       {tooltipPos && hoveredRegion && (
         <div
           style={{
@@ -274,8 +274,10 @@ function RegierungsMapSVGComponent({
             left: tooltipPos.x,
             top: tooltipPos.y,
             transform: "translate(-50%, -100%)",
-            background: "rgba(0, 0, 0, 0.9)",
-            color: "#fff",
+            background: "rgba(255, 255, 255, 0.85)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255, 255, 255, 0.6)",
+            color: "#1f2937",
             padding: "12px",
             borderRadius: "8px",
             fontSize: "13px",
@@ -283,7 +285,7 @@ function RegierungsMapSVGComponent({
             pointerEvents: "none",
             zIndex: 10,
             marginTop: "-8px",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -305,7 +307,7 @@ function RegierungsMapSVGComponent({
           <div style={{ textAlign: "center", fontWeight: "600" }}>
             {hoveredRegion}
           </div>
-          <div style={{ textAlign: "center", fontSize: "12px", opacity: 0.9 }}>
+          <div style={{ textAlign: "center", fontSize: "12px", opacity: 0.8 }}>
             {selectedMetric === "students"
               ? "Schüler und Schülerinnen"
               : selectedMetric === "schools"

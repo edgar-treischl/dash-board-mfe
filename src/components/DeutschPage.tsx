@@ -306,7 +306,7 @@ function DeutschViewComponent() {
                   (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
                 }}
               >
-                {showSkillLevels ? '▲ Hide' : '▼ Show'} skill level explanations
+                {showSkillLevels ? '▲ Weniger' : '▼ Mehr'} über die Kompetenzmessung
               </button>
             </div>
 
@@ -426,6 +426,19 @@ function DeutschViewComponent() {
                 }}>
                   Getestete Bereiche
                 </h3>
+
+                <p style={{
+                  fontSize: '0.9rem',
+                  color: 'var(--bydash-text)',
+                  lineHeight: '1.6',
+                  marginBottom: '18px',
+                  marginTop: '12px',
+                  opacity: 0.8,
+                }}>
+                  Die Kompetenzstufenmessung des IQB-Bildungstrends erfasst, über welche sprachlichen Fähigkeiten Schülerinnen und Schüler 
+                  verfügen und inwieweit sie die bundesweiten Bildungsstandards der Kultusministerkonferenz (KMK) erreichen. <br /> <br />
+                  Die Leistungen der Schülerinnen und Schüler werden anhand von sechs Kompetenzstufen beschrieben:
+                </p>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '18px' }}>
                   {competencies.map((competency) => (

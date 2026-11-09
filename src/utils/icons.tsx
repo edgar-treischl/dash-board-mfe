@@ -187,15 +187,16 @@ export function SpellingIcon({ className }: IconProps) {
       strokeLinejoin="round"
       className={className}
     >
-      {/* Letter A */}
-      <path d="M3 17l4-10 4 10" />
-      <path d="M4.5 13h5" />
+      {/* Spelling sheet */}
+      <path d="M4 4h11l5 5v5" />
+      <path d="M15 4v5h5" />
 
-      {/* Letter Z */}
-      <path d="M13 7h8l-8 10h8" />
+      {/* Text lines */}
+      <path d="M8 13h7" />
+      <path d="M8 17h4" />
 
       {/* Checkmark */}
-      <path d="M14 21l2 2 5-5" />
+      <path d="m14 19 2 2 5-5" />
     </svg>
   );
 }
