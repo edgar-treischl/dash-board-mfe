@@ -1,0 +1,450 @@
+import { memo, useMemo, useState } from 'react'
+import { BEREICHE, groupDataForChart, filterData, type Bereich } from './iqb.ts'
+import { StackedBarChart } from './charts/StackedBarChart.tsx'
+import './DeutschPage.css'
+import styles from './RegierungsPage.module.css'
+
+type LanguageCode = 'de'
+
+type CompetencyInfo = {
+  bereich: Bereich
+  description: string
+  skillLevelInfo: string
+}
+
+const DEUTSCH_COMPETENCIES: Record<LanguageCode, Array<CompetencyInfo>> = {
+  de: [
+    {
+      bereich: 'Lesen',
+      description:
+        'Die Fähigkeit, geschriebene Texte zu verstehen, zu nutzen und über sie zu reflektieren.',
+      skillLevelInfo: `
+V (Optimalstandard): Umfasst die optimale Leistung bei komplexen Aufgaben
+IV (Regelstandard Plus): Sichere Beherrschung über die Anforderungen hinaus
+III (Regelstandard): Erfüllt alle wesentlichen Anforderungen
+II (Mindeststandard Plus): Erfüllt Mindestanforderungen mit Sicherheit
+Ib (Mindeststandard): Erreicht gerade noch die Mindestanforderungen
+Ia (Unter Mindeststandard): Unterschreitet die Mindestanforderungen    `,
+    },
+    {
+      bereich: 'Orthografie',
+      description:
+        'Die Fähigkeit, Wörter, Sätze und Texte normgerecht zu schreiben und Rechtschreibregeln anzuwenden.',
+      skillLevelInfo: `
+V (Optimalstandard): Umfasst die optimale Leistung bei komplexen Aufgaben
+IV (Regelstandard Plus): Sichere Beherrschung über die Anforderungen hinaus
+III (Regelstandard): Erfüllt alle wesentlichen Anforderungen
+II (Mindeststandard Plus): Erfüllt Mindestanforderungen mit Sicherheit
+Ib (Mindeststandard): Erreicht gerade noch die Mindestanforderungen
+Ia (Unter Mindeststandard): Unterschreitet die Mindestanforderungen    `,
+    },
+    {
+      bereich: 'Zuhören',
+      description:
+        'Die Fähigkeit, gesprochene Texte zu verstehen, zu verarbeiten und Hauptaussagen sowie Details zu erfassen.',
+      skillLevelInfo: `
+V (Optimalstandard): Umfasst die optimale Leistung bei komplexen Aufgaben
+IV (Regelstandard Plus): Sichere Beherrschung über die Anforderungen hinaus
+III (Regelstandard): Erfüllt alle wesentlichen Anforderungen
+II (Mindeststandard Plus): Erfüllt Mindestanforderungen mit Sicherheit
+Ib (Mindeststandard): Erreicht gerade noch die Mindestanforderungen
+Ia (Unter Mindeststandard): Unterschreitet die Mindestanforderungen    `,
+    },
+  ],
+}
+
+const LANGUAGES: Array<{ code: LanguageCode; label: string }> = [
+  { code: 'de', label: 'Deutsch' },
+  // Future languages will be added here
+]
+
+function DeutschViewComponent() {
+  const [language, setLanguage] = useState<LanguageCode>('de')
+  const [selectedSkills, setSelectedSkills] = useState<Set<Bereich>>(
+    new Set(BEREICHE)
+  )
+  const [showSkillLevels, setShowSkillLevels] = useState(false)
+
+  const competencies = DEUTSCH_COMPETENCIES[language]
+
+  const competenciesByBereich = useMemo(() => {
+    return new Map(competencies.map((c) => [c.bereich, c]))
+  }, [competencies])
+
+  const toggleSkill = (bereich: Bereich) => {
+    const updated = new Set(selectedSkills)
+    if (updated.has(bereich)) {
+      updated.delete(bereich)
+    } else {
+      updated.add(bereich)
+    }
+    setSelectedSkills(updated)
+  }
+
+  const skillsToDisplay = BEREICHE.filter((b) => selectedSkills.has(b))
+  const chartData = useMemo(() => {
+    const filteredData = filterData('Alle', 'Alle', 'alle').filter((d) =>
+      skillsToDisplay.includes(d.bereich)
+    )
+    return groupDataForChart(filteredData, { showBulaInLabel: true })
+  }, [skillsToDisplay])
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.card}>
+        {/* Language Selector Header — Full-Width Breadcrumb Style */}
+        <div style={{
+          padding: '0 24px',
+          borderBottom: '2px solid var(--bydash-border)',
+          background: 'transparent',
+          display: 'grid',
+          gridTemplateColumns: `repeat(${LANGUAGES.length}, 1fr)`,
+          gap: '0',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}>
+          {LANGUAGES.map((lang) => (
+            <button
+              key={lang.code}
+              onClick={() => setLanguage(lang.code)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '12px 16px',
+                background: 'transparent',
+                color: language === lang.code
+                  ? 'var(--bydash-accent)'
+                  : 'var(--bydash-text)',
+                border: 'none',
+                borderBottom: language === lang.code
+                  ? '2px solid var(--bydash-accent)'
+                  : '2px solid transparent',
+                borderRadius: '0',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                fontSize: '0.9rem',
+                fontWeight: language === lang.code ? '600' : '500',
+                whiteSpace: 'nowrap',
+                width: '100%',
+                minHeight: '40px',
+              }}
+              onMouseEnter={(e) => {
+                if (language !== lang.code) {
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-heading)';
+                  (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'rgba(0, 141, 201, 0.3)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (language !== lang.code) {
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-text)';
+                  (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'transparent';
+                }
+              }}
+            >
+              <span>{lang.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Title and Subtitle Section */}
+        <div style={{ padding: '0 24px', paddingTop: '24px', marginBottom: '24px' }}>
+          <div>
+            <h2 style={{
+              fontSize: '2.25rem',
+              fontWeight: '600',
+              margin: '0 0 8px 0',
+              color: 'var(--bydash-heading)',
+            }}>
+              Deutschkompetenz
+            </h2>
+            <p style={{
+              fontSize: '1rem',
+              margin: '0',
+              color: 'var(--bydash-text)',
+              opacity: 0.8,
+              lineHeight: '1.5',
+            }}>
+              Kompetenzstufenverteilung in Jahrgangsstufe 9 — IQB-Bildungstrend 2022. Vergleich Bayern vs. Deutschland.
+            </p>
+          </div>
+        </div>
+
+        {/* Skills Grid / Feature Selector */}
+        <div style={{
+          padding: '0 24px',
+          marginBottom: '24px',
+        }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '12px',
+            marginBottom: '16px',
+          }}>
+            {competencies.map((competency) => {
+              const isSelected = selectedSkills.has(competency.bereich)
+              return (
+                <button
+                  key={competency.bereich}
+                  onClick={() => toggleSkill(competency.bereich)}
+                  style={{
+                    padding: '16px',
+                    border: isSelected
+                      ? '2px solid var(--bydash-accent)'
+                      : '1px solid var(--bydash-border)',
+                    borderRadius: '10px',
+                    background: isSelected
+                      ? 'rgba(0, 141, 201, 0.05)'
+                      : 'var(--bydash-bg)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    textAlign: 'left',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--bydash-accent)';
+                    if (!isSelected) {
+                      (e.currentTarget as HTMLButtonElement).style.background = 'rgba(0, 141, 201, 0.02)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.borderColor = isSelected
+                      ? 'var(--bydash-accent)'
+                      : 'var(--bydash-border)';
+                    if (!isSelected) {
+                      (e.currentTarget as HTMLButtonElement).style.background = 'var(--bydash-bg)';
+                    }
+                  }}
+                >
+                  <div style={{
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    color: 'var(--bydash-heading)',
+                  }}>
+                    {competency.bereich}
+                  </div>
+                  <div style={{
+                    fontSize: '0.85rem',
+                    color: 'var(--bydash-text)',
+                    opacity: 0.7,
+                    lineHeight: '1.4',
+                  }}>
+                    {competency.description}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Skill Level Toggle */}
+          <button
+            onClick={() => setShowSkillLevels(!showSkillLevels)}
+            style={{
+              padding: '8px 12px',
+              fontSize: '0.85rem',
+              background: 'transparent',
+              border: '1px solid var(--bydash-border)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              color: 'var(--bydash-text)',
+              transition: 'all 0.15s ease',
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--bydash-accent)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-accent)';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--bydash-border)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-text)';
+            }}
+          >
+            {showSkillLevels ? 'Hide' : 'Show'} skill level explanations
+          </button>
+        </div>
+
+        {/* Main Content Area */}
+        <div style={{ padding: '24px' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '2fr 1fr',
+              gap: '20px',
+              alignItems: 'start',
+            }}
+          >
+            {/* Left: Chart Component */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+              <div style={{
+                border: '1px solid var(--bydash-border)',
+                borderRadius: '12px',
+                background: 'var(--bydash-bg)',
+                overflow: 'hidden',
+                padding: '24px',
+              }}>
+                <h3 style={{
+                  fontSize: '1.15rem',
+                  fontWeight: '600',
+                  marginBottom: '20px',
+                  color: 'var(--bydash-heading)',
+                }}>
+                  Kompetenzverteilung nach Stufe
+                </h3>
+                <StackedBarChart
+                  groups={chartData}
+                  showLegend={true}
+                />
+              </div>
+            </div>
+
+            {/* Right: Info Panel / Storytelling */}
+            <div style={{
+              border: '1px solid var(--bydash-border)',
+              borderRadius: '12px',
+              background: 'var(--bydash-bg)',
+              overflow: 'hidden',
+              padding: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '24px',
+              height: 'fit-content',
+            }}>
+              {/* Skills Summary */}
+              <div style={{
+                paddingBottom: '16px',
+                borderBottom: '1px solid var(--bydash-border)',
+              }}>
+                <div style={{
+                  fontSize: '0.75rem',
+                  opacity: 0.7,
+                  marginBottom: '4px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  fontWeight: '600',
+                }}>
+                  Ausgewählte Kompetenzen
+                </div>
+                <div style={{
+                  fontSize: '1.2rem',
+                  fontWeight: '700',
+                  margin: 0,
+                }}>
+                  {skillsToDisplay.length} / {BEREICHE.length}
+                </div>
+              </div>
+
+              {/* Selected Skills List */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  color: 'var(--bydash-heading)',
+                }}>
+                  Analysierte Bereiche:
+                </div>
+                {skillsToDisplay.map((skill) => {
+                  const competency = competenciesByBereich.get(skill)
+                  return (
+                    <div
+                      key={skill}
+                      style={{
+                        padding: '12px',
+                        border: '1px solid var(--bydash-border)',
+                        borderRadius: '8px',
+                        background: 'rgba(0, 141, 201, 0.03)',
+                      }}
+                    >
+                      <div style={{
+                        fontSize: '0.95rem',
+                        fontWeight: '600',
+                        marginBottom: '4px',
+                        color: 'var(--bydash-accent)',
+                      }}>
+                        {skill}
+                      </div>
+                      {competency && (
+                        <div style={{
+                          fontSize: '0.85rem',
+                          color: 'var(--bydash-text)',
+                          opacity: 0.7,
+                          lineHeight: '1.4',
+                        }}>
+                          {competency.description}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Data Source */}
+              <div style={{
+                paddingTop: '16px',
+                borderTop: '1px solid var(--bydash-border)',
+                fontSize: '0.85rem',
+                color: 'var(--bydash-text)',
+                opacity: 0.65,
+              }}>
+                <strong>Quelle:</strong> IQB-Bildungstrend 2022 in der Sekundarstufe I
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Skill Level Explanations */}
+        {showSkillLevels && (
+          <div style={{ padding: '24px', borderTop: '1px solid var(--bydash-border)', background: 'rgba(0, 141, 201, 0.03)' }}>
+            <h3 style={{
+              fontSize: '1.1rem',
+              fontWeight: '600',
+              marginBottom: '16px',
+              marginTop: 0,
+              color: 'var(--bydash-heading)',
+            }}>
+              Erklärung der Kompetenzstufen
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+              {competencies.map((competency) => (
+                <div
+                  key={competency.bereich}
+                  style={{
+                    padding: '16px',
+                    border: '1px solid var(--bydash-border)',
+                    borderRadius: '8px',
+                    background: 'var(--bydash-bg)',
+                  }}
+                >
+                  <h4 style={{
+                    fontSize: '0.95rem',
+                    fontWeight: '600',
+                    marginBottom: '12px',
+                    marginTop: 0,
+                    color: 'var(--bydash-accent)',
+                  }}>
+                    {competency.bereich}
+                  </h4>
+                  <pre style={{
+                    fontSize: '0.85rem',
+                    color: 'var(--bydash-text)',
+                    margin: 0,
+                    whiteSpace: 'pre-wrap',
+                    wordWrap: 'break-word',
+                    opacity: 0.8,
+                    lineHeight: '1.6',
+                    fontFamily: 'inherit',
+                  }}>
+                    {competency.skillLevelInfo}
+                  </pre>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export const DeutschView = memo(DeutschViewComponent)

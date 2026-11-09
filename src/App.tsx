@@ -4,6 +4,7 @@ import { RegierungsView } from './components/RegierungsPage'
 import { HeroView } from './components/HeroPage'
 import { InfoView } from './components/InfoPage'
 import { SAmtPage } from './components/SAmtPage'
+import { DeutschView } from './components/DeutschPage'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import {
   VIEW_OPTIONS,
@@ -42,6 +43,10 @@ export default function App() {
           {view === 'home' ? (
             <ErrorBoundary>
               <HeroView />
+            </ErrorBoundary>
+          ) : view === 'deutsch' ? (
+            <ErrorBoundary>
+              <DeutschView />
             </ErrorBoundary>
           ) : view === 'bavaria' ? (
             <ErrorBoundary>

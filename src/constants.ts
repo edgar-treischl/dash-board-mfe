@@ -7,6 +7,7 @@ export const VIEW_OPTIONS = [
   { key: 'bavaria' as const, label: 'Bayern' },
   { key: 'regierung' as const, label: 'Regierungsbezirke' },
   { key: 'samt' as const, label: 'Schulamt' },
+  { key: 'deutsch' as const, label: 'Kompetenzen' },
   { key: 'info' as const, label: 'Info' },
 ] as const
 
@@ -18,6 +19,7 @@ export const VIEW_METADATA: Record<
   string
 > = {
   home: 'ByDash',
+  deutsch: 'Deutsch IQB',
   bavaria: 'Bayern',
   regierung: 'Regierungsbezirke',
   samt: 'Schulamt',

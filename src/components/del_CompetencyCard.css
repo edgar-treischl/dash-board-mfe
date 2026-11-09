@@ -1,0 +1,106 @@
+.competency-card {
+  padding: 20px;
+  border: 1px solid var(--mfe-template-border);
+  border-radius: 12px;
+  background: var(--mfe-template-elevated);
+  border-left: 4px solid var(--mfe-template-accent);
+}
+
+.competency-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.competency-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--mfe-template-heading);
+  flex: 1;
+}
+
+.competency-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: none;
+  border: 1px solid var(--mfe-template-border);
+  border-radius: 6px;
+  color: var(--mfe-template-text);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.competency-toggle:hover {
+  background: var(--mfe-template-surface);
+  border-color: var(--mfe-template-accent);
+}
+
+.competency-toggle:focus-visible {
+  outline: 2px solid var(--mfe-template-accent);
+  outline-offset: 2px;
+}
+
+.toggle-icon {
+  display: block;
+  line-height: 1;
+}
+
+.competency-details {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--mfe-template-border);
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.competency-description {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--mfe-template-text-muted);
+}
+
+.skill-level-info {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--mfe-template-text-muted);
+  background: var(--mfe-template-surface);
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 3px solid var(--mfe-template-accent);
+}
+
+.skill-level-info strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--mfe-template-heading);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 720px) {
+  .competency-card {
+    padding: 16px;
+  }
+
+  .competency-name {
+    font-size: 1.1rem;
+  }
+}
