@@ -157,3 +157,66 @@ export function GlobeIcon({ className }: IconProps) {
   );
 }
 
+export function ReadingIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      {/* Open book */}
+      <path d="M12 7v14" />
+      <path d="M12 7C9.5 5 5.5 5 2 6v13c4-1 7.5-1 10 2" />
+      <path d="M12 7c2.5-2 6.5-2 10-1v13c-4-1-7.5-1-10 2" />
+    </svg>
+  );
+}
+
+export function SpellingIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      {/* Letter A */}
+      <path d="M3 17l4-10 4 10" />
+      <path d="M4.5 13h5" />
+
+      {/* Letter Z */}
+      <path d="M13 7h8l-8 10h8" />
+
+      {/* Checkmark */}
+      <path d="M14 21l2 2 5-5" />
+    </svg>
+  );
+}
+
+export function ListeningIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      {/* Headphones */}
+      <path d="M3 14v-3a9 9 0 0 1 18 0v3" />
+
+      {/* Ear cups */}
+      <path d="M3 14h3v6H5a2 2 0 0 1-2-2v-4z" />
+      <path d="M21 14h-3v6h1a2 2 0 0 0 2-2v-4z" />
+    </svg>
+  );
+}
