@@ -246,31 +246,6 @@ function DeutschViewComponent() {
               )
             })}
           </div>
-
-          {/* Skill Level Toggle */}
-          <button
-            onClick={() => setShowSkillLevels(!showSkillLevels)}
-            style={{
-              padding: '8px 12px',
-              fontSize: '0.85rem',
-              background: 'transparent',
-              border: '1px solid var(--bydash-border)',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              color: 'var(--bydash-text)',
-              transition: 'all 0.15s ease',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--bydash-accent)';
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-accent)';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--bydash-border)';
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-text)';
-            }}
-          >
-            {showSkillLevels ? 'Hide' : 'Show'} skill level explanations
-          </button>
         </div>
 
         {/* Main Content Area */}
@@ -305,6 +280,34 @@ function DeutschViewComponent() {
                   showLegend={true}
                 />
               </div>
+
+              {/* Skill Level Toggle - After Chart */}
+              <button
+                onClick={() => setShowSkillLevels(!showSkillLevels)}
+                style={{
+                  padding: '10px 16px',
+                  fontSize: '0.85rem',
+                  background: 'transparent',
+                  border: '1px solid var(--bydash-border)',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  color: 'var(--bydash-text)',
+                  transition: 'all 0.15s ease',
+                  fontWeight: '500',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--bydash-accent)';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-accent)';
+                  (e.currentTarget as HTMLButtonElement).style.background = 'rgba(0, 141, 201, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--bydash-border)';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--bydash-text)';
+                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                }}
+              >
+                {showSkillLevels ? '▲ Hide' : '▼ Show'} skill level explanations
+              </button>
             </div>
 
             {/* Right: Info Panel / Storytelling */}
@@ -406,52 +409,133 @@ function DeutschViewComponent() {
           </div>
         </div>
 
-        {/* Skill Level Explanations */}
+        {/* Skill Level Explanations - Reusable Template */}
         {showSkillLevels && (
           <div style={{ padding: '24px', borderTop: '1px solid var(--bydash-border)', background: 'rgba(0, 141, 201, 0.03)' }}>
-            <h3 style={{
-              fontSize: '1.1rem',
-              fontWeight: '600',
-              marginBottom: '16px',
-              marginTop: 0,
-              color: 'var(--bydash-heading)',
-            }}>
-              Erklärung der Kompetenzstufen
-            </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
-              {competencies.map((competency) => (
-                <div
-                  key={competency.bereich}
-                  style={{
-                    padding: '16px',
-                    border: '1px solid var(--bydash-border)',
-                    borderRadius: '8px',
-                    background: 'var(--bydash-bg)',
-                  }}
-                >
-                  <h4 style={{
-                    fontSize: '0.95rem',
-                    fontWeight: '600',
-                    marginBottom: '12px',
-                    marginTop: 0,
-                    color: 'var(--bydash-accent)',
-                  }}>
-                    {competency.bereich}
-                  </h4>
-                  <pre style={{
-                    fontSize: '0.85rem',
-                    color: 'var(--bydash-text)',
-                    margin: 0,
-                    whiteSpace: 'pre-wrap',
-                    wordWrap: 'break-word',
-                    opacity: 0.8,
-                    lineHeight: '1.6',
-                    fontFamily: 'inherit',
-                  }}>
-                    {competency.skillLevelInfo}
-                  </pre>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', alignItems: 'flex-start' }}>
+              {/* Left Column: Getestete Bereiche */}
+              <div>
+                <h3 style={{
+                  fontSize: '1.3rem',
+                  fontWeight: '600',
+                  marginBottom: '16px',
+                  marginTop: 0,
+                  color: 'var(--bydash-heading)',
+                  borderBottom: '2px solid var(--bydash-border)',
+                  paddingBottom: '8px',
+                }}>
+                  Getestete Bereiche
+                </h3>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '18px' }}>
+                  {competencies.map((competency) => (
+                    <div
+                      key={competency.bereich}
+                      style={{
+                        padding: '18px',
+                        borderLeft: '4px solid var(--bydash-accent)',
+                        background: 'var(--bydash-bg)',
+                        borderRadius: '8px',
+                      }}
+                    >
+                      <h4 style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '1.125rem',
+                        fontWeight: '600',
+                        color: 'var(--bydash-heading)',
+                      }}>
+                        {competency.bereich}
+                      </h4>
+                      <p style={{
+                        margin: 0,
+                        fontSize: '0.88rem',
+                        color: 'var(--bydash-text)',
+                        lineHeight: '1.6',
+                        opacity: 0.85,
+                      }}>
+                        {competency.description}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              {/* Right Column: Kompetenzstufen */}
+              <div>
+                <h3 style={{
+                  fontSize: '1.3rem',
+                  fontWeight: '600',
+                  marginBottom: '16px',
+                  marginTop: 0,
+                  color: 'var(--bydash-heading)',
+                  borderBottom: '2px solid var(--bydash-border)',
+                  paddingBottom: '8px',
+                }}>
+                  Kompetenzstufen
+                </h3>
+
+                <p style={{
+                  fontSize: '0.9rem',
+                  color: 'var(--bydash-text)',
+                  lineHeight: '1.6',
+                  marginBottom: '18px',
+                  marginTop: '12px',
+                  opacity: 0.8,
+                }}>
+                  Die Leistungen der Schülerinnen und Schüler werden anhand von sechs Kompetenzstufen beschrieben:
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  {competencies.length > 0 && competenciesByBereich.has(selectedSkill) && (() => {
+                    const selectedCompetency = competenciesByBereich.get(selectedSkill)
+                    const skillLines = selectedCompetency?.skillLevelInfo.trim().split('\n') || []
+                    
+                    const skillLevels = [
+                      { code: 'V', title: 'Optimalstandard', color: '#01665e' },
+                      { code: 'IV', title: 'Regelstandard Plus', color: '#5ab4ac' },
+                      { code: 'III', title: 'Regelstandard', color: '#c7eae5', textColor: '#111827' },
+                      { code: 'II', title: 'Mindeststandard Plus', color: '#f6e8c3', textColor: '#111827' },
+                      { code: 'Ib', title: 'Mindeststandard', color: '#d8b365' },
+                      { code: 'Ia', title: 'Unter Mindeststandard', color: '#8c510a' },
+                    ]
+
+                    return skillLevels.map((level) => {
+                      const skillLine = skillLines.find(line => line.trim().startsWith(level.code))
+                      const description = skillLine 
+                        ? skillLine.split(':').slice(1).join(':').trim() 
+                        : ''
+
+                      return (
+                        <div key={level.code} style={{ display: 'flex', gap: '16px', padding: '18px', border: '1px solid var(--bydash-border)', borderRadius: '12px', background: 'var(--bydash-surface)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)' }}>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            minWidth: '48px',
+                            height: '48px',
+                            borderRadius: '12px',
+                            fontWeight: '600',
+                            fontSize: '1rem',
+                            color: level.textColor || 'white',
+                            flexShrink: 0,
+                            background: level.color,
+                          }}>
+                            {level.code}
+                          </div>
+                          <div>
+                            <h4 style={{ margin: '0 0 6px 0', fontSize: '0.95rem', fontWeight: '600', color: 'var(--bydash-heading)' }}>
+                              {level.title}
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--bydash-text)', opacity: 0.8, lineHeight: '1.5' }}>
+                              {description}
+                            </p>
+                          </div>
+                        </div>
+                      )
+                    })
+                  })()}
+                </div>
+              </div>
             </div>
           </div>
         )}
